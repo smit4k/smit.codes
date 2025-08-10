@@ -1,16 +1,17 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { FaGithub, FaGlobe, FaRust, FaReact } from "react-icons/fa";
+import { FaGithub, FaGlobe, FaRust, FaReact, FaJava } from "react-icons/fa"; // added FaJava
 import { RiTailwindCssFill } from "react-icons/ri";
+import { SiModrinth } from "react-icons/si";
 
 const Projects = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="bg-card border border-border rounded-lg p-8 max-w-2xl w-full">
         <div className="flex justify-between items-start mb-8">
-          <img 
-            src="/smit_pfp.svg" 
-            alt="Smit's profile picture" 
+          <img
+            src="/smit_pfp.svg"
+            alt="Smit's profile picture"
             className="w-10 h-10 rounded-full object-cover border-2 border-border"
           />
           <Navigation />
@@ -31,6 +32,7 @@ const Projects = () => {
               . Here are some highlights of my work:
             </p>
             <div className="space-y-4">
+              {/* Conversia */}
               <div className="border border-border rounded-lg p-4 relative">
                 <a
                   href="https://github.com/smit4k/conversia"
@@ -51,6 +53,7 @@ const Projects = () => {
                   </div>
                 </div>
               </div>
+              {/* smit.codes */}
               <div className="border border-border rounded-lg p-4 relative">
                 <div className="absolute top-4 right-4 flex gap-2">
                   <a
@@ -83,29 +86,41 @@ const Projects = () => {
                   </div>
                 </div>
               </div>
+              {/* Quicknote */}
               <div className="border border-border rounded-lg p-4 relative">
-                <a
-                  href="https://github.com/smit4k/codingbat-rust"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="absolute top-4 right-4 text-muted-foreground hover:text-link transition-colors"
-                  aria-label="View codingbat-rust on GitHub"
-                >
-                  <FaGithub size={18} />
-                </a>
+                <div className="absolute top-4 right-4 flex gap-2">
+                  <a
+                    href="https://modrinth.com/mod/quicknote"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-link transition-colors"
+                    aria-label="View modrinth.com mod page"
+                  >
+                    <SiModrinth size={18} />
+                  </a>
+                  <a
+                    href="https://github.com/smit4k/quicknote"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-link transition-colors"
+                    aria-label="View quicknote on GitHub"
+                  >
+                    <FaGithub size={18} />
+                  </a>
+                </div>
                 <div className="pr-10">
-                  <h3 className="font-medium text-foreground mb-2">codingbat-rust</h3>
+                  <h3 className="font-medium text-foreground mb-2">Quicknote</h3>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Rust solutions to the codingbat.com problems
+                    Take notes in Minecraft quickly using chat commands
                   </p>
                   <div className="flex gap-2">
-                    <span className="text-xs px-2 py-1 bg-[hsl(var(--rust))] text-secondary-foreground rounded"><FaRust /></span>
+                    <span className="text-xs px-2 py-1 bg-[hsl(var(--java))] text-secondary-foreground rounded"><FaJava /></span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </div> {/* ✅ closes space-y-8 div */}
         <Footer />
       </div>
     </div>
