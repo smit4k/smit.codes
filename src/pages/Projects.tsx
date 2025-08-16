@@ -1,6 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { FaGithub, FaGlobe, FaRust, FaReact, FaJava } from "react-icons/fa"; // added FaJava
+import { FaGithub, FaGlobe, FaRust, FaReact, FaJava } from "react-icons/fa";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { SiModrinth } from "react-icons/si";
 
@@ -49,10 +49,14 @@ const Projects = () => {
                     A powerful, multi-purpose file utility bot using the serenity and poise frameworks
                   </p>
                   <div className="flex gap-2">
-                    <span className="text-xs px-2 py-1 bg-[hsl(var(--rust))] text-secondary-foreground rounded"><FaRust /></span>
+                    <span className="text-xs px-2 py-1 bg-[hsl(var(--rust))] text-secondary-foreground rounded flex items-center gap-1">
+                      <FaRust />
+                      Rust
+                    </span>
                   </div>
                 </div>
               </div>
+
               {/* smit.codes */}
               <div className="border border-border rounded-lg p-4 relative">
                 <div className="absolute top-4 right-4 flex gap-2">
@@ -81,11 +85,18 @@ const Projects = () => {
                     This website, a personal homepage, and my first time using React and TailwindCSS
                   </p>
                   <div className="flex gap-2">
-                    <span className="text-xs px-2 py-1 bg-[hsl(var(--lang-react))] text-[hsl(var(--lang-react-foreground))] rounded"><FaReact /></span>
-                    <span className="text-xs px-2 py-1 bg-[hsl(var(--lang-tailwind))] text-[hsl(var(--lang-tailwind-foreground))] rounded"><RiTailwindCssFill /></span>
+                    <span className="text-xs px-2 py-1 bg-[hsl(var(--lang-react))] text-[hsl(var(--lang-react-foreground))] rounded flex items-center gap-1">
+                      <FaReact />
+                      React
+                    </span>
+                    <span className="text-xs px-2 py-1 bg-[hsl(var(--lang-tailwind))] text-[hsl(var(--lang-tailwind-foreground))] rounded flex items-center gap-1">
+                      <RiTailwindCssFill />
+                      Tailwind
+                    </span>
                   </div>
                 </div>
               </div>
+
               {/* Quicknote */}
               <div className="border border-border rounded-lg p-4 relative">
                 <div className="absolute top-4 right-4 flex gap-2">
@@ -114,13 +125,16 @@ const Projects = () => {
                     Take notes in Minecraft quickly using chat commands
                   </p>
                   <div className="flex gap-2">
-                    <span className="text-xs px-2 py-1 bg-[hsl(var(--java))] text-secondary-foreground rounded"><FaJava /></span>
+                    <span className="text-xs px-2 py-1 bg-[hsl(var(--java))] text-secondary-foreground rounded flex items-center gap-1">
+                      <FaJava />
+                      Java
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div> {/* ✅ closes space-y-8 div */}
+        </div>
         <Footer />
       </div>
     </div>
