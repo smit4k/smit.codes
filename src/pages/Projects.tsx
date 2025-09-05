@@ -91,7 +91,7 @@ const Projects = () => {
                     </span>
                     <span className="text-xs px-2 py-1 bg-[hsl(var(--lang-tailwind))] text-[hsl(var(--lang-tailwind-foreground))] rounded flex items-center gap-1">
                       <RiTailwindCssFill />
-                      Tailwind
+                      TailwindCSS
                     </span>
                   </div>
                 </div>
