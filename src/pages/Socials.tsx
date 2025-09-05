@@ -17,7 +17,8 @@ const Socials = () => {
     },
     { 
       name: "Discord", 
-      handle: "sm.it", 
+      handle: "sm.it",
+      url: "https://discord.com/users/562359659391090689", 
       icon: FaDiscord,
       description: "Direct chat and collaboration"
     },
