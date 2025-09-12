@@ -8,7 +8,7 @@ import { RiTailwindCssFill } from "react-icons/ri";
 const posts = {
   "making-of-lqf": {
     component: MakingOfLQF,
-    title: "My own configuration language, LQF",
+    title: "My Own Configuration Language, LQF",
     date: "July 9, 2025",
     estTimeToRead: "3 min",
   },

@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 const posts = [
   {
     slug: "making-of-lqf",
-    title: "My own configuration language, LQF",
+    title: "My Own Configuration Language, LQF",
     date: "July 9, 2025",
     description: "How I designed my own configuration language and my thought process behind it.",
     estTimeToRead: "3 min",
