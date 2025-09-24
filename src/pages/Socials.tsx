@@ -1,10 +1,9 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { Description } from "@radix-ui/react-toast";
 import { FaGithub, FaDiscord, FaMastodon, FaTwitch, FaReact } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
-import { RiTailwindCssFill } from "react-icons/ri";
+import SocialMediaButton from "@/components/SocialMediaButton";
 
 const Socials = () => {
   const socials = [
@@ -72,42 +71,14 @@ const Socials = () => {
             </p>
             <div className="grid gap-4 md:grid-cols-2">
               {socials.map((social, index) => (
-                social.url ? (
-                  <a
-                    key={index}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-start gap-3 p-4 border border-border rounded-lg hover:bg-secondary transition-colors group"
-                  >
-                    <social.icon size={24} className="text-muted-foreground group-hover:text-link transition-colors mt-1" />
-                    <div className="flex-1">
-                      <h3 className="font-medium text-foreground mb-1">{social.name}</h3>
-                      <p className="text-sm text-muted-foreground mb-1">{social.handle}</p>
-                      <p className="text-xs text-muted-foreground">{social.description}</p>
-                    </div>
-                  </a>
-                ) : (
-                  <div
-                    key={index}
-                    className="flex items-start gap-3 p-4 border border-border rounded-lg"
-                  >
-                    <social.icon size={24} className="text-muted-foreground mt-1" />
-                    <div className="flex-1">
-                      <h3 className="font-medium text-foreground mb-1">{social.name}</h3>
-                      <p className="text-sm text-muted-foreground mb-1">
-                        {social.name === "Discord" ? (
-                          <span className="bg-teal-500/10 border border-teal-500/60 text-teal-300 px-2 py-0.5 rounded text-sm font-mono">
-                            {social.handle}
-                          </span>
-                        ) : (
-                          social.handle
-                        )}
-                      </p>
-                      <p className="text-xs text-muted-foreground">{social.description}</p>
-                    </div>
-                  </div>
-                )
+                <SocialMediaButton
+                  key={index}
+                  name={social.name}
+                  handle={social.handle}
+                  url={social.url}
+                  icon={social.icon}
+                  description={social.description}
+                />
               ))}
             </div>
           </div>
