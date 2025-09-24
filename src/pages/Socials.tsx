@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { FaGithub, FaDiscord, FaMastodon, FaTwitch, FaReact } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
-import SocialMediaButton from "@/components/SocialMediaButton";
+import SocialMediaButton from "@/components/SocialMediaCard";
 import ProfilePicture from "@/components/ProfilePicture";
 
 const Socials = () => {
