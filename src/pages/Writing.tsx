@@ -3,6 +3,7 @@ import { FaClock, FaReact } from "react-icons/fa";
 import { RiTailwindCssFill } from "react-icons/ri";
 import Footer from "@/components/Footer";
 import ProfilePicture from "@/components/ProfilePicture";
+import WritingSection from "@/components/WritingSection";
 
 const posts = [
   {
@@ -22,10 +23,7 @@ const Writing = () => (
         <ProfilePicture />
         <Navigation />
       </div>
-      <h2 className="text-xl font-semibold mb-4 text-foreground">Writing</h2>
-      <p className="text-muted-foreground mb-6">
-        Welcome to my writing! I'll be sharing some cool stuff!
-      </p>
+      <WritingSection />
       <div className="space-y-4">
         {posts.map((post) => (
           <a
