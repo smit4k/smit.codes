@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import MakingOfLQF from "../writing/making-of-lqf.mdx";
 import { FaClock, FaReact } from "react-icons/fa";
 import { RiTailwindCssFill } from "react-icons/ri";
+import ProfilePicture from "@/components/ProfilePicture";
 
 const posts = {
   "making-of-lqf": {
@@ -32,11 +33,7 @@ const WritingPost = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="bg-card border border-border rounded-lg p-8 max-w-2xl w-full">
         <div className="flex justify-between items-start mb-8">
-          <img
-            src="/smit_pfp.svg"
-            alt="Smit's profile picture"
-            className="w-10 h-10 rounded-full object-cover border-2 border-border"
-          />
+          <ProfilePicture />
           <Navigation />
         </div>
         <Link to="/writing" className="text-link hover:underline mb-4 block">

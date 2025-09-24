@@ -2,6 +2,7 @@ import Navigation from "@/components/Navigation";
 import { FaClock, FaReact } from "react-icons/fa";
 import { RiTailwindCssFill } from "react-icons/ri";
 import Footer from "@/components/Footer";
+import ProfilePicture from "@/components/ProfilePicture";
 
 const posts = [
   {
@@ -18,11 +19,7 @@ const Writing = () => (
   <div className="min-h-screen bg-background flex items-center justify-center p-4">
     <div className="bg-card border border-border rounded-lg p-8 max-w-2xl w-full">
       <div className="flex justify-between items-start mb-8">
-        <img
-          src="/smit_pfp.svg"
-          alt="Smit's profile picture"
-          className="w-10 h-10 rounded-full object-cover border-2 border-border"
-        />
+        <ProfilePicture />
         <Navigation />
       </div>
       <h2 className="text-xl font-semibold mb-4 text-foreground">Writing</h2>

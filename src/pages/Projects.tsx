@@ -3,17 +3,14 @@ import Footer from "@/components/Footer";
 import { FaGithub, FaGlobe, FaRust, FaReact, FaJava } from "react-icons/fa";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { SiModrinth } from "react-icons/si";
+import ProfilePicture from "@/components/ProfilePicture";
 
 const Projects = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="bg-card border border-border rounded-lg p-8 max-w-2xl w-full">
         <div className="flex justify-between items-start mb-8">
-          <img
-            src="/smit_pfp.svg"
-            alt="Smit's profile picture"
-            className="w-10 h-10 rounded-full object-cover border-2 border-border"
-          />
+          <ProfilePicture />
           <Navigation />
         </div>
         <div className="space-y-8">

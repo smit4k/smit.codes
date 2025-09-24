@@ -4,6 +4,7 @@ import { FaGithub, FaDiscord, FaMastodon, FaTwitch, FaReact } from "react-icons/
 import { FaXTwitter } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
 import SocialMediaButton from "@/components/SocialMediaButton";
+import ProfilePicture from "@/components/ProfilePicture";
 
 const Socials = () => {
   const socials = [
@@ -41,11 +42,7 @@ const Socials = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="bg-card border border-border rounded-lg p-8 max-w-2xl w-full">
         <div className="flex justify-between items-start mb-8">
-          <img 
-            src="/smit_pfp.svg" 
-            alt="Smit's profile picture" 
-            className="w-10 h-10 rounded-full object-cover border-2 border-border"
-          />
+          <ProfilePicture />
           <Navigation />
         </div>
         <div className="space-y-8">
