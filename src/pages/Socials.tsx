@@ -35,20 +35,6 @@ const Socials = () => {
       icon: FaXTwitter,
       description: "Tech thoughts and updates"
     },
-    {
-      name: "Mastodon",
-      handle: "@xbr",
-      url: "https://mastodon.social/@xbr",
-      icon: FaMastodon,
-      description: "I don't use this much, but you can find me here"
-    },
-    {
-      name: "Twitch",
-      handle: "saberdevstreams",
-      url: "https://twitch.tv/saberdevstreams",
-      icon: FaTwitch,
-      description: "Livestreams and coding sessions"
-    }
   ];
 
   return (
