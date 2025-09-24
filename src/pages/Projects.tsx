@@ -1,9 +1,12 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import ProfilePicture from "@/components/ProfilePicture";
+import ProjectSection from "@/components/ProjectSection";
+import ProjectCard from "@/components/ProjectCard";
+
 import { FaGithub, FaGlobe, FaRust, FaReact, FaJava } from "react-icons/fa";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { SiModrinth } from "react-icons/si";
-import ProfilePicture from "@/components/ProfilePicture";
 
 const Projects = () => {
   return (
@@ -13,124 +16,83 @@ const Projects = () => {
           <ProfilePicture />
           <Navigation />
         </div>
-        <div className="space-y-8">
-          <div>
-            <h2 className="text-xl font-semibold mb-4 text-foreground">Projects</h2>
-            <p className="text-muted-foreground mb-6">
-              Most of my projects are open source and available on my Github,{" "}
-              <a
-                href="https://github.com/smit4k"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-link hover:text-link-hover transition-colors"
-              >
-                @smit4k
-              </a>
-              . Here are some highlights of my work:
-            </p>
-            <div className="space-y-4">
-              {/* Conversia */}
-              <div className="border border-border rounded-lg p-4 relative">
-                <a
-                  href="https://github.com/smit4k/conversia"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="absolute top-4 right-4 text-muted-foreground hover:text-link transition-colors"
-                  aria-label="View conversia on GitHub"
-                >
-                  <FaGithub size={18} />
-                </a>
-                <div className="pr-16">
-                  <h3 className="font-medium text-foreground mb-2">conversia</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    A powerful, multi-purpose file utility bot using the serenity and poise frameworks
-                  </p>
-                  <div className="flex gap-2">
-                    <span className="text-xs px-2 py-1 bg-[hsl(var(--rust))] text-secondary-foreground rounded flex items-center gap-1">
-                      <FaRust />
-                      Rust
-                    </span>
-                  </div>
-                </div>
-              </div>
+        <ProjectSection />
+        <div className="space-y-4">
+          <ProjectCard
+            name="conversia"
+            description="A powerful, multi-purpose file utility bot using the serenity and poise frameworks"
+            links={[
+              {
+                href: "https://github.com/smit4k/conversia",
+                icon: <FaGithub size={18} />,
+                label: "View conversia on GitHub",
+              },
+            ]}
+            languages={[
+              {
+                name: "Rust",
+                icon: <FaRust />,
+                bgColor: "hsl(var(--rust))",
+                textColor: "var(--secondary-foreground)",
+              },
+            ]}
+          />
 
-              {/* smit.codes */}
-              <div className="border border-border rounded-lg p-4 relative">
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <a
-                    href="https://smit.codes"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-link transition-colors"
-                    aria-label="View smit.codes site"
-                  >
-                    <FaGlobe size={18} />
-                  </a>
-                  <a
-                    href="https://github.com/smit4k/smit.codes"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-link transition-colors"
-                    aria-label="View smit.codes on GitHub"
-                  >
-                    <FaGithub size={18} />
-                  </a>
-                </div>
-                <div className="pr-16">
-                  <h3 className="font-medium text-foreground mb-2">smit.codes</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    This website, a personal homepage, and my first time using React and TailwindCSS
-                  </p>
-                  <div className="flex gap-2">
-                    <span className="text-xs px-2 py-1 bg-[hsl(var(--lang-react))] text-[hsl(var(--lang-react-foreground))] rounded flex items-center gap-1">
-                      <FaReact />
-                      React
-                    </span>
-                    <span className="text-xs px-2 py-1 bg-[hsl(var(--lang-tailwind))] text-[hsl(var(--lang-tailwind-foreground))] rounded flex items-center gap-1">
-                      <RiTailwindCssFill />
-                      TailwindCSS
-                    </span>
-                  </div>
-                </div>
-              </div>
+          <ProjectCard
+            name="smit.codes"
+            description="This website, a personal homepage, and my first time using React and TailwindCSS"
+            links={[
+              {
+                href: "https://smit.codes",
+                icon: <FaGlobe size={18} />,
+                label: "View smit.codes site",
+              },
+              {
+                href: "https://github.com/smit4k/smit.codes",
+                icon: <FaGithub size={18} />,
+                label: "View smit.codes on GitHub",
+              },
+            ]}
+            languages={[
+              {
+                name: "React",
+                icon: <FaReact />,
+                bgColor: "hsl(var(--lang-react))",
+                textColor: "hsl(var(--lang-react-foreground))",
+              },
+              {
+                name: "TailwindCSS",
+                icon: <RiTailwindCssFill />,
+                bgColor: "hsl(var(--lang-tailwind))",
+                textColor: "hsl(var(--lang-tailwind-foreground))",
+              },
+            ]}
+          />
 
-              {/* Quicknote */}
-              <div className="border border-border rounded-lg p-4 relative">
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <a
-                    href="https://modrinth.com/mod/quicknote"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-link transition-colors"
-                    aria-label="View modrinth.com mod page"
-                  >
-                    <SiModrinth size={18} />
-                  </a>
-                  <a
-                    href="https://github.com/smit4k/quicknote"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-link transition-colors"
-                    aria-label="View quicknote on GitHub"
-                  >
-                    <FaGithub size={18} />
-                  </a>
-                </div>
-                <div className="pr-10">
-                  <h3 className="font-medium text-foreground mb-2">Quicknote</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Take notes in Minecraft quickly using chat commands
-                  </p>
-                  <div className="flex gap-2">
-                    <span className="text-xs px-2 py-1 bg-[hsl(var(--java))] text-secondary-foreground rounded flex items-center gap-1">
-                      <FaJava />
-                      Java
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ProjectCard
+            name="Quicknote"
+            description="Take notes in Minecraft quickly using chat commands"
+            links={[
+              {
+                href: "https://modrinth.com/mod/quicknote",
+                icon: <SiModrinth size={18} />,
+                label: "View modrinth.com mod page",
+              },
+              {
+                href: "https://github.com/smit4k/quicknote",
+                icon: <FaGithub size={18} />,
+                label: "View quicknote on GitHub",
+              },
+            ]}
+            languages={[
+              {
+                name: "Java",
+                icon: <FaJava />,
+                bgColor: "hsl(var(--java))",
+                textColor: "var(--secondary-foreground)",
+              },
+            ]}
+          />
         </div>
         <Footer />
       </div>
