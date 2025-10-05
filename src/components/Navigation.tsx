@@ -16,7 +16,7 @@ const Navigation = () => {
         <Link
           key={path}
           to={path}
-          className={`px-3 py-1 rounded transition-colors text-sm ${
+          className={`px-3 py-1 rounded-2xl transition-colors text-sm ${
             isActive(path)
               ? "text-accent bg-secondary"
               : "text-muted-foreground hover:text-link"

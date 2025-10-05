@@ -7,11 +7,11 @@ import ProjectCard from "@/components/ProjectCard";
 import { FaGithub, FaGlobe, FaRust, FaReact, FaJava } from "react-icons/fa";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { SiModrinth } from "react-icons/si";
+import MainContainer from "@/components/MainContainer";
 
 const Projects = () => {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="bg-card border border-border rounded-lg p-8 max-w-2xl w-full">
+    <MainContainer>
         <div className="flex justify-between items-start mb-8">
           <ProfilePicture />
           <Navigation />
@@ -95,8 +95,7 @@ const Projects = () => {
           />
         </div>
         <Footer />
-      </div>
-    </div>
+      </MainContainer>
   );
 };
 

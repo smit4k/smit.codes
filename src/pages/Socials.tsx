@@ -5,6 +5,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
 import SocialMediaButton from "@/components/SocialMediaCard";
 import ProfilePicture from "@/components/ProfilePicture";
+import MainContainer from "@/components/MainContainer";
 
 const Socials = () => {
   const socials = [
@@ -39,9 +40,8 @@ const Socials = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="bg-card border border-border rounded-lg p-8 max-w-2xl w-full">
-        <div className="flex justify-between items-start mb-8">
+    <MainContainer>
+    <div className="flex justify-between items-start mb-8">
           <ProfilePicture />
           <Navigation />
         </div>
@@ -67,8 +67,7 @@ const Socials = () => {
           </div>
         </div>
         <Footer />
-      </div>
-    </div>
+    </MainContainer>
   );
 };
 

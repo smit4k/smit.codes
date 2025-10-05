@@ -4,8 +4,10 @@ import { RiTailwindCssFill } from "react-icons/ri";
 import Footer from "@/components/Footer";
 import ProfilePicture from "@/components/ProfilePicture";
 import WritingSection from "@/components/WritingSection";
+import MainContainer from "@/components/MainContainer";
 
 const posts = [
+  // Add more posts here
   {
     slug: "making-of-lqf",
     title: "My Own Configuration Language, LQF",
@@ -13,42 +15,39 @@ const posts = [
     description: "How I designed my own configuration language and my thought process behind it.",
     estTimeToRead: "3 min",
   },
-  // Add more posts here
 ];
 
 const Writing = () => (
-  <div className="min-h-screen bg-background flex items-center justify-center p-4">
-    <div className="bg-card border border-border rounded-lg p-8 max-w-2xl w-full">
-      <div className="flex justify-between items-start mb-8">
-        <ProfilePicture />
-        <Navigation />
-      </div>
-      <WritingSection />
-      <div className="space-y-4">
-        {posts.map((post) => (
-          <a
-            key={post.slug}
-            href={`/writing/${post.slug}`}
-            className="block border border-border rounded-lg p-4 hover:bg-secondary transition-colors"
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="text-lg font-semibold text-foreground mb-1">
-                  {post.title}
-                </h3>
-                <p className="text-xs text-muted-foreground mb-2">{post.date}</p>
-              </div>
-              <span className="text-xs text-muted-foreground whitespace-nowrap ml-4 mt-1">
-                {post.estTimeToRead} <FaClock className="inline-block" />
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground mt-2">{post.description}</p>
-          </a>
-        ))}
-      </div>
-      <Footer />
+  <MainContainer>
+    <div className="flex justify-between items-start mb-8">
+      <ProfilePicture />
+      <Navigation />
     </div>
-  </div>
+    <WritingSection />
+    <div className="space-y-4">
+      {posts.map((post) => (
+        <a
+          key={post.slug}
+          href={`/writing/${post.slug}`}
+          className="block border border-border rounded-lg p-4 hover:bg-secondary transition-colors"
+        >
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="text-lg font-semibold text-foreground mb-1">
+                {post.title}
+              </h3>
+              <p className="text-xs text-muted-foreground mb-2">{post.date}</p>
+            </div>
+            <span className="text-xs text-muted-foreground whitespace-nowrap ml-4 mt-1">
+              {post.estTimeToRead} <FaClock className="inline-block" />
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground mt-2">{post.description}</p>
+        </a>
+      ))}
+    </div>
+    <Footer />
+  </MainContainer>
 );
 
 export default Writing;
