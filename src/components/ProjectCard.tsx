@@ -29,7 +29,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   className = "",
 }) => {
   return (
-    <div className={`border border-border rounded-lg p-4 relative ${className}`}>
+    <div className={`border border-border rounded-2xl p-4 relative ${className}`}>
       <div className="absolute top-4 right-4 flex gap-2">
         {links.map(({ href, icon, label }, i) => (
           <a
@@ -51,7 +51,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           {languages.map(({ name, icon, bgColor, textColor }, i) => (
             <span
               key={i}
-              className="text-xs px-2 py-1 rounded flex items-center gap-1"
+              className="text-xs px-2 py-1 rounded-2xl flex items-center gap-1"
               style={{
                 backgroundColor: bgColor,
                 color: textColor,

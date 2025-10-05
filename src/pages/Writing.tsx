@@ -29,7 +29,7 @@ const Writing = () => (
         <a
           key={post.slug}
           href={`/writing/${post.slug}`}
-          className="block border border-border rounded-lg p-4 hover:bg-secondary transition-colors"
+          className="block border border-border rounded-2xl p-4 hover:bg-secondary transition-colors"
         >
           <div className="flex justify-between items-start">
             <div>

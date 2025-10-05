@@ -14,7 +14,7 @@ type Props = {
 const MainContainer = ({ children, className = "" }: Props) => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className={["bg-card border border-border rounded-lg p-8 max-w-2xl w-full", className].join(" ")}>
+      <div className={["bg-card border border-border rounded-2xl p-8 max-w-2xl w-full", className].join(" ")}>
         {children}
       </div>
     </div>

@@ -18,7 +18,7 @@ const SocialMediaButton: React.FC<SocialMediaButtonProps> = ({
   description,
 }) => {
   const content = (
-    <div className="flex items-start gap-3 p-4 border border-border rounded-lg group hover:bg-secondary transition-colors">
+    <div className="flex items-start gap-3 p-4 border border-border rounded-2xl group hover:bg-secondary transition-colors">
       <Icon size={24} className="text-muted-foreground group-hover:text-link transition-colors mt-1" />
       <div className="flex-1">
         <h3 className="font-medium text-foreground mb-1">{name}</h3>

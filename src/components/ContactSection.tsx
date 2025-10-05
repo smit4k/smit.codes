@@ -8,7 +8,7 @@ const ContactSection = () => (
             <div className="space-y-2 text-foreground">
               <p className="flex items-center gap-2">
                 <span>Discord:</span>
-                <span className="bg-teal-500/10 border border-teal-500/60 text-teal-300 px-2 py-0.5 rounded text-sm font-mono">
+                <span className="bg-[#5865F2]/10 border border-[#5865F2]/60 text-[#5865F2] px-2 py-0.5 rounded-2xl text-sm font-mono">
                   sm.it
                 </span>
               </p>
