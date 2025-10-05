@@ -5,6 +5,7 @@ import MakingOfLQF from "../writing/making-of-lqf.mdx";
 import { FaClock, FaReact } from "react-icons/fa";
 import { RiTailwindCssFill } from "react-icons/ri";
 import ProfilePicture from "@/components/ProfilePicture";
+import MainContainer from "@/components/MainContainer";
 
 const posts = {
   "making-of-lqf": {
@@ -30,13 +31,12 @@ const WritingPost = () => {
   const PostComponent = post.component;
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="bg-card border border-border rounded-lg p-8 max-w-2xl w-full">
-        <div className="flex justify-between items-start mb-8">
-          <ProfilePicture />
-          <Navigation />
-        </div>
-        <Link to="/writing" className="text-link hover:underline mb-4 block">
+    <MainContainer>
+      <div className="flex justify-between items-start mb-8"> 
+        <ProfilePicture />
+        <Navigation />
+      </div>
+      <Link to="/writing" className="text-link hover:underline mb-4 block">
           &larr; Back to Writing
         </Link>
         <h1 className="text-2xl font-bold mb-2 text-foreground">{post.title}</h1>
@@ -52,8 +52,7 @@ const WritingPost = () => {
           <PostComponent />
         </div>
         <Footer />
-      </div>
-    </div>
+      </MainContainer>
   );
 };
 
