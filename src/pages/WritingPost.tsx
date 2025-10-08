@@ -3,7 +3,6 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import MakingOfLQF from "../writing/making-of-lqf.mdx";
 import { FaClock, FaReact } from "react-icons/fa";
-import { RiTailwindCssFill } from "react-icons/ri";
 import ProfilePicture from "@/components/ProfilePicture";
 import MainContainer from "@/components/MainContainer";
 

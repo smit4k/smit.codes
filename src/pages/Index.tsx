@@ -1,7 +1,5 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { FaReact } from "react-icons/fa";
-import { RiTailwindCssFill } from "react-icons/ri";
 import ProfilePicture from "@/components/ProfilePicture";
 import HomeSection from "@/components/HomeSection";
 import ContactSection from "@/components/ContactSection";

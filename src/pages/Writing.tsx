@@ -1,6 +1,5 @@
 import Navigation from "@/components/Navigation";
 import { FaClock, FaReact } from "react-icons/fa";
-import { RiTailwindCssFill } from "react-icons/ri";
 import Footer from "@/components/Footer";
 import ProfilePicture from "@/components/ProfilePicture";
 import WritingSection from "@/components/WritingSection";
