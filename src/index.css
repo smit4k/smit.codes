@@ -246,3 +246,11 @@ th code {
     transform: translateY(0) scale(1);
   }
 }
+
+/* Profile picture hover spin */
+.profile-spin {
+  transition: transform 800ms cubic-bezier(.2,.8,.2,1);
+}
+.profile-spin:hover {
+  transform: rotate(360deg);
+}
