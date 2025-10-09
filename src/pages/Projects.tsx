@@ -20,7 +20,7 @@ const Projects = () => {
         <div className="space-y-4">
           <ProjectCard
             name="conversia"
-            description="A powerful, multi-purpose file utility bot using the serenity and poise frameworks"
+            description="A powerful, multi-purpose Discord file utility bot using the serenity and poise frameworks"
             links={[
               {
                 href: "https://github.com/smit4k/conversia",
