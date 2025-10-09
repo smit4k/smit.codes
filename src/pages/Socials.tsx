@@ -21,21 +21,21 @@ const Socials = () => {
       handle: "sm.it",
       url: "https://discord.com/users/562359659391090689", 
       icon: FaDiscord,
-      description: "Direct chat and collaboration"
+      description: "Send a message"
     },
     { 
       name: "Email", 
       handle: "smit@smit.codes",
       url: "mailto:smit@smit.codes", 
       icon: IoMdMail,
-      description: "Email me!"
+      description: "Feel free to email me"
     },
     { 
       name: "X", 
       handle: "@saberdevx",
       url: "https://twitter.com/saberdevx", 
       icon: FaXTwitter,
-      description: "Tech thoughts and updates"
+      description: "Thoughts and updates"
     },
   ];
 
