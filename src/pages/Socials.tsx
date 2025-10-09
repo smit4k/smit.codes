@@ -41,7 +41,7 @@ const Socials = () => {
 
   return (
     <MainContainer>
-    <div className="flex justify-between items-start mb-8">
+    <div className="flex justify-between items-center mb-8">
           <ProfilePicture />
           <Navigation />
         </div>
