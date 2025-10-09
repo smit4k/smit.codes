@@ -30,7 +30,7 @@ const NotFound = () => {
       {/* GitHub Contribution Snake */}
       <div className="w-full max-w-2xl">
         <img
-          src="https://raw.githubusercontent.com/platane/snk/output/github-contribution-grid-snake-dark.svg"
+          src="https://raw.githubusercontent.com/smit4k/smit.codes/refs/heads/output/github-contribution-grid-snake-dark.svg"
           alt="GitHub Contribution Snake"
           className="w-full h-auto"
           style={{ filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4))' }}
