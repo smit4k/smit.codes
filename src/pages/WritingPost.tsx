@@ -5,6 +5,8 @@ import MakingOfLQF from "../writing/making-of-lqf.mdx";
 import { FaClock, FaReact } from "react-icons/fa";
 import ProfilePicture from "@/components/ProfilePicture";
 import MainContainer from "@/components/MainContainer";
+import WritingView from "@/components/WritingContainer";
+import WritingContainer from "@/components/WritingContainer";
 
 const posts = {
   "making-of-lqf": {
@@ -30,7 +32,7 @@ const WritingPost = () => {
   const PostComponent = post.component;
 
   return (
-    <MainContainer>
+    <WritingContainer>
       <div className="flex justify-between items-center mb-8"> 
         <ProfilePicture />
         <Navigation />
@@ -51,7 +53,7 @@ const WritingPost = () => {
           <PostComponent />
         </div>
         <Footer />
-      </MainContainer>
+      </WritingContainer>
   );
 };
 
