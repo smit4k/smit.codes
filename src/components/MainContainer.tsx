@@ -1,5 +1,6 @@
 import React from "react";
 import PageTransition from "@/components/PageTransition";
+import ParticlesBackground from "@/components/Particles";
 
 type Props = {
   children: React.ReactNode;
@@ -14,8 +15,9 @@ type Props = {
  */
 const MainContainer = ({ children, className = "" }: Props) => {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className={["bg-card border border-border rounded-2xl p-8 max-w-2xl w-full", className].join(" ")}>
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative">
+      <ParticlesBackground />
+      <div className={["bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-8 max-w-2xl w-full relative z-10", className].join(" ")}>
         <PageTransition>
           {children}
         </PageTransition>
