@@ -9,7 +9,6 @@ import NotFound from "./pages/NotFound";
 import Socials from "./pages/Socials";
 import Writing from "./pages/Writing";
 import WritingPost from "./pages/WritingPost";
-import { Analytics } from "@vercel/analytics/react"
 
 const queryClient = new QueryClient();
 
