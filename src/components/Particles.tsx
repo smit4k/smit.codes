@@ -56,8 +56,8 @@ const ParticlesBackground = () => {
             mode: "repulse"
           },
           onHover: {
-            enable: false,
-            mode: "bubble",
+            enable: true,
+            mode: "repulse",
             parallax: {
               enable: false,
               force: 2,
@@ -113,7 +113,7 @@ const ParticlesBackground = () => {
             mode: "delete",
             value: 0
           },
-          value: 160
+          value: 250
         },
         opacity: {
           value: {
