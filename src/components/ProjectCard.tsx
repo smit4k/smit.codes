@@ -37,7 +37,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-link transition-colors"
+            className="text-muted-foreground hover:text-link transition-colors active:scale-95 transition-transform"
             aria-label={label}
           >
             {icon}

@@ -31,7 +31,7 @@ const SocialMediaButton: React.FC<SocialMediaButtonProps> = ({
   );
 
   return url ? (
-    <a href={url} target="_blank" rel="noopener noreferrer">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="active:scale-95 transition-transform">
       {content}
     </a>
   ) : (

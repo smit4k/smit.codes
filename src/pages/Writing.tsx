@@ -28,11 +28,11 @@ const Writing = () => (
         <a
           key={post.slug}
           href={`/writing/${post.slug}`}
-          className="block border border-border rounded-2xl p-4 hover:bg-secondary transition-colors"
+          className="block border border-border rounded-2xl p-4 hover:bg-secondary active:scale-95 transition-transform"
         >
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="text-lg font-semibold text-foreground mb-1">
+              <h3 className="text-lg font-semibold text-foreground mb-1 ">
                 {post.title}
               </h3>
               <p className="text-xs text-muted-foreground mb-2">{post.date}</p>

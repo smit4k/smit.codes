@@ -17,7 +17,7 @@ const Navigation = () => {
           key={path}
           to={path}
           aria-current={isActive(path) ? "page" : undefined}
-          className={`px-3 py-1 rounded-2xl transition-colors text-sm ${
+          className={`px-3 py-1 rounded-2xl transition-colors text-sm active:scale-95 transition-transform ${
             isActive(path)
               ? "text-accent bg-secondary font-semibold"
               : "text-muted-foreground hover:text-link"
