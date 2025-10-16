@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import MakingOfLQF from "../writing/making-of-lqf.mdx";
@@ -37,9 +38,11 @@ const WritingPost = () => {
         <ProfilePicture />
         <Navigation />
       </div>
-      <Link to="/writing" className="text-link hover:underline mb-4 block">
+      <Button asChild size="sm" className="mb-4 rounded-2xl active:scale-95 transition-transform">
+        <Link to="/writing" className="block">
           &larr; Back to Writing
         </Link>
+      </Button>
         <h1 className="text-2xl font-bold mb-2 text-foreground">{post.title}</h1>
         <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
           <span>{post.date}</span>
