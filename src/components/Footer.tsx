@@ -8,12 +8,12 @@ const Footer = () => {
           <span>© 2025 smit4k</span>
           <span>•</span>
           <a
-            href="https://github.com/smit4k"
+            href="https://github.com/smit4k/smit.codes"
             target="_blank"
             rel="noopener noreferrer"
             className="text-link hover:text-link-hover transition-colors"
           >
-            Github
+            Source
           </a>
         </span>
       </div>
