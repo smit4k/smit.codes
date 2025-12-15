@@ -10,7 +10,7 @@
 		align-items: center; /* vertically center if multi-line */
 		font-size: 0.9rem;
 		color: #bbb;
-		margin-bottom: 2rem;
+		margin-top: 1rem;
 	}
 
 	.footer a {
