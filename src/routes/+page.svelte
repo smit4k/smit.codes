@@ -24,7 +24,7 @@
 		<li>Email: <a href="mailto:smit@smit.codes">smit@smit.codes</a></li>
 		<li>Discord: sm.it</li>
 	</ul>
-	<hr style="margin-bottom: 1rem" />
+	<hr />
 	<Footer />
 </Container>
 
@@ -41,15 +41,5 @@
 		margin-top: 0.5rem;
 		margin-bottom: 0.3rem;
 		color: white;
-	}
-
-	/* HR styling */
-	hr {
-		margin: 0.3rem 0;
-		border-color: #444;
-	}
-
-	a {
-		color: #58a6ff;
 	}
 </style>

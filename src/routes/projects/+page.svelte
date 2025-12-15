@@ -1,6 +1,7 @@
 <script>
-	import Navbar from '$lib/components/Navbar.svelte';
 	import Container from '$lib/components/Container.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 </script>
 
 <Container>
@@ -12,6 +13,7 @@
 		in detail.
 	</p>
 	<hr />
+	<Footer />
 </Container>
 
 <style>
@@ -28,14 +30,5 @@
 	p {
 		font-family: Arial;
 		color: #ddd;
-	}
-
-	hr {
-		margin: 0.3rem 0;
-		border-color: #444;
-	}
-
-	a {
-		color: #58a6ff;
 	}
 </style>

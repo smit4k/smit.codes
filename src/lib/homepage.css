@@ -4,3 +4,12 @@ body {
     height: 100vh;
     margin: 0;
 }
+
+hr {
+    margin: 0.3rem 0;
+    border-color: #444;
+}
+
+a {
+    color: #58a6ff;
+}
