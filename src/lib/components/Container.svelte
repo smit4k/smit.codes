@@ -4,7 +4,7 @@
 
 <style>
 	.container {
-		max-width: 700px;
+		max-width: 70ch;
 		margin: 0 auto;
 		padding: 0 1rem;
 		font-family: Arial, system-ui, sans-serif;
