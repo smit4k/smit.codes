@@ -5,20 +5,22 @@ use crate::content::loader::create_content_item;
 
 fn main() {
     let md = r#"
----
-title: Test Post
-date: 2025-01-01
-tags: [rust, svelte]
----
+                    ---
+                    title: Test Post
+                    date: 2025-01-01
+                    tags: [rust, svelte]
+                    ---
 
-# Hello
+                    # Hello
+                    ### This is a markdown file!
 
-This is a test.
-"#;
+                    This is a test.
+                    "#;
 
     let item = create_content_item(md, "test-post").unwrap();
 
     println!("Title: {}", item.frontmatter.title);
+    println!("Date: {}", item.frontmatter.date);
     println!("Read time: {} min", item.read_time);
     println!("Markdown body:\n{}", item.markdown);
 }
