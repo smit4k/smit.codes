@@ -22,7 +22,7 @@
 	<p>If you have any questions or comments, you can contact me through the following ways:</p>
 	<ul>
 		<li>Email: <a href="mailto:smit@smit.codes">smit@smit.codes</a></li>
-		<li>Discord: sm.it</li>
+		<li>Discord: <code>sm.it</code></li>
 	</ul>
 	<hr />
 	<Footer />
