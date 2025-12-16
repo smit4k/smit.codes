@@ -1,7 +1,7 @@
 use crate::content::models::Frontmatter;
 
-pub fn parse_markdown(input: &str) -> Result<(Frontmatter, String), String> {
-    let input = input.trim_start();
+pub fn parse_markdown(md: &str) -> Result<(Frontmatter, String), String> {
+    let input = md.trim_start();
 
     if !input.starts_with("---") {
         return Err("Missing frontmatter".into());
