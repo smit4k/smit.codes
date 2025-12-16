@@ -1,12 +1,4 @@
-use serde::Deserialize;
-
-#[derive(Debug, Deserialize)]
-pub struct Frontmatter {
-    pub title: String,
-    pub date: String,
-    #[serde(default)]
-    pub tags: Vec<String>,
-}
+use crate::content::models::Frontmatter;
 
 pub fn parse_markdown(input: &str) -> Result<(Frontmatter, String), String> {
     let input = input.trim_start();

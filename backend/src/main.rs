@@ -1,8 +1,7 @@
 mod content;
 mod utils;
 
-use crate::content::parser::parse_markdown;
-use crate::utils::read_time::estimate_read_time;
+use crate::content::loader::create_content_item;
 
 fn main() {
     let md = r#"
@@ -17,12 +16,9 @@ tags: [rust, svelte]
 This is a test.
 "#;
 
-    let (fm, body) = parse_markdown(md).unwrap();
+    let item = create_content_item(md, "test-post").unwrap();
 
-    let read_time = estimate_read_time(&body);
-    println!("Read time: {}", read_time);
-    assert_eq!(fm.title, "Test Post");
-    assert!(body.contains("# Hello"));
-
-    println!("Hello, world!");
+    println!("Title: {}", item.frontmatter.title);
+    println!("Read time: {} min", item.read_time);
+    println!("Markdown body:\n{}", item.markdown);
 }
