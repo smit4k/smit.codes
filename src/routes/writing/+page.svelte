@@ -23,6 +23,7 @@
 					Published {post.frontmatter.date} • {post.read_time} min read
 				</p>
 				<p class="tags">Tags: {post.frontmatter.tags.join(', ')}</p>
+				<p class="description">{post.frontmatter.description}</p>
 			</div>
 			<hr />
 		{/each}
@@ -70,6 +71,10 @@
 		font-size: 0.85rem;
 	}
 
+	.description {
+		margin-top: 0.35rem;
+		font-size: 0.9rem;
+	}
 	hr {
 		margin: 1rem 0;
 	}

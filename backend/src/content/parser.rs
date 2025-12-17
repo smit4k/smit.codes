@@ -7,7 +7,7 @@ pub fn parse_markdown(md: &str) -> Result<(Frontmatter, String), String> {
         return Err("Missing frontmatter".into());
     }
 
-    let mut parts = input.splitn(3, "---");
+    let mut parts = input.splitn(4, "---");
 
     parts.next();
 

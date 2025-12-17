@@ -6,6 +6,7 @@ pub struct Frontmatter {
     pub date: String,
     #[serde(default)]
     pub tags: Vec<String>,
+    pub description: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
