@@ -1,6 +1,6 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Frontmatter {
     pub title: String,
     pub date: String,
@@ -8,7 +8,7 @@ pub struct Frontmatter {
     pub tags: Vec<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ContentItem {
     pub slug: String,
     pub frontmatter: Frontmatter,
