@@ -1,14 +1,14 @@
-import type { PageLoad } from './$types';
 import type { ContentItem } from '$lib/types';
+import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
-export const load: PageLoad = async () => {
-    const res = await fetch('http://localhost:3001/api/posts');
+export async function load({ fetch }) {
+    const res = await fetch(`${PUBLIC_API_BASE_URL}/api/posts`);
+
     if (!res.ok) {
-        console.error('Failed to fetch posts', res.status);
-        return { posts: [] as ContentItem[] };
+        throw new Error('Failed to fetch posts');
     }
 
     const posts: ContentItem[] = await res.json();
     return { posts };
-};
+}
 
