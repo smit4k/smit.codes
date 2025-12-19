@@ -18,7 +18,10 @@
 	<div class="posts-list">
 		{#each data.posts as post}
 			<div class="post-item">
-				<h2>{post.frontmatter.title}</h2>
+				<a href={`/WritingPost/${post.slug}`} class="post-link">
+					<h2>{post.frontmatter.title}</h2>
+				</a>
+
 				<p class="meta">
 					Published {post.frontmatter.date} • {post.read_time} min read
 				</p>
