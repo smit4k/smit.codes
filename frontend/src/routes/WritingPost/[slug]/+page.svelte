@@ -3,6 +3,7 @@
 	import Container from '$lib/components/Container.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+
 	import { marked } from 'marked';
 	import { markedHighlight } from 'marked-highlight';
 	import hljs from 'highlight.js';
@@ -21,13 +22,14 @@
 			}
 		})
 	);
+
 	const htmlContent = marked.parse(data.post.markdown);
 </script>
 
 <Container>
 	<Navbar />
 
-	<article class="post">
+	<article>
 		<h1>{data.post.frontmatter.title}</h1>
 
 		<p class="meta">
