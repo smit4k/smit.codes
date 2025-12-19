@@ -1,25 +1,31 @@
 use crate::content::models::Frontmatter;
 
 pub fn parse_markdown(md: &str) -> Result<(Frontmatter, String), String> {
-    let input = md.trim_start();
+    let mut lines = md.lines();
 
-    if !input.starts_with("---") {
-        return Err("Missing frontmatter".into());
+    match lines.next() {
+        Some(line) if line.trim() == "---" => {}
+        _ => return Err("Missing frontmatter start delimiter (---) on line 1".into()),
     }
 
-    let mut parts = input.splitn(4, "---");
+    let mut fm_lines = Vec::new();
+    for i in 2..=5 {
+        match lines.next() {
+            Some(line) => fm_lines.push(line),
+            None => return Err(format!("Missing frontmatter content on line {}", i)),
+        }
+    }
 
-    parts.next();
+    match lines.next() {
+        Some(line) if line.trim() == "---" => {}
+        _ => return Err("Missing frontmatter end delimiter (---) on line 6".into()),
+    }
 
-    let yaml = parts.next().ok_or("Missing frontmatter")?;
+    let yaml = fm_lines.join("\n");
 
-    let markdown = parts
-        .next()
-        .ok_or("Missing markdown content")?
-        .trim_start()
-        .to_string();
+    let frontmatter: Frontmatter = serde_yaml::from_str(&yaml).map_err(|e| e.to_string())?;
 
-    let frontmatter: Frontmatter = serde_yaml::from_str(yaml).map_err(|e| e.to_string())?;
+    let markdown = lines.collect::<Vec<_>>().join("\n");
 
     Ok((frontmatter, markdown))
 }
