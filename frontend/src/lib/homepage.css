@@ -15,3 +15,53 @@ hr {
 a {
     color: #58a6ff;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+    background-color: #0f0f0f;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #1a1a1a;
+}
+
+th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #ffffff;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+td {
+    padding: 0.7rem 1rem;
+    color: #e5e5e5;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #151515;
+}
+
+tbody tr:hover {
+    background-color: #1f1f1f;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+:not(pre)>code {
+    background-color: #1b1b1b;
+    color: white;
+    padding: 0.15em 0.4em;
+    border-radius: 5px;
+    font-size: 0.85em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: nowrap;
+}
