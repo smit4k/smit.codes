@@ -10,8 +10,15 @@ pub struct Frontmatter {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum ContentKind {
+    Project,
+    Writing,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ContentItem {
     pub slug: String,
+    pub kind: ContentKind,
     pub frontmatter: Frontmatter,
     pub markdown: String,
     pub read_time: u32,

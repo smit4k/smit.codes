@@ -1,22 +1,23 @@
 use crate::content::fs::{collect_markdown_files, read_markdown_file};
-use crate::content::models::{ContentItem, Frontmatter};
+use crate::content::models::{ContentItem, ContentKind};
 use crate::content::parser::parse_markdown;
 use crate::utils::read_time::estimate_read_time;
 use std::path::Path;
 
-pub fn create_content_item(md: &str, slug: &str) -> Result<ContentItem, String> {
+pub fn create_content_item(md: &str, slug: &str, kind: ContentKind) -> Result<ContentItem, String> {
     let (frontmatter, body) = parse_markdown(md)?;
     let read_time = estimate_read_time(&body);
 
     Ok(ContentItem {
         slug: slug.to_string(),
+        kind,
         frontmatter,
         markdown: body,
         read_time,
     })
 }
 
-pub fn load_content_from_dir(root: &Path) -> Result<Vec<ContentItem>, String> {
+pub fn load_content_from_dir(root: &Path, kind: ContentKind) -> Result<Vec<ContentItem>, String> {
     let mut items = Vec::new();
 
     let files = collect_markdown_files(root)?;
@@ -29,7 +30,7 @@ pub fn load_content_from_dir(root: &Path) -> Result<Vec<ContentItem>, String> {
             .to_string_lossy()
             .to_string();
 
-        let item = create_content_item(&md, &slug)?;
+        let item = create_content_item(&md, &slug, kind.clone())?;
         items.push(item);
     }
 

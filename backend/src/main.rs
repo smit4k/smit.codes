@@ -8,24 +8,38 @@ use axum::{
     Json, Router,
 };
 use content::loader::load_content_from_dir;
-use content::models::ContentItem;
+use content::models::{ContentItem, ContentKind};
 use std::{path::Path as StdPath, sync::Arc};
-use tower_http::cors::CorsLayer;
-use tower_http::services::ServeDir;
+use tower_http::{cors::CorsLayer, services::ServeDir};
 use tracing::info;
+
+#[derive(Clone)]
+struct AppState {
+    writing: Arc<Vec<ContentItem>>,
+    projects: Arc<Vec<ContentItem>>,
+}
 
 #[tokio::main]
 async fn main() {
-    // Initialize tracing
     tracing_subscriber::fmt::init();
 
-    // Load all posts at startup
-    let posts: Vec<ContentItem> =
-        load_content_from_dir(StdPath::new("./content/posts")).expect("Failed to load posts");
-    let posts = Arc::new(posts);
-    info!("Loaded {} posts", posts.len());
+    let writing = load_content_from_dir(StdPath::new("./content/writing"), ContentKind::Writing)
+        .expect("Failed to load writing posts");
 
-    // Configure CORS
+    let projects = load_content_from_dir(StdPath::new("./content/projects"), ContentKind::Project)
+        .expect("Failed to load projects");
+
+    let state = AppState {
+        writing: Arc::new(writing),
+        projects: Arc::new(projects),
+    };
+
+    info!(
+        "Loaded {} writing posts, {} projects",
+        state.writing.len(),
+        state.projects.len()
+    );
+
     let cors = CorsLayer::new()
         .allow_origin(
             "http://localhost:5173"
@@ -35,12 +49,16 @@ async fn main() {
         .allow_methods([Method::GET, Method::POST, Method::OPTIONS])
         .allow_headers(tower_http::cors::Any);
 
-    // Build router
     let app = Router::new()
-        .route("/api/posts", get(list_posts))
-        .route("/api/posts/{slug}", get(get_post))
-        .with_state(posts.clone())
+        // Writing
+        .route("/api/writing", get(list_writing))
+        .route("/api/writing/{slug}", get(get_writing))
+        // Projects
+        .route("/api/projects", get(list_projects))
+        .route("/api/projects/{slug}", get(get_project))
+        // Static assets (images, etc.)
         .nest_service("/assets", ServeDir::new("./content"))
+        .with_state(state)
         .layer(cors);
 
     let addr = "127.0.0.1:3001";
@@ -50,16 +68,36 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn list_posts(State(posts): State<Arc<Vec<ContentItem>>>) -> Json<Vec<ContentItem>> {
-    Json(posts.to_vec())
+async fn list_writing(State(state): State<AppState>) -> Json<Vec<ContentItem>> {
+    Json(state.writing.as_ref().clone())
 }
 
-async fn get_post(
-    State(posts): State<Arc<Vec<ContentItem>>>,
+async fn get_writing(
+    State(state): State<AppState>,
     Path(slug): Path<String>,
 ) -> Result<Json<ContentItem>, (StatusCode, &'static str)> {
-    match posts.iter().find(|p| p.slug == slug) {
-        Some(post) => Ok(Json(post.clone())),
-        None => Err((StatusCode::NOT_FOUND, "Post not found")),
-    }
+    state
+        .writing
+        .iter()
+        .find(|p| p.slug == slug)
+        .cloned()
+        .map(Json)
+        .ok_or((StatusCode::NOT_FOUND, "Post not found"))
+}
+
+async fn list_projects(State(state): State<AppState>) -> Json<Vec<ContentItem>> {
+    Json(state.projects.as_ref().clone())
+}
+
+async fn get_project(
+    State(state): State<AppState>,
+    Path(slug): Path<String>,
+) -> Result<Json<ContentItem>, (StatusCode, &'static str)> {
+    state
+        .projects
+        .iter()
+        .find(|p| p.slug == slug)
+        .cloned()
+        .map(Json)
+        .ok_or((StatusCode::NOT_FOUND, "Project not found"))
 }
