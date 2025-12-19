@@ -42,4 +42,13 @@
 		margin-bottom: 0.3rem;
 		color: white;
 	}
+	code {
+		font-size: 1.1em;
+		border: 1px solid;
+		border-radius: 5px;
+		padding: 0 3px 0 3px;
+
+		background: #050505;
+		color: rgb(102, 204, 187);
+	}
 </style>
