@@ -63,10 +63,6 @@
 		color: white;
 	}
 
-	.post {
-		margin-top: 1rem;
-	}
-
 	.meta {
 		margin: 0.2rem 0;
 		color: #aaa;
