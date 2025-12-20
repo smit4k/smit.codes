@@ -1,4 +1,5 @@
 mod content;
+mod system;
 mod utils;
 
 use axum::{
@@ -10,6 +11,8 @@ use axum::{
 use content::loader::load_content_from_dir;
 use content::models::{ContentItem, ContentKind};
 use std::{path::Path as StdPath, sync::Arc};
+use system::models::{SystemInfo, SystemMetrics};
+use system::monitor::{get_system_info, get_system_metrics};
 use tower_http::{cors::CorsLayer, services::ServeDir};
 use tracing::info;
 
@@ -17,6 +20,14 @@ use tracing::info;
 struct AppState {
     writing: Arc<Vec<ContentItem>>,
     projects: Arc<Vec<ContentItem>>,
+}
+
+async fn system_info_handler() -> Json<SystemInfo> {
+    Json(get_system_info())
+}
+
+async fn system_metrics_handler() -> Json<SystemMetrics> {
+    Json(get_system_metrics())
 }
 
 #[tokio::main]
@@ -56,6 +67,9 @@ async fn main() {
         // Projects
         .route("/api/projects", get(list_projects))
         .route("/api/projects/{slug}", get(get_project))
+        // System Info/Metrics
+        .route("/api/system/info", get(system_info_handler))
+        .route("/api/system/metrics", get(system_metrics_handler))
         // Static assets (images, etc.)
         .nest_service("/assets", ServeDir::new("./content"))
         .with_state(state)
