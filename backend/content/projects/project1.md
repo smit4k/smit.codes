@@ -1,6 +1,6 @@
 ---
 title: Quicknote
-date: December 13, 2025
+date: 2025-12-13
 tags: [minecraft, fabric, java]
 description: A minecraft mod that allows you to take notes using the commands
 ---

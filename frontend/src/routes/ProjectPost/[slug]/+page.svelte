@@ -3,6 +3,7 @@
 	import Container from '$lib/components/Container.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import { formatDate } from '$lib/date';
 
 	import { marked } from 'marked';
 	import { markedHighlight } from 'marked-highlight';
@@ -33,7 +34,7 @@
 		<h1>{data.post.frontmatter.title}</h1>
 
 		<p class="meta">
-			Created {data.post.frontmatter.date} • {data.post.read_time} min read
+			Created {formatDate(data.post.frontmatter.date)} • {data.post.read_time} min read
 		</p>
 
 		<p class="tags">

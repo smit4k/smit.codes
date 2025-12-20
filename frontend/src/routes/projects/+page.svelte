@@ -4,6 +4,8 @@
 	import Container from '$lib/components/Container.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import { formatDate } from '$lib/date';
+
 	export let data: { posts: ContentItem[] };
 </script>
 
@@ -23,7 +25,7 @@
 					<h2>{post.frontmatter.title}</h2>
 				</a>
 				<p class="meta">
-					Created {post.frontmatter.date} • {post.read_time} min read
+					Created {formatDate(post.frontmatter.date)} • {post.read_time} min read
 				</p>
 				<p class="tags">Tags: {post.frontmatter.tags.join(', ')}</p>
 				<p class="description">{post.frontmatter.description}</p>

@@ -1,6 +1,6 @@
 ---
 title: Test Post
-date: December 16, 2025
+date: 2025-12-16
 tags: [rust, svelte]
 description: This is a test post to test out the rust backend for my website!
 ---

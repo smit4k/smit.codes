@@ -1,6 +1,6 @@
 ---
 title: The Making of LQF
-date: July 26, 2025
+date: 2025-07-26
 tags: [config language]
 description: An overview of the design philosophy and development process behind LQF, my custom configuration language, including the reasoning, structure, and syntax decisions that shape how it works.
 ---
