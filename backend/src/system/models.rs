@@ -9,6 +9,8 @@ pub struct SystemInfo {
     pub cpu_brand: String,
     pub cpu_cores: usize,
     pub total_memory: u64,
+    pub disk_total: u64,
+    pub disk_used: u64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

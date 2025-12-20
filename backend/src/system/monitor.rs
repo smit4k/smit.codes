@@ -1,9 +1,28 @@
 use crate::system::models::{SystemInfo, SystemMetrics};
-use sysinfo::{Components, Disks, Networks, System};
+use std::collections::HashSet;
+use sysinfo::{Disks, System};
 
 pub fn get_system_info() -> SystemInfo {
     let mut sys = System::new_all();
     sys.refresh_all();
+
+    let disks = Disks::new_with_refreshed_list();
+    let mut seen = HashSet::new();
+    let (disk_total, disk_used) = disks
+        .iter()
+        .filter(|disk| {
+            let key = (
+                disk.name().to_string_lossy().to_string(),
+                disk.total_space(),
+            );
+            seen.insert(key)
+        })
+        .fold((0u64, 0u64), |(total, used), disk| {
+            (
+                total + disk.total_space(),
+                used + (disk.total_space() - disk.available_space()),
+            )
+        });
 
     SystemInfo {
         os_name: System::name(),
@@ -17,6 +36,8 @@ pub fn get_system_info() -> SystemInfo {
             .unwrap_or_else(|| "Unknown".to_string()),
         cpu_cores: System::physical_core_count().unwrap(),
         total_memory: sys.total_memory(),
+        disk_total,
+        disk_used,
     }
 }
 
