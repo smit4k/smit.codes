@@ -12,13 +12,4 @@
 		color: #bbb;
 		margin-top: 1rem;
 	}
-
-	.footer a {
-		color: #58a6ff;
-		text-decoration: none;
-	}
-
-	.footer a:hover {
-		text-decoration: underline;
-	}
 </style>
