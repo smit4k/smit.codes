@@ -4,10 +4,13 @@
 
 <style>
 	.container {
-		max-width: 75ch;
+		max-width: 65ch;
 		margin: 0 auto;
 		padding: 0 1rem;
-		letter-spacing: 0.02em;
-		font-family: Arial, system-ui, sans-serif;
+		font-family:
+			DejaVu Sans,
+			Arial,
+			system-ui,
+			sans-serif;
 	}
 </style>
