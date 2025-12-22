@@ -1,5 +1,14 @@
 @import 'highlight.js/styles/vs2015.css';
 
+:root {
+    --code-color: rgb(102, 204, 187);
+    --code-background: rgb(25, 51, 46);
+    --code-link-color: rgb(71, 169, 255);
+    --code-link-background: rgb(20, 50, 76);
+    --text-color: rgb(163, 163, 163);
+}
+
+
 body {
     display: flex;
     justify-content: center;
@@ -57,11 +66,43 @@ tbody tr:last-child td {
 }
 
 :not(pre)>code {
-    background-color: #1b1b1b;
-    color: white;
-    padding: 0.15em 0.4em;
+    font-size: 1.1em;
+    border: 1px solid;
     border-radius: 5px;
-    font-size: 0.85em;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    white-space: nowrap;
+    padding: 0 3px;
+    font-family: JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--code-background);
+    color: var(--code-color);
+}
+
+a code {
+    background: var(--code-link-background);
+    color: var(--code-link-color);
+}
+
+pre {
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 5px;
+    overflow-x: auto;
+    font-size: 0.9em;
+}
+
+pre code {
+    font-size: inherit;
+    border: none;
+    padding: 0;
+    color: var(--text-color);
+    background-color: transparent;
+}
+
+table code,
+td code,
+th code {
+    background: none !important;
+    color: inherit !important;
+    border: none !important;
+    padding: 0 !important;
+    font-size: inherit !important;
 }
