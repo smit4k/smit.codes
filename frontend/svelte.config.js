@@ -1,7 +1,11 @@
-import adapter from '@sveltejs/adapter-static';
+import adapterStatic from '@sveltejs/adapter-static';
+import adapterAuto from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { mdsvex } from 'mdsvex';
 import { codeToHtml } from 'shiki';
+
+// SvelteKit sets this automatically
+const dev = process.env.NODE_ENV === 'development';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -24,12 +28,14 @@ const config = {
     ],
 
     kit: {
-        adapter: adapter({
-            pages: 'build',
-            assets: 'build',
-            fallback: 'index.html', // SPA fallback for dynamic routes
-	    strict: false
-        })
+        adapter: dev
+            ? adapterAuto()
+            : adapterStatic({
+                pages: 'build',
+                assets: 'build',
+                fallback: 'index.html',
+                strict: false
+            })
     }
 };
 
