@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { mdsvex } from 'mdsvex';
 import { codeToHtml } from 'shiki';
@@ -15,7 +15,7 @@ const config = {
                 highlighter: async (code, lang = 'text') => {
                     const html = await codeToHtml(code, {
                         lang,
-                        theme: 'github-dark'
+                        theme: 'dark-plus'
                     });
                     return `{@html \`${html}\` }`;
                 }
@@ -24,8 +24,14 @@ const config = {
     ],
 
     kit: {
-        adapter: adapter()
+        adapter: adapter({
+            pages: 'build',
+            assets: 'build',
+            fallback: 'index.html', // SPA fallback for dynamic routes
+	    strict: false
+        })
     }
 };
 
 export default config;
+

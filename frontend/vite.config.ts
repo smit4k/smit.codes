@@ -3,10 +3,8 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [sveltekit()],
-  server: {
-    proxy: {
-      '/api': 'http://localhost:3001'
-    }
+  build: {
+    reportCompressedSize: false // disables gzip/brotli size calculation
   }
 });
 
