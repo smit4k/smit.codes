@@ -38,16 +38,9 @@
 </Container>
 
 <style>
-	:global(body) {
-		background-color: black;
-		color: #ddd;
-		font-family: Arial, sans-serif;
-	}
-
 	h1 {
 		margin-top: 0.5rem;
 		margin-bottom: 0.5rem;
-		color: white;
 	}
 
 	.posts-list {
@@ -82,5 +75,8 @@
 	}
 	hr {
 		margin: 1rem 0;
+	}
+	a {
+		text-decoration: none;
 	}
 </style>

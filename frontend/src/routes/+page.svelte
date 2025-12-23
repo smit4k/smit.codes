@@ -56,12 +56,6 @@
 </Container>
 
 <style>
-	:global(body) {
-		background: black;
-		color: #ddd;
-		margin: 0;
-	}
-
 	h1,
 	h2 {
 		margin-top: 0.5rem;

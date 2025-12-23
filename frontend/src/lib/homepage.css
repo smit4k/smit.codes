@@ -32,10 +32,13 @@
 }
 
 body {
+    background: black;
+    color: white;
     display: flex;
     justify-content: center;
     height: 100vh;
     margin: 0;
+    line-height: 1.2;
 }
 
 hr {

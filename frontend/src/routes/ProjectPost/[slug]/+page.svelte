@@ -31,11 +31,6 @@
 </Container>
 
 <style>
-	:global(body) {
-		background-color: black;
-		color: #ddd;
-		font-family: Arial, sans-serif;
-	}
 	h1 {
 		margin-top: 0.5rem;
 		margin-bottom: 0.25rem;
@@ -52,11 +47,8 @@
 		font-size: 0.85rem;
 	}
 	.content {
-		line-height: 1.5;
+		line-height: 1.6;
 		font-size: 0.95rem;
-	}
-	.content :global(h2) {
-		color: white;
 	}
 	hr {
 		margin: 1rem 0;
