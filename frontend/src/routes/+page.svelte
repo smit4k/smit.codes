@@ -33,7 +33,7 @@
 	<ul>
 		{#each data.recentProjects as project}
 			<li>
-				<a href={`/projects/${project.slug}`}>
+				<a href={`/ProjectPost/${project.slug}`}>
 					{project.frontmatter.title}
 				</a>
 				— {project.frontmatter.description}
@@ -44,7 +44,7 @@
 	<ul>
 		{#each data.recentWriting as post}
 			<li>
-				<a href={`/projects/${post.slug}`}>
+				<a href={`/WritingPost/${post.slug}`}>
 					{post.frontmatter.title}
 				</a>
 				— {post.frontmatter.description}
