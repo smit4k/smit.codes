@@ -19,3 +19,4 @@ sysinfo = "0.37.2"
 sqlx = { version = "0.8", features = ["runtime-tokio-native-tls", "sqlite"] }
 chrono = "0.4"
 dotenv = "0.15"
+sha1 = "0.10.6"

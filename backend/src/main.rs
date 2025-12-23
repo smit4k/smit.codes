@@ -6,7 +6,8 @@ mod utils;
 use analytics::{get_post_views, record_post_view};
 use axum::{
     extract::{Path, State},
-    http::{Method, StatusCode},
+    http::{HeaderMap, Method, StatusCode},
+    response::{IntoResponse, Response},
     routing::{get, post},
     Json, Router,
 };
@@ -100,36 +101,81 @@ async fn main() {
     .unwrap();
 }
 
-async fn list_writing(State(state): State<AppState>) -> Json<Vec<ContentItem>> {
-    Json(state.writing.as_ref().clone())
+async fn list_writing(State(state): State<AppState>, headers: HeaderMap) -> Response {
+    let body = serde_json::to_vec(state.writing.as_ref()).unwrap();
+    let etag = utils::cache::etag_from_bytes(&body);
+
+    if let Some(if_none_match) = headers.get("If-None-Match") {
+        if if_none_match == etag {
+            return StatusCode::NOT_MODIFIED.into_response();
+        }
+    }
+
+    let response_headers = utils::cache::default_cache_headers(etag);
+    (response_headers, body).into_response()
 }
 
 async fn get_writing(
     State(state): State<AppState>,
+    headers: HeaderMap,
     Path(slug): Path<String>,
-) -> Result<Json<ContentItem>, (StatusCode, &'static str)> {
-    state
+) -> Result<Response, (StatusCode, &'static str)> {
+    let post = state
         .writing
         .iter()
         .find(|p| p.slug == slug)
         .cloned()
-        .map(Json)
-        .ok_or((StatusCode::NOT_FOUND, "Post not found"))
+        .ok_or((StatusCode::NOT_FOUND, "Post not found"))?;
+
+    let body = serde_json::to_vec(&post).unwrap();
+    let etag = utils::cache::etag_from_bytes(&body);
+
+    if let Some(if_none_match) = headers.get("If-None-Match") {
+        if if_none_match == etag {
+            return Ok(StatusCode::NOT_MODIFIED.into_response());
+        }
+    }
+
+    let response_headers = utils::cache::default_cache_headers(etag);
+
+    Ok((response_headers, body).into_response())
 }
 
-async fn list_projects(State(state): State<AppState>) -> Json<Vec<ContentItem>> {
-    Json(state.projects.as_ref().clone())
+async fn list_projects(State(state): State<AppState>, headers: HeaderMap) -> Response {
+    let body = serde_json::to_vec(state.projects.as_ref()).unwrap();
+    let etag = utils::cache::etag_from_bytes(&body);
+
+    if let Some(if_none_match) = headers.get("If-None-Match") {
+        if if_none_match == etag {
+            return StatusCode::NOT_MODIFIED.into_response();
+        }
+    }
+
+    let response_headers = utils::cache::default_cache_headers(etag);
+    (response_headers, body).into_response()
 }
 
 async fn get_project(
     State(state): State<AppState>,
+    headers: HeaderMap,
     Path(slug): Path<String>,
-) -> Result<Json<ContentItem>, (StatusCode, &'static str)> {
-    state
+) -> Result<Response, (StatusCode, &'static str)> {
+    let project = state
         .projects
         .iter()
         .find(|p| p.slug == slug)
         .cloned()
-        .map(Json)
-        .ok_or((StatusCode::NOT_FOUND, "Project not found"))
+        .ok_or((StatusCode::NOT_FOUND, "Project not found"))?;
+
+    let body = serde_json::to_vec(&project).unwrap();
+    let etag = utils::cache::etag_from_bytes(&body);
+
+    if let Some(if_none_match) = headers.get("If-None-Match") {
+        if if_none_match == etag {
+            return Ok(StatusCode::NOT_MODIFIED.into_response());
+        }
+    }
+
+    let response_headers = utils::cache::default_cache_headers(etag);
+    Ok((response_headers, body).into_response())
 }

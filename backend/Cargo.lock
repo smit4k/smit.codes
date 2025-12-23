@@ -100,6 +100,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_yaml",
+ "sha1",
  "sqlx",
  "sysinfo",
  "tokio",
