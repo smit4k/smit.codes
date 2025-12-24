@@ -6,6 +6,11 @@
 	import { formatDate } from '$lib/date';
 
 	export let data: { posts: ContentItem[] };
+
+	// Sort posts by date, newest first
+	let sortedPosts = data.posts.sort((a, b) => {
+		return b.frontmatter.date.localeCompare(a.frontmatter.date);
+	});
 </script>
 
 <Container>
@@ -18,7 +23,7 @@
 	<hr />
 
 	<div class="posts-list">
-		{#each data.posts as post}
+		{#each sortedPosts as post}
 			<div class="post-item">
 				<a href={`/WritingPost/${post.slug}`} class="post-link">
 					<h2>{post.frontmatter.title}</h2>

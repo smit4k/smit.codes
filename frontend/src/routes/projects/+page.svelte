@@ -7,28 +7,35 @@
 	import { formatDate } from '$lib/date';
 
 	export let data: { posts: ContentItem[] };
+
+	// Sort projects by date, newest first
+	let sortedProjects = data.posts.sort((a, b) => {
+		return b.frontmatter.date.localeCompare(a.frontmatter.date);
+	});
 </script>
 
 <Container>
 	<Navbar />
 	<h1>Projects</h1>
 	<p>
-		You can find all of my projects on my Github, <a href="https://github.com/smit4k">@smit4k</a>.
-		Some of my most interesting or complete projects will be put here, with articles explaining them
-		in detail.
+		You can find all of my projects on my Github,
+		<a href="https://github.com/smit4k">@smit4k</a>. Some of my most interesting or complete
+		projects will be put here, with articles explaining them in detail.
 	</p>
 	<hr />
+
 	<div class="posts-list">
-		{#each data.posts as post}
+		{#each sortedProjects as project}
 			<div class="post-item">
-				<a href={`/ProjectPost/${post.slug}`} class="post-link">
-					<h2>{post.frontmatter.title}</h2>
+				<a href={`/ProjectPost/${project.slug}`} class="post-link">
+					<h2>{project.frontmatter.title}</h2>
 				</a>
+
 				<p class="meta">
-					Created {formatDate(post.frontmatter.date)} • {post.read_time} min read
+					Created {formatDate(project.frontmatter.date)} • {project.read_time} min read
 				</p>
-				<p class="tags">Tags: {post.frontmatter.tags.join(', ')}</p>
-				<p class="description">{post.frontmatter.description}</p>
+				<p class="tags">Tags: {project.frontmatter.tags.join(', ')}</p>
+				<p class="description">{project.frontmatter.description}</p>
 			</div>
 			<hr />
 		{/each}
