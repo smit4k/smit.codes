@@ -27,14 +27,6 @@ struct AppState {
     db: SqlitePool,
 }
 
-async fn system_info_handler() -> Json<SystemInfo> {
-    Json(get_system_info())
-}
-
-async fn system_metrics_handler() -> Json<SystemMetrics> {
-    Json(get_system_metrics())
-}
-
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
@@ -78,8 +70,8 @@ async fn main() {
         .route("/api/projects", get(list_projects))
         .route("/api/projects/{slug}", get(get_project))
         // Analytics
-        .route("/api/{post_type}/{id}/view", post(record_post_view))
-        .route("/api/{post_type}/{id}/views", get(get_post_views))
+        .route("/api/{post_type}/{slug}/view", post(record_post_view))
+        .route("/api/{post_type}/{slug}/views", get(get_post_views))
         // System
         .route("/api/system/info", get(system_info_handler))
         .route("/api/system/metrics", get(system_metrics_handler))
@@ -99,6 +91,16 @@ async fn main() {
     )
     .await
     .unwrap();
+}
+
+// --- Handlers ---
+
+async fn system_info_handler() -> Json<SystemInfo> {
+    Json(get_system_info())
+}
+
+async fn system_metrics_handler() -> Json<SystemMetrics> {
+    Json(get_system_metrics())
 }
 
 async fn list_writing(State(state): State<AppState>, headers: HeaderMap) -> Response {
@@ -179,3 +181,4 @@ async fn get_project(
     let response_headers = utils::cache::default_cache_headers(etag);
     Ok((response_headers, body).into_response())
 }
+
