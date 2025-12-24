@@ -4,8 +4,7 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { mdsvex } from 'mdsvex';
 import { codeToHtml } from 'shiki';
 
-// SvelteKit sets this automatically
-const dev = process.env.NODE_ENV === 'development';
+const dev = process.env.NODE_ENV === 'development'; // fallback with ??
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
