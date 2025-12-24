@@ -15,8 +15,8 @@
 	<hr />
 	<p>
 		Hey! I’m Smit, welcome to my homepage,
-		<a href="https://smit.codes">smit.codes</a>! I'm currently a high school student in Michigan,
-		interested in software development, Linux, and UI/UX design.
+		<a href="https://smit.codes">smit.codes</a>! I'm a high school student in Michigan, interested
+		in software development, Linux, and machining. I enjoy coding in Rust and Lua.
 	</p>
 
 	<h2>Contact</h2>
@@ -29,6 +29,7 @@
 	</ul>
 	<h2>Recent</h2>
 	<hr />
+	<p>Here are some links to recent projects I have worked on and articles I have written.</p>
 	<h3>Projects</h3>
 	<ul>
 		{#each data.recentProjects as project}
