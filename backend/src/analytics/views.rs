@@ -29,28 +29,6 @@ pub async fn record_view(
     Ok(())
 }
 
-/// Check if a viewer IP has already viewed this post in the last 24 hours
-pub async fn has_recent_view(
-    pool: &SqlitePool,
-    post_slug: &str,
-    viewer_ip: &str,
-) -> Result<bool, sqlx::Error> {
-    let row = sqlx::query(
-        "SELECT COUNT(*) as count
-         FROM post_views
-         WHERE post_slug = ?
-         AND viewer_ip = ?
-         AND viewed_at > datetime('now', '-24 hours')",
-    )
-    .bind(post_slug)
-    .bind(viewer_ip)
-    .fetch_one(pool)
-    .await?;
-
-    let count: i64 = row.get("count");
-    Ok(count > 0)
-}
-
 /// Get total and unique views for a post/project by slug
 pub async fn get_view_count(pool: &SqlitePool, post_slug: &str) -> Result<ViewCount, sqlx::Error> {
     let row = sqlx::query(

@@ -17,6 +17,12 @@ export const load: PageLoad = async ({ params, fetch }) => {
         const post: ContentItem = await res.json();
         const htmlContent = await parseMarkdownWithShiki(post.markdown);
 
+        fetch(`${PUBLIC_API_BASE_URL}/api/projects/${params.slug}/view`, {
+            method: 'POST'
+        }).catch(err => {
+            console.error("Failed to record view: ", err);
+        })
+
         return {
             post,
             htmlContent
