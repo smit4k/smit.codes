@@ -6,12 +6,19 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import { formatDate } from '$lib/date';
 
+	// Icons
+	import { Github } from '@lucide/svelte';
+	import { Link } from '@lucide/svelte';
+
 	export let data: { posts: ContentItem[] };
 
 	// Sort projects by date, newest first
 	let sortedProjects = data.posts.sort((a, b) => {
 		return b.frontmatter.date.localeCompare(a.frontmatter.date);
 	});
+
+	// Helper function to find GitHub link
+	const getGitHubLink = (links: string[]) => links.find((link) => link.includes('github.com'));
 </script>
 
 <Container>
@@ -27,9 +34,31 @@
 	<div class="posts-list">
 		{#each sortedProjects as project}
 			<div class="post-item">
-				<a href={`/ProjectPost/${project.slug}`} class="post-link">
-					<h2>{project.frontmatter.title}</h2>
-				</a>
+				<div class="post-header">
+					<a href={`/ProjectPost/${project.slug}`} class="post-link">
+						<h2>{project.frontmatter.title}</h2>
+					</a>
+
+					<div class="icons">
+						{#if getGitHubLink(project.frontmatter.links)}
+							<a
+								href={getGitHubLink(project.frontmatter.links)}
+								target="_blank"
+								aria-label="GitHub"
+							>
+								<Github size="1.2em" />
+							</a>
+						{/if}
+
+						{#each project.frontmatter.links as link (link)}
+							{#if !link.includes('github.com')}
+								<a href={link} target="_blank" aria-label="External Link">
+									<Link size="1.2em" />
+								</a>
+							{/if}
+						{/each}
+					</div>
+				</div>
 
 				<p class="meta">
 					Created {formatDate(project.frontmatter.date)} • {project.read_time} min read
@@ -62,6 +91,7 @@
 		margin: 0;
 		font-size: 1.2rem;
 		color: white;
+		display: inline-block;
 	}
 
 	.meta {
@@ -80,10 +110,28 @@
 		margin-top: 0.35rem;
 		font-size: 0.9rem;
 	}
+
 	hr {
 		margin: 1rem 0;
 	}
+
 	a {
 		text-decoration: none;
+	}
+
+	.post-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.icons a {
+		margin-left: 0.5rem;
+		color: #ccc;
+		transition: color 0.2s;
+	}
+
+	.icons a:hover {
+		color: white;
 	}
 </style>
