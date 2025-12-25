@@ -2,6 +2,7 @@
 title: Random Project
 date: 2023-04-12
 tags: [lua, scripting]
+links: []
 description: A simple program that allows me to create automation scripts for my favorite game using Lua.
 ---
 

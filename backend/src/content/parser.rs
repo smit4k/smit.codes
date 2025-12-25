@@ -9,7 +9,7 @@ pub fn parse_markdown(md: &str) -> Result<(Frontmatter, String), String> {
     }
 
     let mut fm_lines = Vec::new();
-    for i in 2..=5 {
+    for i in 2..=6 {
         match lines.next() {
             Some(line) => fm_lines.push(line),
             None => return Err(format!("Missing frontmatter content on line {}", i)),
@@ -18,7 +18,7 @@ pub fn parse_markdown(md: &str) -> Result<(Frontmatter, String), String> {
 
     match lines.next() {
         Some(line) if line.trim() == "---" => {}
-        _ => return Err("Missing frontmatter end delimiter (---) on line 6".into()),
+        _ => return Err("Missing frontmatter end delimiter (---) on line 7".into()),
     }
 
     let yaml = fm_lines.join("\n");

@@ -2,6 +2,7 @@
 title: Quicknote
 date: 2025-12-13
 tags: [minecraft, fabric, java]
+links: [https://github.com/smit4k/quicknote]
 description: A minecraft mod that allows you to take notes using the commands
 ---
 
