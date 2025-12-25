@@ -27,7 +27,7 @@
 		margin: 0;
 		color: white;
 		font-weight: 600;
-		font-size: 1.1rem;
+		font-size: 1.2rem;
 	}
 
 	nav {
@@ -38,7 +38,7 @@
 	nav a {
 		color: #bbb;
 		text-decoration: none;
-		font-size: 0.95rem;
+		font-size: 1rem;
 		transition: color 0.4s ease;
 	}
 
