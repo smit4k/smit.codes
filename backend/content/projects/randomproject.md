@@ -8,6 +8,14 @@ description: A simple program that allows me to create automation scripts for my
 
 # Hey
 
+:::warning hey there
+I have no clue what I am doing
+:::
+
+:::danger woah this is dangerous
+Just testing out some markdown stuff
+:::
+
 ## this is my automation program
 
 It's written in `lua` and allows me to create scripts to automate tasks in my favorite game.

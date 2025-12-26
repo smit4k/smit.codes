@@ -123,3 +123,94 @@ code:not(pre code) {
     border-radius: 5px;
     padding: 0 3px;
 }
+
+.callout {
+    border-left: 4px solid;
+    border-radius: 6px;
+    margin: 1rem 0;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem 1rem;
+}
+
+/* Header row (icon + title) */
+.callout-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+/* Body spacing fix */
+.callout-body>*:first-child {
+    margin-top: 0;
+}
+
+.callout-body>*:last-child {
+    margin-bottom: 0;
+}
+
+/* Icon base using SVG mask */
+.callout-icon {
+    width: 14px;
+    /* tiny size */
+    height: 14px;
+    display: inline-block;
+    background-color: currentColor;
+    /* inherits color from callout */
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+}
+
+/* INFO */
+.callout-info {
+    border-color: #4da3ff;
+    color: #4da3ff;
+    background: rgba(77, 163, 255, 0.08);
+}
+
+.callout-info .callout-icon {
+    mask-image: url('/info.svg');
+    -webkit-mask-image: url('/info.svg');
+}
+
+/* WARNING */
+.callout-warning {
+    border-color: #ffb020;
+    color: #ffb020;
+    background: rgba(255, 176, 32, 0.08);
+}
+
+.callout-warning .callout-icon {
+    mask-image: url('/warn.svg');
+    -webkit-mask-image: url('/warn.svg');
+}
+
+/* NOTE */
+.callout-note {
+    border-color: #6ee7b7;
+    color: #6ee7b7;
+    background: rgba(110, 231, 183, 0.08);
+}
+
+.callout-note .callout-icon {
+    mask-image: url('/note.svg');
+    -webkit-mask-image: url('/note.svg');
+}
+
+/* DANGER */
+.callout-danger {
+    border-color: #ff4d4d;
+    color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.08);
+}
+
+.callout-danger .callout-icon {
+    mask-image: url('/danger.svg');
+    /* optional if you have a danger SVG */
+    -webkit-mask-image: url('/danger.svg');
+}
