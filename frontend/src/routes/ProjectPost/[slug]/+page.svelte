@@ -77,7 +77,6 @@
 
 	.content {
 		line-height: 1.6;
-		font-size: 0.95rem;
 	}
 
 	hr {
