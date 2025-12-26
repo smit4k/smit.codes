@@ -152,9 +152,8 @@ code:not(pre code) {
 
 /* Icon base using SVG mask */
 .callout-icon {
-    width: 14px;
-    /* tiny size */
-    height: 14px;
+    width: 18px;
+    height: 18px;
     display: inline-block;
     background-color: currentColor;
     /* inherits color from callout */
@@ -211,6 +210,5 @@ code:not(pre code) {
 
 .callout-danger .callout-icon {
     mask-image: url('/danger.svg');
-    /* optional if you have a danger SVG */
     -webkit-mask-image: url('/danger.svg');
 }
