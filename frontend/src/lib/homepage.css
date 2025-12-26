@@ -105,6 +105,7 @@ pre {
     border: 1px solid white !important;
     padding: 0.5rem !important;
     border-radius: 5px !important;
+    font-size: 0.9em !important;
     overflow-x: auto;
     font-family: JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
 }
@@ -125,8 +126,8 @@ code:not(pre code) {
 }
 
 .callout {
-    border-left: 4px solid;
-    border-radius: 6px;
+    border-left: 6px solid;
+    border-radius: 4px;
     margin: 1rem 0;
     background: rgba(255, 255, 255, 0.03);
     padding: 0.75rem 1rem;
