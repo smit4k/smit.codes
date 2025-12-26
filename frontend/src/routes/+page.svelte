@@ -16,13 +16,16 @@
 	<p>
 		Hey! I’m Smit, welcome to my homepage,
 		<a href="https://smit.codes">smit.codes</a>! I'm a high school student in Michigan, interested
-		in software development, Linux, and machining. I enjoy coding in Rust and Lua.
+		in software development, Linux, and robotics. I enjoy coding in Rust and Lua.
 	</p>
 
 	<h2>Contact</h2>
 	<hr />
 
-	<p>If you have any questions or comments, you can contact me through the following ways:</p>
+	<p>
+		If you have any questions, comments, or want to chat, you can contact me through the following
+		ways:
+	</p>
 	<ul>
 		<li>Email: <a href="mailto:smit@smit.codes">smit@smit.codes</a></li>
 		<li>Discord: <code>sm.it</code></li>
