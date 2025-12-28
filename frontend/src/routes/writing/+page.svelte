@@ -60,6 +60,8 @@
 		margin: 0;
 		font-size: 1.2rem;
 		color: white;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
 	}
 
 	.meta {

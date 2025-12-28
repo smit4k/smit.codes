@@ -123,6 +123,18 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	.post-link {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.icons {
+		display: flex;
+		flex-shrink: 0;
 	}
 
 	.icons a {
@@ -133,5 +145,25 @@
 
 	.icons a:hover {
 		color: white;
+	}
+
+	h2 {
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+	}
+
+	@media (max-width: 600px) {
+		.post-header {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.icons {
+			margin-top: 0.5rem;
+		}
+
+		.icons a:first-child {
+			margin-left: 0;
+		}
 	}
 </style>

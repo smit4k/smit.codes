@@ -87,6 +87,18 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	h1 {
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+	}
+
+	.icons {
+		display: flex;
+		flex-shrink: 0;
 	}
 
 	.icons a {
@@ -97,5 +109,20 @@
 
 	.icons a:hover {
 		color: white;
+	}
+
+	@media (max-width: 600px) {
+		.post-header {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.icons {
+			margin-top: 0.5rem;
+		}
+
+		.icons a:first-child {
+			margin-left: 0;
+		}
 	}
 </style>

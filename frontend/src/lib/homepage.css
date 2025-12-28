@@ -58,6 +58,18 @@ table {
     background-color: #0f0f0f;
     border-radius: 8px;
     overflow: hidden;
+    display: block;
+    overflow-x: auto;
+}
+
+@media (max-width: 600px) {
+    table {
+        font-size: 0.85rem;
+    }
+
+    th, td {
+        padding: 0.5rem 0.75rem;
+    }
 }
 
 thead {
@@ -107,6 +119,7 @@ pre {
     border-radius: 5px !important;
     font-size: 0.9em !important;
     overflow-x: auto;
+    max-width: 100%;
     font-family: JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
 }
 
