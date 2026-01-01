@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ContentItem } from '$lib/types';
+	import type { ContentItem, ViewCountResponse } from '$lib/types';
 	import Container from '$lib/components/Container.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
@@ -10,6 +10,7 @@
 
 	export let data: {
 		post: ContentItem;
+		viewCount: ViewCountResponse;
 		htmlContent: string;
 	};
 
@@ -41,7 +42,9 @@
 		</div>
 
 		<p class="meta">
-			Published {formatDate(data.post.frontmatter.date)} • {data.post.read_time} min read
+			Published {formatDate(data.post.frontmatter.date)} • {data.post.read_time} min read • {data
+				.viewCount.total_views}
+			views
 		</p>
 		<p class="tags">
 			Tags: {data.post.frontmatter.tags.join(', ')}

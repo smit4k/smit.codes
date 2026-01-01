@@ -13,3 +13,8 @@ export type ContentItem = {
     read_time: number;
 };
 
+
+export type ViewCountResponse = {
+    total_views: number;
+    unique_views: number;
+}
