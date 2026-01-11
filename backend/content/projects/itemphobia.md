@@ -13,6 +13,10 @@ items that I did not want. It got so annoying that I checked if there was a mod
 that could blacklist items, and there apparently wasn't one, so I took the
 opportunity to make one myself.
 
+:::info Download Links
+As of right now, the mod is not published on Modrinth or CurseForge. I am working on publishing it to those platforms, but for now you can compile it yourself by cloning the [repository](https://github.com/smit4k/Itemphobia)
+:::
+
 ## Usage
 
 Once you have installed the mod, you can press `I` in-game to open the
