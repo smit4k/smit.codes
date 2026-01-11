@@ -67,7 +67,8 @@ table {
         font-size: 0.85rem;
     }
 
-    th, td {
+    th,
+    td {
         padding: 0.5rem 0.75rem;
     }
 }
@@ -183,7 +184,7 @@ code:not(pre code) {
 .callout-info {
     border-color: #4da3ff;
     color: #4da3ff;
-    background: rgba(77, 163, 255, 0.08);
+    background: rgba(77, 163, 255, 0.1);
 }
 
 .callout-info .callout-icon {
@@ -195,7 +196,7 @@ code:not(pre code) {
 .callout-warning {
     border-color: #ffb020;
     color: #ffb020;
-    background: rgba(255, 176, 32, 0.08);
+    background: rgba(255, 176, 32, 0.1);
 }
 
 .callout-warning .callout-icon {
@@ -207,7 +208,7 @@ code:not(pre code) {
 .callout-note {
     border-color: #6ee7b7;
     color: #6ee7b7;
-    background: rgba(110, 231, 183, 0.08);
+    background: rgba(110, 231, 183, 0.1);
 }
 
 .callout-note .callout-icon {
@@ -219,7 +220,7 @@ code:not(pre code) {
 .callout-danger {
     border-color: #ff4d4d;
     color: #ff4d4d;
-    background: rgba(255, 77, 77, 0.08);
+    background: rgba(255, 77, 77, 0.1);
 }
 
 .callout-danger .callout-icon {
