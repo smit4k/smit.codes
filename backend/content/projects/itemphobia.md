@@ -14,7 +14,8 @@ that could blacklist items, and there apparently wasn't one, so I took the
 opportunity to make one myself.
 
 :::info Download Links
-As of right now, the mod is not published on Modrinth or CurseForge. I am working on publishing it to those platforms, but for now you can compile it yourself by cloning the [repository](https://github.com/smit4k/Itemphobia)
+You can download the latest version of Itemphobia from the [Github Releases Page](https://github.com/smit4k/Itemphobia/releases)
+As of the time writing, Modrinth has not approved the mod yet.
 :::
 
 ## Usage
