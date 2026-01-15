@@ -1,18 +1,18 @@
-node_modules
+node_modules/
 
-# Output
-.output
-.vercel
-.netlify
-.wrangler
-/.svelte-kit
-/build
+.output/
+.svelte-kit/
+build/
+
+.vercel/
+.netlify/
+.wrangler/
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Env
+# Env files
 .env
 .env.*
 !.env.example
