@@ -30,6 +30,7 @@
 	"dependencies": {
 		"@lucide/svelte": "^0.562.0",
 		"@types/markdown-it": "^14.1.2",
-		"markdown-it": "^14.1.0"
+		"markdown-it": "^14.1.0",
+		"sveltekit-top-loader": "^0.1.0"
 	}
 }

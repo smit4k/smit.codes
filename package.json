@@ -1,0 +1,5 @@
+{
+	"dependencies": {
+		"sveltekit-top-loader": "^0.1.0"
+	}
+}
