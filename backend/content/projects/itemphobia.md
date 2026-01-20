@@ -6,6 +6,9 @@ links: [https://github.com/smit4k/Itemphobia]
 description: "A client side Minecraft fabric mod that lets you blacklist items that you do not want to pick up from the ground"
 ---
 
+![GitHub Release](https://img.shields.io/github/v/release/smit4k/itemphobia)
+![Modrinth Downloads](https://img.shields.io/modrinth/dt/itemphobia)
+
 This is a Minecraft fabric mod that allows you to blacklist items that you do
 not want to pick up from the ground. I made this because I realized that I was
 constantly picking up random junk like rotten flesh, cobblestone and other
