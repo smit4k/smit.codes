@@ -42,7 +42,7 @@
 		</div>
 
 		<p class="meta">
-			Published {formatDate(data.post.frontmatter.date)} • {data.post.read_time} min read • {data
+			Created {formatDate(data.post.frontmatter.date)} • {data.post.read_time} min read • {data
 				.viewCount.total_views}
 			views
 		</p>
