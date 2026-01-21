@@ -17,7 +17,7 @@ that could blacklist items, and there apparently wasn't one, so I took the
 opportunity to make one myself.
 
 :::info Download Links
-The mod can be downloaded from [Modrinth](https://modrinht.com/mod/itemphobia) and [Github](https://github.com/smit4k/itemphobia/releases)
+The mod can be downloaded from [Modrinth](https://modrinth.com/mod/itemphobia) and [Github](https://github.com/smit4k/itemphobia/releases)
 :::
 
 ## Usage
