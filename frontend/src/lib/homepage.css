@@ -55,9 +55,8 @@ table {
     border-collapse: collapse;
     margin: 1.5rem 0;
     font-size: 0.95rem;
-    background-color: #0f0f0f;
-    border-radius: 8px;
-    overflow: hidden;
+    border: 1px solid #333;
+    border-radius: 5px;
     display: block;
     overflow-x: auto;
 }
@@ -69,35 +68,29 @@ table {
 
     th,
     td {
-        padding: 0.5rem 0.75rem;
+        padding: 0.125rem 0.25rem;
     }
 }
 
-thead {
-    background-color: #1a1a1a;
-}
+thead {}
 
 th {
-    padding: 0.75rem 1rem;
+    padding: 0.25rem 0.5rem;
     text-align: left;
     font-weight: 600;
     color: #ffffff;
-    border-bottom: 1px solid #2a2a2a;
+    border-bottom: 1px solid #333;
 }
 
 td {
-    padding: 0.7rem 1rem;
+    padding: 0.25rem 0.5rem;
     color: #e5e5e5;
-    border-bottom: 1px solid #2a2a2a;
+    border-bottom: 1px solid #333;
 }
 
-tbody tr:nth-child(even) {
-    background-color: #151515;
-}
 
-tbody tr:hover {
-    background-color: #1f1f1f;
-}
+
+
 
 tbody tr:last-child td {
     border-bottom: none;
