@@ -17,6 +17,7 @@ use sqlx::SqlitePool;
 use std::{path::Path as StdPath, sync::Arc};
 use system::models::{SystemInfo, SystemMetrics};
 use system::monitor::{get_system_info, get_system_metrics};
+use tower_governor::{governor::GovernorConfigBuilder, GovernorLayer};
 use tower_http::{cors::CorsLayer, services::ServeDir};
 use tracing::info;
 
@@ -62,6 +63,14 @@ async fn main() {
         .allow_methods([Method::GET, Method::POST, Method::OPTIONS])
         .allow_headers(tower_http::cors::Any);
 
+    let governor_conf = Arc::new(
+        GovernorConfigBuilder::default()
+            .per_second(1)
+            .burst_size(25)
+            .finish()
+            .unwrap(),
+    );
+
     let app = Router::new()
         // Writing
         .route("/api/writing", get(list_writing))
@@ -78,6 +87,7 @@ async fn main() {
         // Static assets
         .nest_service("/assets", ServeDir::new("./content"))
         .with_state(state)
+        .layer(GovernorLayer::new(governor_conf))
         .layer(cors);
 
     let addr = "127.0.0.1:3001";
@@ -181,4 +191,3 @@ async fn get_project(
     let response_headers = utils::cache::default_cache_headers(etag);
     Ok((response_headers, body).into_response())
 }
-
