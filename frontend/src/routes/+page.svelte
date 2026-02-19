@@ -2,6 +2,7 @@
 	import Container from '$lib/components/Container.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import Callout from '$lib/components/Callout.svelte';
 	import type { ContentItem } from '$lib/types';
 	export let data: {
 		recentProjects: ContentItem[];
@@ -14,10 +15,20 @@
 	<h1>Home</h1>
 	<hr />
 	<p>
-		Hey! I’m Smit, welcome to my homepage,
+		Hey! I'm Smit, welcome to my homepage,
 		<a href="https://smit.codes">smit.codes</a>! I'm a high school student in Michigan, interested
 		in software development, Linux, and robotics. I enjoy coding in Rust and Lua.
 	</p>
+
+	<Callout type="info" title="Check out my Neovim plugin!">
+		<p>
+			I've been working on my first Neovim plugin for a while now -- it's called <b>snapshot.nvim</b
+			> and it lets you take beautiful screenshots of your code directly inside Neovim. I'd greatly appreciate
+			it if you could check it out. A post about the plugin is coming soon!
+		</p>
+
+		<p>Github: <a href="https://github.com/smit4k/snapshot.nvim">snapshot.nvim</a></p>
+	</Callout>
 
 	<h2>Contact</h2>
 	<hr />
