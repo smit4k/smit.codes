@@ -1,11 +1,12 @@
 use sqlx::sqlite::{SqliteConnectOptions, SqlitePool, SqlitePoolOptions};
 use std::str::FromStr;
+use tracing::info;
 
 pub async fn create_pool() -> Result<SqlitePool, sqlx::Error> {
-    std::fs::create_dir_all("./database").expect("Failed to create database directory");
+    std::fs::create_dir_all("./db").expect("Failed to create db directory");
 
     let options =
-        SqliteConnectOptions::from_str("sqlite:./database/blog.db")?.create_if_missing(true);
+        SqliteConnectOptions::from_str("sqlite:./db/analytics.db")?.create_if_missing(true);
 
     let pool = SqlitePoolOptions::new()
         .max_connections(5)
@@ -15,7 +16,7 @@ pub async fn create_pool() -> Result<SqlitePool, sqlx::Error> {
     let schema = include_str!("../database/schema.sql");
     sqlx::raw_sql(schema).execute(&pool).await?;
 
-    println!("✓ Database schema initialized");
+    info!("Database schema initialized");
 
     Ok(pool)
 }

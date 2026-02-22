@@ -4,6 +4,8 @@ mod system;
 mod utils;
 
 use analytics::{get_post_views, record_post_view};
+use analytics::{get_all_page_views, get_page_views, track_page_view};
+use analytics::create_pool;
 use axum::{
     extract::{Path, State},
     http::{HeaderMap, Method, StatusCode},
@@ -38,9 +40,9 @@ async fn main() {
     let projects = load_content_from_dir(StdPath::new("./content/projects"), ContentKind::Project)
         .expect("Failed to load projects");
 
-    let pool = SqlitePool::connect("sqlite://./db/analytics.db")
+    let pool = create_pool()
         .await
-        .expect("Failed to connect to SQLite");
+        .expect("Failed to initialize database");
 
     let state = AppState {
         writing: Arc::new(writing),
@@ -78,7 +80,11 @@ async fn main() {
         // Projects
         .route("/api/projects", get(list_projects))
         .route("/api/projects/{slug}", get(get_project))
-        // Analytics
+        // Analytics - page views (before post views to avoid route conflicts)
+        .route("/api/views/track", post(track_page_view))
+        .route("/api/views", get(get_all_page_views))
+        .route("/api/views/{*page_path}", get(get_page_views))
+        // Analytics - post views
         .route("/api/{post_type}/{slug}/view", post(record_post_view))
         .route("/api/{post_type}/{slug}/views", get(get_post_views))
         // System

@@ -1,10 +1,12 @@
 use super::views::{get_view_count, record_view, ViewCount};
+use super::views::{get_page_view_count, get_site_stats, record_page_view, PageViewCount, SiteStats};
 use crate::AppState;
 use axum::{
     extract::{ConnectInfo, Path, State},
     http::{HeaderMap, StatusCode},
     Json,
 };
+use serde::Deserialize;
 use std::net::{IpAddr, SocketAddr};
 use tracing::error;
 
@@ -110,3 +112,77 @@ pub async fn get_post_views(
     }
 }
 
+// --- Page view tracking (all pages) ---
+
+#[derive(Debug, Deserialize)]
+pub struct TrackPageViewRequest {
+    pub page_path: String,
+}
+
+/// POST /api/views/track
+/// Records a page view for any page
+pub async fn track_page_view(
+    State(state): State<AppState>,
+    ConnectInfo(addr): ConnectInfo<SocketAddr>,
+    headers: HeaderMap,
+    Json(body): Json<TrackPageViewRequest>,
+) -> Result<StatusCode, StatusCode> {
+    let pool = &state.db;
+
+    let page_path = body.page_path.trim().to_string();
+    if page_path.is_empty() {
+        return Err(StatusCode::BAD_REQUEST);
+    }
+
+    let viewer_ip = extract_ip(&headers, &addr);
+    let ip_string = viewer_ip.to_string();
+
+    let user_agent = headers
+        .get("user-agent")
+        .and_then(|v| v.to_str().ok())
+        .map(String::from);
+
+    if let Err(e) = record_page_view(pool, &page_path, Some(ip_string), user_agent).await {
+        error!(
+            "Failed to record page view for {}: {:?}",
+            page_path, e
+        );
+        return Err(StatusCode::INTERNAL_SERVER_ERROR);
+    }
+
+    Ok(StatusCode::CREATED)
+}
+
+/// GET /api/views
+/// Returns site-wide view stats with per-page breakdown
+pub async fn get_all_page_views(
+    State(state): State<AppState>,
+) -> Result<Json<SiteStats>, StatusCode> {
+    let pool = &state.db;
+
+    match get_site_stats(pool).await {
+        Ok(stats) => Ok(Json(stats)),
+        Err(e) => {
+            error!("Failed to get site stats: {:?}", e);
+            Err(StatusCode::INTERNAL_SERVER_ERROR)
+        }
+    }
+}
+
+/// GET /api/views/:page_path
+/// Returns view count for a specific page
+pub async fn get_page_views(
+    Path(page_path): Path<String>,
+    State(state): State<AppState>,
+) -> Result<Json<PageViewCount>, StatusCode> {
+    let pool = &state.db;
+    let decoded_path = format!("/{}", page_path);
+
+    match get_page_view_count(pool, &decoded_path).await {
+        Ok(views) => Ok(Json(views)),
+        Err(e) => {
+            error!("Failed to get page view count for {}: {:?}", decoded_path, e);
+            Err(StatusCode::INTERNAL_SERVER_ERROR)
+        }
+    }
+}
