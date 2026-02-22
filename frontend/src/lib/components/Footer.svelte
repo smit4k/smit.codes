@@ -1,5 +1,5 @@
 <div class="footer">
-	<span>© Smit Patil 2025</span>
+	<span>© Smit Patil 2026</span>
 	<a href="https://github.com/smit4k/smit.codes">Source</a>
 </div>
 
