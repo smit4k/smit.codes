@@ -2,7 +2,7 @@
 title: Itemphobia
 date: 2025-12-25
 tags: [minecraft, fabric, java]
-links: [https://github.com/smit4k/Itemphobia]
+links: [https://github.com/smit4k/Itemphobia, https://modrinth.com/mod/itemphobia]
 description: "A client side Minecraft fabric mod that lets you blacklist items that you do not want to pick up from the ground"
 ---
 
