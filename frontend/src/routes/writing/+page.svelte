@@ -11,6 +11,18 @@
 	let sortedPosts = data.posts.sort((a, b) => {
 		return b.frontmatter.date.localeCompare(a.frontmatter.date);
 	});
+
+	// Group posts by year
+	let postsByYear: { year: string; posts: ContentItem[] }[] = [];
+	for (const post of sortedPosts) {
+		const year = post.frontmatter.date.slice(0, 4);
+		const group = postsByYear.find((g) => g.year === year);
+		if (group) {
+			group.posts.push(post);
+		} else {
+			postsByYear.push({ year, posts: [post] });
+		}
+	}
 </script>
 
 <Container>
@@ -23,22 +35,32 @@
 	<hr />
 
 	<div class="posts-list">
-		{#each sortedPosts as post}
-			<div class="post-item">
-				<a href={`/WritingPost/${post.slug}`} class="post-link">
-					<h2>{post.frontmatter.title}</h2>
-				</a>
-
-				<p class="meta">
-					Published {formatDate(post.frontmatter.date)} • {post.read_time} min read
-				</p>
-				<p class="tags">Tags: {post.frontmatter.tags.join(', ')}</p>
-				<p class="description">{post.frontmatter.description}</p>
+		{#each postsByYear as { year, posts }}
+			<div class="year-divider">
+				<span class="year-line"></span>
+				<span class="year-label"><strong>{year}</strong></span>
+				<span class="year-line"></span>
 			</div>
-			<hr />
+			<div class="cards-grid">
+				{#each posts as post}
+					<a href={`/WritingPost/${post.slug}`} class="card">
+						<div class="card-top">
+							<span class="date">{formatDate(post.frontmatter.date)}</span>
+							<h2>{post.frontmatter.title}</h2>
+							<p class="description">{post.frontmatter.description}</p>
+						</div>
+						<div class="card-bottom">
+							<span class="meta"
+								>{post.read_time} min read • {post.frontmatter.tags.join(', ')}</span
+							>
+						</div>
+					</a>
+				{/each}
+			</div>
 		{/each}
 	</div>
 
+	<hr />
 	<Footer />
 </Container>
 
@@ -52,38 +74,86 @@
 		margin-top: 1rem;
 	}
 
-	.post-item {
-		margin-bottom: 1.5rem;
+	.cards-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		gap: 0.85rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.card {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 0.75rem;
+		padding: 1rem 1.1rem;
+		background: #0e0e0e;
+		border: 1px solid #2a2a2a;
+		border-radius: 8px;
+		text-decoration: none;
+		color: inherit;
+		transition:
+			border-color 0.18s ease,
+			background 0.18s ease;
+	}
+
+	.card:hover {
+		border-color: #555;
+		background: #141414;
 	}
 
 	h2 {
-		margin: 0;
-		font-size: 1.2rem;
+		margin: 0 0 0.35rem;
+		font-size: 1rem;
 		color: white;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
-	}
-
-	.meta {
-		margin: 0.2rem 0;
-		color: #aaa;
-		font-size: 0.9rem;
-	}
-
-	.tags {
-		margin: 0;
-		color: #888;
-		font-size: 0.85rem;
+		line-height: 1.35;
 	}
 
 	.description {
-		margin-top: 0.35rem;
-		font-size: 0.9rem;
+		margin: 0;
+		font-size: 0.85rem;
+		color: #aaa;
+		line-height: 1.45;
 	}
+
+	.card-bottom {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+
+	.date {
+		display: block;
+		margin-bottom: 0.3rem;
+		font-size: 0.78rem;
+		color: #666;
+	}
+
+	.meta {
+		font-size: 0.78rem;
+		color: #555;
+	}
+
 	hr {
 		margin: 1rem 0;
 	}
-	a {
-		text-decoration: none;
+
+	.year-divider {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		margin: 1.5rem 0 0.75rem;
+		color: #aaa;
+		font-size: 0.9rem;
+	}
+	.year-line {
+		flex: 1;
+		height: 1px;
+		background-color: #444;
+	}
+	.year-label strong {
+		color: #ccc;
 	}
 </style>
