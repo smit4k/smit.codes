@@ -15,6 +15,11 @@
 <Container>
 	<Navbar />
 	<article>
+		<nav class="breadcrumbs">
+			<a href="/writing">writing</a>
+			<span class="separator">&gt;&gt;</span>
+			<span class="current">{data.post.slug}</span>
+		</nav>
 		<h1>{data.post.frontmatter.title}</h1>
 		<p class="meta">
 			Published {formatDate(data.post.frontmatter.date)} • {data.post.read_time} min read • {data
@@ -33,6 +38,31 @@
 </Container>
 
 <style>
+	.breadcrumbs {
+		font-size: 0.9rem;
+		color: #888;
+		margin-bottom: 0.75rem;
+	}
+
+	.breadcrumbs a {
+		color: #888;
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	.breadcrumbs a:hover {
+		color: #ccc;
+	}
+
+	.breadcrumbs .separator {
+		margin: 0 0.25rem;
+		color: #666;
+	}
+
+	.breadcrumbs .current {
+		color: #aaa;
+	}
+
 	h1 {
 		margin-top: 0.5rem;
 		margin-bottom: 0.25rem;
