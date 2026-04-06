@@ -1,0 +1,3 @@
+[submodule "lambdavim-website"]
+	path = lambdavim-website
+	url = ../lambdavim-website
