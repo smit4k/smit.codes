@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <script>
+        // Initialize theme before render to prevent flash
+        (() => {
+            const stored = localStorage.getItem('lambdavim-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = stored || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plugins - LambdaVim</title>
+    <meta name="description" content="Plugins used by LambdaVim." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script>
+    <script type="module" src="js/sidebar.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/syntax.js"></script>
+</head>
+<body>
+    <site-sidebar current="plugins"></site-sidebar>
+    
+    <main class="main-content">
+        <div class="content-wrapper fade-in">
+            <header class="page-header">
+                <h1>Plugins</h1>
+                <p class="tagline">The repo keeps plugin specs in <code>lua/plugins</code>, with each file focused on one tool or integration.</p>
+            </header>
+
+            <section class="content-section">
+                <h2>Plugin Catalog</h2>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Plugin</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>akinsho/bufferline.nvim</code></td>
+                                <td>UI</td>
+                                <td>Buffer tabs with pinning, movement, and close shortcuts.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Bekaboo/dropbar.nvim</code></td>
+                                <td>Navigation</td>
+                                <td>Symbol breadcrumbs in the winbar with navigation helpers.</td>
+                            </tr>
+                            <tr>
+                                <td><code>folke/noice.nvim</code></td>
+                                <td>UI</td>
+                                <td>Improves the command-line, notifications, and message UI.</td>
+                            </tr>
+                            <tr>
+                                <td><code>folke/todo-comments.nvim</code></td>
+                                <td>Productivity</td>
+                                <td>Highlights TODO, FIXME, and other project markers.</td>
+                            </tr>
+                            <tr>
+                                <td><code>folke/trouble.nvim</code></td>
+                                <td>Diagnostics</td>
+                                <td>Diagnostic, symbol, location list, and quickfix views.</td>
+                            </tr>
+                            <tr>
+                                <td><code>folke/which-key.nvim</code></td>
+                                <td>Keymaps</td>
+                                <td>Shows available keymaps after pressing leader combinations.</td>
+                            </tr>
+                            <tr>
+                                <td><code>jose-elias-alvarez/null-ls.nvim</code></td>
+                                <td>Formatting</td>
+                                <td>Bridges external formatters and diagnostics into Neovim.</td>
+                            </tr>
+                            <tr>
+                                <td><code>lewis6991/gitsigns.nvim</code></td>
+                                <td>Git</td>
+                                <td>Adds git status indicators in the sign column.</td>
+                            </tr>
+                            <tr>
+                                <td><code>lukas-reineke/indent-blankline.nvim</code></td>
+                                <td>Editing</td>
+                                <td>Displays indent guides and scope highlighting.</td>
+                            </tr>
+                            <tr>
+                                <td><code>mason-org/mason.nvim</code></td>
+                                <td>LSP</td>
+                                <td>Installs and manages language servers and tools.</td>
+                            </tr>
+                            <tr>
+                                <td><code>mason-org/mason-lspconfig.nvim</code></td>
+                                <td>LSP</td>
+                                <td>Connects Mason-managed servers to <code>nvim-lspconfig</code>.</td>
+                            </tr>
+                            <tr>
+                                <td><code>MunifTanjim/nui.nvim</code></td>
+                                <td>UI</td>
+                                <td>UI primitives used by Noice and related interfaces.</td>
+                            </tr>
+                            <tr>
+                                <td><code>nvim-lua/plenary.nvim</code></td>
+                                <td>Library</td>
+                                <td>Shared utility library used by many plugins.</td>
+                            </tr>
+                            <tr>
+                                <td><code>nvim-mini/mini.pairs</code></td>
+                                <td>Editing</td>
+                                <td>Minimal auto-pairing for brackets, quotes, and similar characters.</td>
+                            </tr>
+                            <tr>
+                                <td><code>nvim-mini/mini.pick</code></td>
+                                <td>Navigation</td>
+                                <td>Lightweight picker alternative for finding files and items.</td>
+                            </tr>
+                            <tr>
+                                <td><code>nvim-neo-tree/neo-tree.nvim</code></td>
+                                <td>Navigation</td>
+                                <td>File explorer sidebar with a toggle mapping on <code>&lt;leader&gt;e</code>.</td>
+                            </tr>
+                            <tr>
+                                <td><code>nvim-tree/nvim-web-devicons</code></td>
+                                <td>UI</td>
+                                <td>Filetype and UI icons used by the sidebar and statusline.</td>
+                            </tr>
+                            <tr>
+                                <td><code>nvim-telescope/telescope.nvim</code></td>
+                                <td>Navigation</td>
+                                <td>Fuzzy finder for files, recent history, and live grep.</td>
+                            </tr>
+                            <tr>
+                                <td><code>nvim-telescope/telescope-fzf-native.nvim</code></td>
+                                <td>Navigation</td>
+                                <td>Native sorter for faster Telescope matching.</td>
+                            </tr>
+                            <tr>
+                                <td><code>nvim-telescope/telescope-ui-select.nvim</code></td>
+                                <td>Navigation</td>
+                                <td>Telescope-based replacement for UI selection prompts.</td>
+                            </tr>
+                            <tr>
+                                <td><code>nvim-treesitter/nvim-treesitter</code></td>
+                                <td>Syntax</td>
+                                <td>Tree-sitter parsing and syntax highlighting.</td>
+                            </tr>
+                            <tr>
+                                <td><code>nvimdev/dashboard-nvim</code></td>
+                                <td>UI</td>
+                                <td>Start screen with actions for files, search, config, Lazy, and quit.</td>
+                            </tr>
+                            <tr>
+                                <td><code>neovim/nvim-lspconfig</code></td>
+                                <td>LSP</td>
+                                <td>Base configuration layer for Neovim's LSP client.</td>
+                            </tr>
+                            <tr>
+                                <td><code>saghen/blink.cmp</code></td>
+                                <td>Completion</td>
+                                <td>Completion engine with signature help and custom insert mappings.</td>
+                            </tr>
+                            <tr>
+                                <td><code>smit4k/shale.nvim</code></td>
+                                <td>Theme</td>
+                                <td>LambdaVim's colorscheme, loaded at startup.</td>
+                            </tr>
+                            <tr>
+                                <td><code>stevearc/conform.nvim</code></td>
+                                <td>Formatting</td>
+                                <td>Formats buffers on save and through <code>&lt;leader&gt;f</code>.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="nav-actions">
+                <a class="action-btn secondary" href="keymaps.html">
+                    <span class="arrow">←</span>
+                    Keymaps
+                </a>
+            </div>
+        </div>
+    </main>
+    <script src="js/copy-code.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LambdaVim</title>
+    <meta name="description" content="A minimal, modern Neovim configuration" />
+    <script>
+        // Initialize theme before render to prevent flash
+        (() => {
+            const stored = localStorage.getItem('lambdavim-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = stored || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script>
+    <script type="module" src="js/sidebar.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/syntax.js"></script>
+</head>
+
+<body>
+    <site-sidebar current="home"></site-sidebar>
+
+    <main class="main-content">
+        <div class="content-wrapper fade-in">
+            <header class="page-header">
+                <div class="logo-mark">λ</div>
+                <h1>LambdaVim</h1>
+                <p class="tagline">
+                    A minimal, modern Neovim configuration designed
+                    for developers who want a clean and productive editing
+                    experience without the bloat.
+                </p>
+            </header>
+
+            <section class="content-section">
+                <h2>Project Goals</h2>
+                <div class="text-content">
+                    <p>
+                        Most Neovim distros come with a ton of bloat, hide plugins,
+                        and force you to use their configuration strictly.
+                        LambdaVim's goal is to give the user full control over their
+                        own Neovim configuration while providing a simple,
+                        bloat-free and intuitive starting configuration. This also means LambdaVim is very beginner
+                        friendly!
+                    </p>
+                </div>
+            </section>
+
+            <div class="nav-actions">
+                <a class="action-btn" href="installation.html">
+                    Get Started
+                    <span class="arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <script src="js/copy-code.js"></script>
+</body>
+
+</html>

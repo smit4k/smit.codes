@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Theme Toggle Test</title>
+    <script>
+        // Initialize theme before render to prevent flash
+        (() => {
+            const stored = localStorage.getItem('lambdavim-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = stored || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <link rel="stylesheet" href="css/theme.css" />
+    <script type="module" src="js/sidebar.js"></script>
+    <script src="js/theme.js"></script>
+</head>
+<body>
+    <site-sidebar current="home"></site-sidebar>
+    
+    <main class="main-content">
+        <div class="content-wrapper fade-in">
+            <header class="page-header">
+                <h1>Theme Toggle Test</h1>
+                <p class="tagline">Click the theme button in the sidebar to test dark/light mode.</p>
+            </header>
+
+            <section class="content-section">
+                <h2>Current Theme</h2>
+                <p id="theme-display">Loading...</p>
+                <button id="test-btn" style="padding: 10px 20px; margin-top: 20px; cursor: pointer;">
+                    Manual Toggle Test
+                </button>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        function updateDisplay() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            document.getElementById('theme-display').textContent = 
+                `Current theme: ${theme} (stored: ${localStorage.getItem('lambdavim-theme')})`;
+        }
+        
+        // Update on load
+        setTimeout(updateDisplay, 100);
+        
+        // Update on theme change
+        window.addEventListener('themechange', updateDisplay);
+        
+        // Manual test button
+        document.getElementById('test-btn').addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('lambdavim-theme', newTheme);
+            window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: newTheme } }));
+            updateDisplay();
+        });
+        
+        // Watch for changes
+        const observer = new MutationObserver(updateDisplay);
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    </script>
+</body>
+</html>

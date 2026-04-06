@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <script>
+        // Initialize theme before render to prevent flash
+        (() => {
+            const stored = localStorage.getItem('lambdavim-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = stored || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Installation - LambdaVim</title>
+    <meta name="description" content="Install LambdaVim." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script>
+    <script type="module" src="js/sidebar.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/syntax.js"></script>
+</head>
+<body>
+    <site-sidebar current="installation"></site-sidebar>
+    
+    <main class="main-content">
+        <div class="content-wrapper fade-in">
+            <header class="page-header">
+                <h1>Installation</h1>
+                <p class="tagline">Install LambdaVim after backing up any existing Neovim configuration.</p>
+            </header>
+
+            <section class="content-section">
+                <h2>Requirements</h2>
+                <ul class="clean-list">
+                    <li>Neovim ≥ 0.10</li>
+                    <li>Git</li>
+                    <li>A Nerd Font for icons</li>
+                    <li>A terminal with true color support</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>Backup your existing Neovim configuration</h2>
+                <pre><code>mv ~/.config/nvim ~/.config/nvim.bak</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Clone LambdaVim</h2>
+                <pre><code>git clone https://github.com/smit4k/LambdaVim ~/.config/nvim</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Launch Neovim</h2>
+                <pre><code>nvim</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>What happens next</h2>
+                <ul class="clean-list">
+                    <li><code>lazy.nvim</code> bootstraps automatically from <code>lua/config/lazy.lua</code></li>
+                    <li>Plugins install on first launch</li>
+                    <li>The dashboard gives you shortcuts into files, recent buffers, search, config, and Lazy</li>
+                </ul>
+            </section>
+
+            <div class="nav-actions">
+                <a class="action-btn secondary" href="index.html">
+                    <span class="arrow">←</span>
+                    Home
+                </a>
+                <a class="action-btn" href="configuration.html">
+                    Configuration
+                    <span class="arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </main>
+    <script src="copy-code.js"></script>
+</body>
+</html>
