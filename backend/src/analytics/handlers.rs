@@ -1,5 +1,7 @@
+use super::views::{
+    get_page_view_count, get_site_stats, record_page_view, PageViewCount, SiteStats,
+};
 use super::views::{get_view_count, record_view, ViewCount};
-use super::views::{get_page_view_count, get_site_stats, record_page_view, PageViewCount, SiteStats};
 use crate::AppState;
 use axum::{
     extract::{ConnectInfo, Path, State},
@@ -7,34 +9,81 @@ use axum::{
     Json,
 };
 use serde::Deserialize;
-use std::net::{IpAddr, SocketAddr};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use tracing::error;
 
-/// Extracts the IP address from headers or socket
-fn extract_ip(headers: &HeaderMap, addr: &SocketAddr) -> IpAddr {
-    if let Some(forwarded) = headers.get("x-forwarded-for") {
-        if let Ok(forwarded_str) = forwarded.to_str() {
-            if let Some(ip_str) = forwarded_str.split(',').next() {
-                if let Ok(ip) = ip_str.trim().parse() {
-                    return ip;
-                } else {
-                    error!("Failed to parse x-forwarded-for IP: {}", ip_str);
-                }
-            }
-        }
-    }
+const MAX_USER_AGENT_LEN: usize = 256;
+const MAX_PAGE_PATH_LEN: usize = 256;
 
-    if let Some(real_ip) = headers.get("x-real-ip") {
-        if let Ok(ip_str) = real_ip.to_str() {
-            if let Ok(ip) = ip_str.parse() {
-                return ip;
-            } else {
-                error!("Failed to parse x-real-ip: {}", ip_str);
-            }
-        }
-    }
-
+/// Use the socket address directly unless a trusted proxy layer is introduced.
+fn extract_ip(_headers: &HeaderMap, addr: &SocketAddr) -> IpAddr {
     addr.ip()
+}
+
+fn anonymize_ip(ip: IpAddr) -> String {
+    match ip {
+        IpAddr::V4(v4) => {
+            let octets = v4.octets();
+            Ipv4Addr::new(octets[0], octets[1], octets[2], 0).to_string()
+        }
+        IpAddr::V6(v6) => {
+            let segments = v6.segments();
+            Ipv6Addr::new(
+                segments[0],
+                segments[1],
+                segments[2],
+                segments[3],
+                0,
+                0,
+                0,
+                0,
+            )
+            .to_string()
+        }
+    }
+}
+
+fn sanitize_user_agent(headers: &HeaderMap) -> Option<String> {
+    let raw = headers.get("user-agent")?.to_str().ok()?.trim();
+    if raw.is_empty() {
+        return None;
+    }
+
+    let truncated: String = raw.chars().take(MAX_USER_AGENT_LEN).collect();
+    Some(
+        truncated
+            .chars()
+            .filter(|c| !c.is_control())
+            .collect::<String>(),
+    )
+}
+
+fn normalize_page_path(raw: &str) -> Option<String> {
+    let trimmed = raw.trim();
+    if trimmed.is_empty() || trimmed.len() > MAX_PAGE_PATH_LEN {
+        return None;
+    }
+
+    let without_query = trimmed.split(['?', '#']).next().unwrap_or(trimmed).trim();
+
+    if without_query.is_empty()
+        || !without_query.starts_with('/')
+        || without_query.contains('\\')
+        || without_query.contains("..")
+        || without_query.contains("//")
+        || without_query.chars().any(|c| c.is_control())
+    {
+        return None;
+    }
+
+    if !without_query
+        .chars()
+        .all(|c| c.is_ascii_alphanumeric() || matches!(c, '/' | '-' | '_' | '.'))
+    {
+        return None;
+    }
+
+    Some(without_query.to_string())
 }
 
 /// POST /api/:post_type/:slug/view
@@ -75,16 +124,13 @@ pub async fn record_post_view(
     };
 
     let viewer_ip = extract_ip(&headers, &addr);
-    let ip_string = viewer_ip.to_string();
-
-    let user_agent = headers
-        .get("user-agent")
-        .and_then(|v| v.to_str().ok())
-        .map(String::from);
+    let ip_string = anonymize_ip(viewer_ip);
+    let user_agent = sanitize_user_agent(&headers);
 
     let type_singular = post_type.trim_end_matches('s');
 
-    if let Err(e) = record_view(pool, &post_slug, type_singular, Some(ip_string), user_agent).await {
+    if let Err(e) = record_view(pool, &post_slug, type_singular, Some(ip_string), user_agent).await
+    {
         error!(
             "Failed to record view for {}: {} (DB Error: {:?})",
             post_slug, type_singular, e
@@ -129,24 +175,16 @@ pub async fn track_page_view(
 ) -> Result<StatusCode, StatusCode> {
     let pool = &state.db;
 
-    let page_path = body.page_path.trim().to_string();
-    if page_path.is_empty() {
+    let Some(page_path) = normalize_page_path(&body.page_path) else {
         return Err(StatusCode::BAD_REQUEST);
-    }
+    };
 
     let viewer_ip = extract_ip(&headers, &addr);
-    let ip_string = viewer_ip.to_string();
-
-    let user_agent = headers
-        .get("user-agent")
-        .and_then(|v| v.to_str().ok())
-        .map(String::from);
+    let ip_string = anonymize_ip(viewer_ip);
+    let user_agent = sanitize_user_agent(&headers);
 
     if let Err(e) = record_page_view(pool, &page_path, Some(ip_string), user_agent).await {
-        error!(
-            "Failed to record page view for {}: {:?}",
-            page_path, e
-        );
+        error!("Failed to record page view for {}: {:?}", page_path, e);
         return Err(StatusCode::INTERNAL_SERVER_ERROR);
     }
 
@@ -181,7 +219,10 @@ pub async fn get_page_views(
     match get_page_view_count(pool, &decoded_path).await {
         Ok(views) => Ok(Json(views)),
         Err(e) => {
-            error!("Failed to get page view count for {}: {:?}", decoded_path, e);
+            error!(
+                "Failed to get page view count for {}: {:?}",
+                decoded_path, e
+            );
             Err(StatusCode::INTERNAL_SERVER_ERROR)
         }
     }

@@ -3,10 +3,11 @@ mod content;
 mod system;
 mod utils;
 
-use analytics::{get_post_views, record_post_view};
-use analytics::{get_all_page_views, get_page_views, track_page_view};
 use analytics::create_pool;
+use analytics::{get_all_page_views, get_page_views, track_page_view};
+use analytics::{get_post_views, record_post_view};
 use axum::{
+    extract::DefaultBodyLimit,
     extract::{Path, State},
     http::{HeaderMap, Method, StatusCode},
     response::{IntoResponse, Response},
@@ -40,9 +41,7 @@ async fn main() {
     let projects = load_content_from_dir(StdPath::new("./content/projects"), ContentKind::Project)
         .expect("Failed to load projects");
 
-    let pool = create_pool()
-        .await
-        .expect("Failed to initialize database");
+    let pool = create_pool().await.expect("Failed to initialize database");
 
     let state = AppState {
         writing: Arc::new(writing),
@@ -92,6 +91,7 @@ async fn main() {
         .route("/api/system/metrics", get(system_metrics_handler))
         // Static assets
         .nest_service("/assets", ServeDir::new("./content"))
+        .layer(DefaultBodyLimit::max(1024))
         .with_state(state)
         .layer(GovernorLayer::new(governor_conf))
         .layer(cors);
