@@ -41,7 +41,7 @@
 	.breadcrumbs {
 		font-size: 0.9rem;
 		color: #888;
-		margin-bottom: 0.75rem;
+		font-weight: bold;
 	}
 
 	.breadcrumbs a {
