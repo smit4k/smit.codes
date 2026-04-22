@@ -14,8 +14,8 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use content::loader::load_content_from_dir;
-use content::models::{ContentItem, ContentKind};
+use content::loader::{load_content_from_dir, load_photo_posts_from_dir};
+use content::models::{ContentItem, ContentKind, PhotoPost};
 use sqlx::SqlitePool;
 use std::{path::Path as StdPath, sync::Arc};
 use system::models::{SystemInfo, SystemMetrics};
@@ -28,6 +28,7 @@ use tracing::info;
 struct AppState {
     writing: Arc<Vec<ContentItem>>,
     projects: Arc<Vec<ContentItem>>,
+    photos: Arc<Vec<PhotoPost>>,
     db: SqlitePool,
 }
 
@@ -40,19 +41,23 @@ async fn main() {
 
     let projects = load_content_from_dir(StdPath::new("./content/projects"), ContentKind::Project)
         .expect("Failed to load projects");
+    let photos =
+        load_photo_posts_from_dir(StdPath::new("./content/photos")).expect("Failed to load photo posts");
 
     let pool = create_pool().await.expect("Failed to initialize database");
 
     let state = AppState {
         writing: Arc::new(writing),
         projects: Arc::new(projects),
+        photos: Arc::new(photos),
         db: pool,
     };
 
     info!(
-        "Loaded {} writing posts, {} projects",
+        "Loaded {} writing posts, {} projects, {} photo posts",
         state.writing.len(),
-        state.projects.len()
+        state.projects.len(),
+        state.photos.len()
     );
 
     let cors = CorsLayer::new()
@@ -79,6 +84,9 @@ async fn main() {
         // Projects
         .route("/api/projects", get(list_projects))
         .route("/api/projects/{slug}", get(get_project))
+        // Photos
+        .route("/api/photos", get(list_photos))
+        .route("/api/photos/{slug}", get(get_photo))
         // Analytics - page views (before post views to avoid route conflicts)
         .route("/api/views/track", post(track_page_view))
         .route("/api/views", get(get_all_page_views))
@@ -186,6 +194,45 @@ async fn get_project(
         .ok_or((StatusCode::NOT_FOUND, "Project not found"))?;
 
     let body = serde_json::to_vec(&project).unwrap();
+    let etag = utils::cache::etag_from_bytes(&body);
+
+    if let Some(if_none_match) = headers.get("If-None-Match") {
+        if if_none_match == etag {
+            return Ok(StatusCode::NOT_MODIFIED.into_response());
+        }
+    }
+
+    let response_headers = utils::cache::default_cache_headers(etag);
+    Ok((response_headers, body).into_response())
+}
+
+async fn list_photos(State(state): State<AppState>, headers: HeaderMap) -> Response {
+    let body = serde_json::to_vec(state.photos.as_ref()).unwrap();
+    let etag = utils::cache::etag_from_bytes(&body);
+
+    if let Some(if_none_match) = headers.get("If-None-Match") {
+        if if_none_match == etag {
+            return StatusCode::NOT_MODIFIED.into_response();
+        }
+    }
+
+    let response_headers = utils::cache::default_cache_headers(etag);
+    (response_headers, body).into_response()
+}
+
+async fn get_photo(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    Path(slug): Path<String>,
+) -> Result<Response, (StatusCode, &'static str)> {
+    let photo = state
+        .photos
+        .iter()
+        .find(|p| p.slug == slug)
+        .cloned()
+        .ok_or((StatusCode::NOT_FOUND, "Photo post not found"))?;
+
+    let body = serde_json::to_vec(&photo).unwrap();
     let etag = utils::cache::etag_from_bytes(&body);
 
     if let Some(if_none_match) = headers.get("If-None-Match") {

@@ -13,6 +13,23 @@ export type ContentItem = {
     read_time: number;
 };
 
+export type PhotoImage = {
+    src: string;
+    width?: number;
+    height?: number;
+    alt?: string;
+};
+
+export type PhotoPost = {
+    slug: string;
+    title: string;
+    date: string;
+    tags: string[];
+    coverImage: string;
+    previewImages: string[];
+    images: PhotoImage[];
+    description?: string;
+};
 
 export type ViewCountResponse = {
     total_views: number;

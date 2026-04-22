@@ -10,6 +10,7 @@
 		<a href="/">Home</a>
 		<a href="/projects">Projects</a>
 		<a href="/writing">Writing</a>
+		<a href="/photowall">Photowall</a>
 		<a href="https://github.com/smit4k">Github</a>
 	</nav>
 </header>

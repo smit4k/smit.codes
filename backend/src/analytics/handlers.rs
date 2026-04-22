@@ -96,7 +96,7 @@ pub async fn record_post_view(
 ) -> Result<StatusCode, StatusCode> {
     let pool = &state.db;
 
-    if post_type != "writing" && post_type != "projects" {
+    if post_type != "writing" && post_type != "projects" && post_type != "photos" {
         error!("Invalid post_type: {}", post_type);
         return Err(StatusCode::BAD_REQUEST);
     }
@@ -109,6 +109,11 @@ pub async fn record_post_view(
             .map(|p| p.slug.clone()),
         "projects" => state
             .projects
+            .iter()
+            .find(|p| p.slug == slug)
+            .map(|p| p.slug.clone()),
+        "photos" => state
+            .photos
             .iter()
             .find(|p| p.slug == slug)
             .map(|p| p.slug.clone()),

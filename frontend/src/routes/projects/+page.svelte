@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { ContentItem } from '$lib/types';
+	import { goto } from '$app/navigation';
 
 	import Container from '$lib/components/Container.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
@@ -46,6 +47,17 @@
 
 	// Helper function to find GitHub link
 	const getGitHubLink = (links: string[]) => links.find((link) => link.includes('github.com'));
+
+	function openProject(slug: string) {
+		goto(`/ProjectPost/${slug}`);
+	}
+
+	function onCardKeydown(event: KeyboardEvent, slug: string) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			openProject(slug);
+		}
+	}
 </script>
 
 <Container>
@@ -61,7 +73,14 @@
 	<div class="posts-list">
 		<div class="cards-grid">
 			{#each sortedProjects as project}
-					<a href={`/ProjectPost/${project.slug}`} class="card">
+					<div
+						class="card"
+						role="link"
+						tabindex="0"
+						aria-label={`Open ${project.frontmatter.title}`}
+						onclick={() => openProject(project.slug)}
+						onkeydown={(event) => onCardKeydown(event, project.slug)}
+					>
 						<div class="card-top">
 							<div class="card-title-row">
 								<span class="date">{formatDate(project.frontmatter.date)}</span>
@@ -105,7 +124,7 @@
 								></span>
 							{/if}
 						</div>
-					</a>
+					</div>
 			{/each}
 		</div>
 	</div>
