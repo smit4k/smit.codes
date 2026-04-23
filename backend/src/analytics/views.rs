@@ -15,35 +15,27 @@ pub async fn record_view(
     viewer_ip: Option<String>,
     user_agent: Option<String>,
 ) -> Result<(), sqlx::Error> {
-    let recent_duplicate = sqlx::query(
-        "SELECT 1
-         FROM post_views
-         WHERE post_slug = ?
-           AND post_type = ?
-           AND viewer_ip IS ?
-           AND user_agent IS ?
-           AND viewed_at >= datetime('now', '-1 hour')
-         LIMIT 1",
+    sqlx::query(
+        "INSERT INTO post_views (post_slug, post_type, viewer_ip, user_agent, viewed_at)
+         SELECT ?, ?, ?, ?, datetime('now')
+         WHERE NOT EXISTS (
+             SELECT 1
+             FROM post_views
+             WHERE post_slug = ?
+               AND post_type = ?
+               AND viewer_ip IS ?
+               AND user_agent IS ?
+               AND viewed_at >= datetime('now', '-1 hour')
+         )",
     )
     .bind(post_slug)
     .bind(post_type)
     .bind(viewer_ip.as_deref())
     .bind(user_agent.as_deref())
-    .fetch_optional(pool)
-    .await?;
-
-    if recent_duplicate.is_some() {
-        return Ok(());
-    }
-
-    sqlx::query(
-        "INSERT INTO post_views (post_slug, post_type, viewer_ip, user_agent, viewed_at)
-         VALUES (?, ?, ?, ?, datetime('now'))",
-    )
     .bind(post_slug)
     .bind(post_type)
-    .bind(viewer_ip)
-    .bind(user_agent)
+    .bind(viewer_ip.as_deref())
+    .bind(user_agent.as_deref())
     .execute(pool)
     .await?;
 
@@ -92,32 +84,24 @@ pub async fn record_page_view(
     viewer_ip: Option<String>,
     user_agent: Option<String>,
 ) -> Result<(), sqlx::Error> {
-    let recent_duplicate = sqlx::query(
-        "SELECT 1
-         FROM page_views
-         WHERE page_path = ?
-           AND viewer_ip IS ?
-           AND user_agent IS ?
-           AND viewed_at >= datetime('now', '-1 hour')
-         LIMIT 1",
+    sqlx::query(
+        "INSERT INTO page_views (page_path, viewer_ip, user_agent, viewed_at)
+         SELECT ?, ?, ?, datetime('now')
+         WHERE NOT EXISTS (
+             SELECT 1
+             FROM page_views
+             WHERE page_path = ?
+               AND viewer_ip IS ?
+               AND user_agent IS ?
+               AND viewed_at >= datetime('now', '-1 hour')
+         )",
     )
     .bind(page_path)
     .bind(viewer_ip.as_deref())
     .bind(user_agent.as_deref())
-    .fetch_optional(pool)
-    .await?;
-
-    if recent_duplicate.is_some() {
-        return Ok(());
-    }
-
-    sqlx::query(
-        "INSERT INTO page_views (page_path, viewer_ip, user_agent, viewed_at)
-         VALUES (?, ?, ?, datetime('now'))",
-    )
     .bind(page_path)
-    .bind(viewer_ip)
-    .bind(user_agent)
+    .bind(viewer_ip.as_deref())
+    .bind(user_agent.as_deref())
     .execute(pool)
     .await?;
 
