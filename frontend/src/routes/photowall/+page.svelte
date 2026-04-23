@@ -3,10 +3,17 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { formatDate } from '$lib/date';
+	import { collectionJsonLd, serializeJsonLd } from '$lib/seo';
+	import { absoluteUrl, buildPageTitle } from '$lib/site';
 	import type { PhotoPost } from '$lib/types';
 	import { Camera } from '@lucide/svelte';
 
 	export let data: { posts: PhotoPost[] };
+
+	const title = buildPageTitle('Photowall');
+	const description =
+		'Photo posts by Smit Patil featuring screenshots, experiments, and curated visual collections.';
+	const canonicalUrl = absoluteUrl('/photowall');
 
 	const ALL_TAG = 'All';
 
@@ -30,7 +37,32 @@
 
 		return tiles;
 	}
+
+	$: structuredData = serializeJsonLd(
+		collectionJsonLd({
+			title: 'Photowall',
+			description,
+			path: '/photowall',
+			items: sortedPosts.map((post) => ({
+				name: post.title,
+				path: `/photowall/${post.slug}`
+			}))
+		})
+	);
 </script>
+
+<svelte:head>
+	<title>{title}</title>
+	<meta name="description" content={description} />
+	<link rel="canonical" href={canonicalUrl} />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content={title} />
+	<meta property="og:description" content={description} />
+	<meta property="og:url" content={canonicalUrl} />
+	<meta name="twitter:title" content={title} />
+	<meta name="twitter:description" content={description} />
+	<script type="application/ld+json">{@html structuredData}</script>
+</svelte:head>
 
 <Container>
 	<Navbar />
@@ -81,7 +113,7 @@
 	{:else}
 		<div class="cards-grid">
 			{#each filteredPosts as post}
-				<a class="card" href={`/PhotoPost/${post.slug}`} aria-label={`Open ${post.title}`}>
+				<a class="card" href={`/photowall/${post.slug}`} aria-label={`Open ${post.title}`}>
 					<div class="preview-shell">
 						<div class="preview-grid">
 							{#each previewTiles(post) as imageSrc, index (`${post.slug}:${imageSrc}:${index}`)}

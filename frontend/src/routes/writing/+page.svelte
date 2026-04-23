@@ -4,8 +4,15 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { formatDate } from '$lib/date';
+	import { collectionJsonLd, serializeJsonLd } from '$lib/seo';
+	import { absoluteUrl, buildPageTitle } from '$lib/site';
 
 	export let data: { posts: ContentItem[] };
+
+	const title = buildPageTitle('Writing');
+	const description =
+		'Technical writing by Smit Patil covering software projects, configuration languages, tools, and programming experiments.';
+	const canonicalUrl = absoluteUrl('/writing');
 
 	// Sort posts by date, newest first
 	let sortedPosts = data.posts.sort((a, b) => {
@@ -23,7 +30,32 @@
 			postsByYear.push({ year, posts: [post] });
 		}
 	}
+
+	$: structuredData = serializeJsonLd(
+		collectionJsonLd({
+			title: 'Writing',
+			description,
+			path: '/writing',
+			items: sortedPosts.map((post) => ({
+				name: post.frontmatter.title,
+				path: `/writing/${post.slug}`
+			}))
+		})
+	);
 </script>
+
+<svelte:head>
+	<title>{title}</title>
+	<meta name="description" content={description} />
+	<link rel="canonical" href={canonicalUrl} />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content={title} />
+	<meta property="og:description" content={description} />
+	<meta property="og:url" content={canonicalUrl} />
+	<meta name="twitter:title" content={title} />
+	<meta name="twitter:description" content={description} />
+	<script type="application/ld+json">{@html structuredData}</script>
+</svelte:head>
 
 <Container>
 	<Navbar />
@@ -43,7 +75,7 @@
 			</div>
 			<div class="cards-grid">
 				{#each posts as post}
-					<a href={`/WritingPost/${post.slug}`} class="card">
+					<a href={`/writing/${post.slug}`} class="card">
 						<div class="card-top">
 							<span class="date">{formatDate(post.frontmatter.date)}</span>
 							<h2>{post.frontmatter.title}</h2>

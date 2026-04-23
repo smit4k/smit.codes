@@ -4,14 +4,14 @@
 </script>
 
 <header class="topbar">
-	<h4>Smit Patil</h4>
+	<p class="brand"><a href="/">Smit Patil</a></p>
 
-	<nav>
+	<nav aria-label="Primary">
 		<a href="/">Home</a>
 		<a href="/projects">Projects</a>
 		<a href="/writing">Writing</a>
 		<a href="/photowall">Photowall</a>
-		<a href="https://github.com/smit4k">Github</a>
+		<a href="https://github.com/smit4k" rel="me">Github</a>
 	</nav>
 </header>
 
@@ -24,11 +24,15 @@
 		margin-bottom: 1.5rem;
 	}
 
-	h4 {
+	.brand {
 		margin: 0;
-		color: white;
 		font-weight: 600;
 		font-size: 1.2rem;
+	}
+
+	.brand a {
+		color: white;
+		text-decoration: none;
 	}
 
 	nav {

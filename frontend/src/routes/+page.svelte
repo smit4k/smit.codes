@@ -3,21 +3,68 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import Callout from '$lib/components/Callout.svelte';
+	import { serializeJsonLd } from '$lib/seo';
+	import { absoluteUrl, buildPageTitle, site } from '$lib/site';
 	import type { ContentItem } from '$lib/types';
 	export let data: {
 		recentProjects: ContentItem[];
 		recentWriting: ContentItem[];
 	};
+
+	const title = buildPageTitle();
+	const description =
+		'Smit Patil is a student developer in Michigan publishing software projects, technical writing, and photo posts on smit.codes.';
+	const canonicalUrl = absoluteUrl('/');
+	const structuredData = serializeJsonLd([
+		{
+			'@context': 'https://schema.org',
+			'@type': 'WebSite',
+			name: site.name,
+			url: canonicalUrl,
+			description,
+			author: {
+				'@type': 'Person',
+				name: site.personName
+			}
+		},
+		{
+			'@context': 'https://schema.org',
+			'@type': 'Person',
+			name: site.personName,
+			url: canonicalUrl,
+			email: site.email,
+			sameAs: [site.githubUrl]
+		}
+	]);
 </script>
+
+<svelte:head>
+	<title>{title}</title>
+	<meta name="description" content={description} />
+	<link rel="canonical" href={canonicalUrl} />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content={title} />
+	<meta property="og:description" content={description} />
+	<meta property="og:url" content={canonicalUrl} />
+	<meta name="twitter:title" content={title} />
+	<meta name="twitter:description" content={description} />
+	<script type="application/ld+json">
+{@html structuredData}
+	</script>
+</svelte:head>
 
 <Container>
 	<Navbar />
 	<h1>Home</h1>
 	<hr />
 	<p>
-		Hey! I'm Smit, welcome to my homepage,
-		<a href="https://smit.codes">smit.codes</a>! I'm a high school student in Michigan, interested
-		in software development, Linux, and robotics. I enjoy coding in Rust and Lua.
+		I build software, write technical posts, and publish project notes on
+		<a href="https://smit.codes">smit.codes</a>. I&apos;m a high school student in Michigan
+		interested in software development, Linux, robotics, Rust, and Lua.
+	</p>
+	<p>
+		This site is where I keep my most complete projects, longer-form writing, and photo posts in one
+		place.
 	</p>
 
 	<Callout type="info" title="Check out my Neovim plugin!">
@@ -43,12 +90,12 @@
 	</ul>
 	<h2>Recent</h2>
 	<hr />
-	<p>Here are some links to recent projects I have worked on and articles I have written.</p>
+	<p>Recent work from my projects and writing archives.</p>
 	<h3>Projects</h3>
 	<ul>
 		{#each data.recentProjects as project}
 			<li>
-				<a href={`/ProjectPost/${project.slug}`}>
+				<a href={`/projects/${project.slug}`}>
 					{project.frontmatter.title}
 				</a>
 				— {project.frontmatter.description}
@@ -59,7 +106,7 @@
 	<ul>
 		{#each data.recentWriting as post}
 			<li>
-				<a href={`/WritingPost/${post.slug}`}>
+				<a href={`/writing/${post.slug}`}>
 					{post.frontmatter.title}
 				</a>
 				— {post.frontmatter.description}

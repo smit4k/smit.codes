@@ -6,12 +6,19 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { formatDate } from '$lib/date';
+	import { collectionJsonLd, serializeJsonLd } from '$lib/seo';
+	import { absoluteUrl, buildPageTitle } from '$lib/site';
 
 	// Icons
 	import { Github } from '@lucide/svelte';
 	import { Link } from '@lucide/svelte';
 
 	export let data: { posts: ContentItem[]; languages: Record<string, string | null> };
+
+	const title = buildPageTitle('Projects');
+	const description =
+		'Software projects by Smit Patil, including build notes, implementation details, and external links.';
+	const canonicalUrl = absoluteUrl('/projects');
 
 	// GitHub linguist language colors (subset)
 	const LANG_COLORS: Record<string, string> = {
@@ -49,7 +56,7 @@
 	const getGitHubLink = (links: string[]) => links.find((link) => link.includes('github.com'));
 
 	function openProject(slug: string) {
-		goto(`/ProjectPost/${slug}`);
+		goto(`/projects/${slug}`);
 	}
 
 	function onCardKeydown(event: KeyboardEvent, slug: string) {
@@ -58,7 +65,32 @@
 			openProject(slug);
 		}
 	}
+
+	$: structuredData = serializeJsonLd(
+		collectionJsonLd({
+			title: 'Projects',
+			description,
+			path: '/projects',
+			items: sortedProjects.map((project) => ({
+				name: project.frontmatter.title,
+				path: `/projects/${project.slug}`
+			}))
+		})
+	);
 </script>
+
+<svelte:head>
+	<title>{title}</title>
+	<meta name="description" content={description} />
+	<link rel="canonical" href={canonicalUrl} />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content={title} />
+	<meta property="og:description" content={description} />
+	<meta property="og:url" content={canonicalUrl} />
+	<meta name="twitter:title" content={title} />
+	<meta name="twitter:description" content={description} />
+	<script type="application/ld+json">{@html structuredData}</script>
+</svelte:head>
 
 <Container>
 	<Navbar />
