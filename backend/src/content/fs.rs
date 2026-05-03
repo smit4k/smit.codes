@@ -9,7 +9,10 @@ pub fn read_markdown_file(path: &Path) -> Result<String, String> {
     read_text_file(path)
 }
 
-pub fn collect_files_with_extensions(root: &Path, extensions: &[&str]) -> Result<Vec<PathBuf>, String> {
+pub fn collect_files_with_extensions(
+    root: &Path,
+    extensions: &[&str],
+) -> Result<Vec<PathBuf>, String> {
     let mut files = Vec::new();
 
     if !root.exists() {
@@ -21,11 +24,15 @@ pub fn collect_files_with_extensions(root: &Path, extensions: &[&str]) -> Result
 
         if path.is_dir() {
             files.extend(collect_files_with_extensions(&path, extensions)?);
-        } else if path.extension().and_then(|ext| ext.to_str()).map_or(false, |ext| {
-            extensions
-                .iter()
-                .any(|candidate| ext.eq_ignore_ascii_case(candidate))
-        }) {
+        } else if path
+            .extension()
+            .and_then(|ext| ext.to_str())
+            .map_or(false, |ext| {
+                extensions
+                    .iter()
+                    .any(|candidate| ext.eq_ignore_ascii_case(candidate))
+            })
+        {
             files.push(path);
         }
     }

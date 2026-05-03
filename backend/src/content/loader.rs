@@ -1,4 +1,6 @@
-use crate::content::fs::{collect_files_with_extensions, collect_markdown_files, read_markdown_file, read_text_file};
+use crate::content::fs::{
+    collect_files_with_extensions, collect_markdown_files, read_markdown_file, read_text_file,
+};
 use crate::content::models::{ContentItem, ContentKind, PhotoImage, PhotoPost, PhotoPostManifest};
 use crate::content::parser::parse_markdown;
 use crate::utils::read_time::estimate_read_time;
@@ -101,7 +103,10 @@ fn parse_photo_manifest(path: &Path, raw_manifest: &str) -> Result<PhotoPostMani
             extension,
             path.display()
         )),
-        None => Err(format!("Photo manifest {} is missing an extension", path.display())),
+        None => Err(format!(
+            "Photo manifest {} is missing an extension",
+            path.display()
+        )),
     }
 }
 
@@ -169,8 +174,12 @@ fn build_photo_post(
     })
 }
 
-fn build_generated_photo_post(content_root: &Path, folder: &Path) -> Result<Option<PhotoPost>, String> {
-    let mut image_files = collect_files_with_extensions(folder, &["png", "jpg", "jpeg", "webp", "gif", "avif"])?;
+fn build_generated_photo_post(
+    content_root: &Path,
+    folder: &Path,
+) -> Result<Option<PhotoPost>, String> {
+    let mut image_files =
+        collect_files_with_extensions(folder, &["png", "jpg", "jpeg", "webp", "gif", "avif"])?;
     image_files.sort();
 
     if image_files.is_empty() {
@@ -186,9 +195,13 @@ fn build_generated_photo_post(content_root: &Path, folder: &Path) -> Result<Opti
     let resolved_images = image_files
         .iter()
         .map(|path| {
-            let relative = path
-                .strip_prefix(folder)
-                .map_err(|_| format!("Image {} is outside of {}", path.display(), folder.display()))?;
+            let relative = path.strip_prefix(folder).map_err(|_| {
+                format!(
+                    "Image {} is outside of {}",
+                    path.display(),
+                    folder.display()
+                )
+            })?;
 
             let src = resolve_asset_path(content_root, folder, &relative.to_string_lossy())?;
 
@@ -245,7 +258,11 @@ fn photo_slug_from_manifest_path(path: &Path) -> Result<String, String> {
     }
 }
 
-fn resolve_asset_path(content_root: &Path, base_dir: &Path, raw_path: &str) -> Result<String, String> {
+fn resolve_asset_path(
+    content_root: &Path,
+    base_dir: &Path,
+    raw_path: &str,
+) -> Result<String, String> {
     if raw_path.starts_with("/assets/") {
         return Ok(raw_path.to_string());
     }
@@ -262,9 +279,13 @@ fn resolve_asset_path(content_root: &Path, base_dir: &Path, raw_path: &str) -> R
     }
 
     let assets_root = content_root.parent().unwrap_or(content_root);
-    let relative_to_content = absolute_path
-        .strip_prefix(assets_root)
-        .map_err(|_| format!("Asset {} is outside of {}", absolute_path.display(), assets_root.display()))?;
+    let relative_to_content = absolute_path.strip_prefix(assets_root).map_err(|_| {
+        format!(
+            "Asset {} is outside of {}",
+            absolute_path.display(),
+            assets_root.display()
+        )
+    })?;
 
     let web_path = relative_to_content
         .to_string_lossy()
