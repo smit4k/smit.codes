@@ -12,4 +12,9 @@
 		word-wrap: break-word;
 		overflow-wrap: break-word;
 	}
+
+	.container :global(.content img) {
+		max-width: 100%;
+		height: auto;
+	}
 </style>
