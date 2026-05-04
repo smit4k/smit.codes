@@ -1,5 +1,4 @@
 import type { ContentItem } from '$lib/types';
-import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
 function parseGitHubRepo(url: string): { owner: string; repo: string } | null {
 	const match = url.match(/github\.com\/([^/]+)\/([^/]+)/);
@@ -8,7 +7,7 @@ function parseGitHubRepo(url: string): { owner: string; repo: string } | null {
 }
 
 export async function load({ fetch }) {
-    const res = await fetch(`${PUBLIC_API_BASE_URL}/api/projects`);
+    const res = await fetch('/api/projects');
     if (!res.ok) {
         throw new Error('Failed to fetch posts');
     }
