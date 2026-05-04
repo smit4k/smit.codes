@@ -3,7 +3,7 @@ title: snapshot.nvim
 date: 2026-05-03
 tags: [neovim, lua, rust]
 links: [https://github.com/smit4k/snapshot.nvim]
-description: "A Neovim plugin for taking code screenshots from the current buffer or visual selection"
+description: "Create beautiful screenshots of your code, directly inside Neovim "
 ---
 
 
