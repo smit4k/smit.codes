@@ -1,0 +1,14 @@
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+/playwright.config.ts
+/playwright-todomvc-added-items.png
+/playwright@latest/
+/tests/
+/.github/workflows/playwright.yml
+/package-lock.json
