@@ -1,0 +1,25 @@
+services:
+  backend:
+    image: ${BACKEND_IMAGE}
+    restart: unless-stopped
+    environment:
+      SERVER_ADDR: 0.0.0.0:3001
+      ANALYTICS_DB_URL: sqlite:./db/analytics.db
+      RATE_LIMIT_TRUST_PROXY_HEADERS: "true"
+    volumes:
+      - backend-db:/app/backend/db
+    expose:
+      - "3001"
+
+  frontend:
+    image: ${FRONTEND_IMAGE}
+    restart: unless-stopped
+    environment:
+      BACKEND_UPSTREAM: http://backend:3001
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+
+volumes:
+  backend-db:
