@@ -36,6 +36,9 @@
 
 	$: diskPercent = info.disk_total > 0 ? (info.disk_used / info.disk_total) * 100 : 0;
 	$: freeMemory = Math.max(info.total_memory - metrics.used_memory, 0);
+	$: cpuStatus = getResourceStatus(metrics.cpu_usage);
+	$: memoryStatus = getResourceStatus(metrics.memory_percent);
+	$: diskStatus = getResourceStatus(diskPercent);
 	$: hostLine = [info.os_name, info.os_version].filter(Boolean).join(' ') || 'Unknown OS';
 	$: lastUpdated = new Intl.DateTimeFormat('en-US', {
 		hour: 'numeric',
@@ -54,6 +57,30 @@
 		}
 
 		return `${byteFormatter.format(value)} ${units[unitIndex]}`;
+	}
+
+	function getResourceStatus(percent: number) {
+		if (percent >= 90) {
+			return 'critical';
+		}
+
+		if (percent >= 70) {
+			return 'warning';
+		}
+
+		return 'healthy';
+	}
+
+	function getResourceLabel(status: string) {
+		if (status === 'critical') {
+			return 'Low';
+		}
+
+		if (status === 'warning') {
+			return 'Tight';
+		}
+
+		return 'Healthy';
 	}
 
 	function formatUptime(totalSeconds: number) {
@@ -136,24 +163,36 @@
 	{/if}
 
 	<div class="cards" aria-label="Server stats">
-		<section class="card">
+		<section class={`card status-${cpuStatus}`}>
 			<div class="card-title">
 				<h2>CPU</h2>
-				<strong>{percentFormatter.format(metrics.cpu_usage)}%</strong>
+				<div class="metric-heading">
+					<span>{getResourceLabel(cpuStatus)}</span>
+					<strong>{percentFormatter.format(metrics.cpu_usage)}%</strong>
+				</div>
 			</div>
-			<div class="bar" aria-label={`CPU usage ${percentFormatter.format(metrics.cpu_usage)} percent`}>
+			<div
+				class={`bar status-${cpuStatus}`}
+				aria-label={`CPU usage ${percentFormatter.format(metrics.cpu_usage)} percent, ${getResourceLabel(cpuStatus)}`}
+			>
 				<span style={`width: ${Math.min(metrics.cpu_usage, 100)}%`}></span>
 			</div>
 			<p>{info.cpu_brand}</p>
 			<p class="muted">{info.cpu_cores} physical cores</p>
 		</section>
 
-		<section class="card">
+		<section class={`card status-${memoryStatus}`}>
 			<div class="card-title">
 				<h2>Memory</h2>
-				<strong>{percentFormatter.format(metrics.memory_percent)}%</strong>
+				<div class="metric-heading">
+					<span>{getResourceLabel(memoryStatus)}</span>
+					<strong>{percentFormatter.format(metrics.memory_percent)}%</strong>
+				</div>
 			</div>
-			<div class="bar" aria-label={`Memory usage ${percentFormatter.format(metrics.memory_percent)} percent`}>
+			<div
+				class={`bar status-${memoryStatus}`}
+				aria-label={`Memory usage ${percentFormatter.format(metrics.memory_percent)} percent, ${getResourceLabel(memoryStatus)}`}
+			>
 				<span style={`width: ${Math.min(metrics.memory_percent, 100)}%`}></span>
 			</div>
 			<div class="stats-row">
@@ -162,12 +201,18 @@
 			</div>
 		</section>
 
-		<section class="card">
+		<section class={`card status-${diskStatus}`}>
 			<div class="card-title">
 				<h2>Disk</h2>
-				<strong>{percentFormatter.format(diskPercent)}%</strong>
+				<div class="metric-heading">
+					<span>{getResourceLabel(diskStatus)}</span>
+					<strong>{percentFormatter.format(diskPercent)}%</strong>
+				</div>
 			</div>
-			<div class="bar" aria-label={`Disk usage ${percentFormatter.format(diskPercent)} percent`}>
+			<div
+				class={`bar status-${diskStatus}`}
+				aria-label={`Disk usage ${percentFormatter.format(diskPercent)} percent, ${getResourceLabel(diskStatus)}`}
+			>
 				<span style={`width: ${Math.min(diskPercent, 100)}%`}></span>
 			</div>
 			<div class="stats-row">
@@ -296,6 +341,21 @@
 		background: rgba(255, 255, 255, 0.03);
 	}
 
+	.card.status-healthy {
+		border-color: rgba(60, 214, 109, 0.45);
+		background: rgba(60, 214, 109, 0.06);
+	}
+
+	.card.status-warning {
+		border-color: rgba(245, 166, 35, 0.55);
+		background: rgba(245, 166, 35, 0.07);
+	}
+
+	.card.status-critical {
+		border-color: rgba(255, 77, 77, 0.65);
+		background: rgba(255, 77, 77, 0.08);
+	}
+
 	.card-title {
 		display: flex;
 		align-items: baseline;
@@ -307,6 +367,36 @@
 	.card h2 {
 		margin: 0;
 		font-size: 1.1rem;
+	}
+
+	.metric-heading {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+	}
+
+	.metric-heading span {
+		padding: 0.12rem 0.38rem;
+		color: #d6f7df;
+		font-size: 0.72rem;
+		font-weight: 700;
+		line-height: 1.3;
+		text-transform: uppercase;
+		border: 1px solid rgba(60, 214, 109, 0.55);
+		border-radius: 999px;
+		background: rgba(60, 214, 109, 0.12);
+	}
+
+	.status-warning .metric-heading span {
+		color: #ffe1a6;
+		border-color: rgba(245, 166, 35, 0.65);
+		background: rgba(245, 166, 35, 0.15);
+	}
+
+	.status-critical .metric-heading span {
+		color: #ffb8b8;
+		border-color: rgba(255, 77, 77, 0.65);
+		background: rgba(255, 77, 77, 0.15);
 	}
 
 	.card strong {
@@ -343,7 +433,15 @@
 	.bar span {
 		display: block;
 		height: 100%;
-		background: #58a6ff;
+		background: #3cd66d;
+	}
+
+	.bar.status-warning span {
+		background: #f5a623;
+	}
+
+	.bar.status-critical span {
+		background: #ff4d4d;
 	}
 
 	.host-table {
