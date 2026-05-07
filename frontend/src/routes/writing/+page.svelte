@@ -101,7 +101,7 @@
 <style>
 	.heading-row {
 		display: flex;
-		align-items: baseline;
+		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
 		margin-top: 0.5rem;
@@ -110,11 +110,13 @@
 
 	h1 {
 		margin: 0;
+		line-height: 1.1;
 	}
 
 	.rss-link {
 		color: #888;
 		font-size: 0.9rem;
+		line-height: 1;
 		text-decoration: none;
 		transition: color 0.18s ease;
 	}
