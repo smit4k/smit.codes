@@ -81,16 +81,13 @@
 			<div class="cards-grid">
 				{#each posts as post}
 					<a href={`/writing/${post.slug}`} class="card">
-						<div class="card-top">
-							<span class="date">{formatDate(post.frontmatter.date)}</span>
-							<h2>{post.frontmatter.title}</h2>
-							<p class="description">{post.frontmatter.description}</p>
-						</div>
-						<div class="card-bottom">
-							<span class="meta"
-								>{post.read_time} min read • {post.frontmatter.tags.join(', ')}</span
-							>
-						</div>
+						<h2>{post.frontmatter.title}</h2>
+						<p class="description">{post.frontmatter.description}</p>
+						<span class="meta"
+							>{formatDate(post.frontmatter.date)} • {post.read_time} min read • {post.frontmatter.tags.join(
+								', '
+							)}</span
+						>
 					</a>
 				{/each}
 			</div>
@@ -132,17 +129,15 @@
 
 	.cards-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-		gap: 0.85rem;
+		grid-template-columns: 1fr;
+		gap: 0.55rem;
 		margin-bottom: 0.5rem;
 	}
 
 	.card {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		gap: 0.75rem;
-		padding: 1rem 1.1rem;
+		display: grid;
+		gap: 0.22rem;
+		padding: 0.62rem 0.78rem;
 		background: #0e0e0e;
 		border: 1px solid #2a2a2a;
 		border-radius: 8px;
@@ -159,32 +154,20 @@
 	}
 
 	h2 {
-		margin: 0 0 0.35rem;
+		margin: 0;
 		font-size: 1rem;
 		color: white;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
 		line-height: 1.35;
+		min-width: 0;
 	}
 
 	.description {
 		margin: 0;
 		font-size: 0.85rem;
 		color: #aaa;
-		line-height: 1.45;
-	}
-
-	.card-bottom {
-		display: flex;
-		flex-direction: column;
-		gap: 0.2rem;
-	}
-
-	.date {
-		display: block;
-		margin-bottom: 0.3rem;
-		font-size: 0.78rem;
-		color: #666;
+		line-height: 1.35;
 	}
 
 	.meta {
