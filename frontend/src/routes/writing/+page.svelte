@@ -13,6 +13,7 @@
 	const description =
 		'Technical writing by Smit Patil covering software projects, configuration languages, tools, and programming experiments.';
 	const canonicalUrl = absoluteUrl('/writing');
+	const rssUrl = absoluteUrl('/writing/rss.xml');
 
 	// Sort posts by date, newest first
 	let sortedPosts = data.posts.sort((a, b) => {
@@ -48,6 +49,7 @@
 	<title>{title}</title>
 	<meta name="description" content={description} />
 	<link rel="canonical" href={canonicalUrl} />
+	<link rel="alternate" type="application/rss+xml" title="smit.codes Writing RSS" href={rssUrl} />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content={title} />
 	<meta property="og:description" content={description} />
@@ -59,7 +61,10 @@
 
 <Container>
 	<Navbar />
-	<h1>Writing</h1>
+	<div class="heading-row">
+		<h1>Writing</h1>
+		<a class="rss-link" href="/writing/rss.xml" data-sveltekit-reload>RSS</a>
+	</div>
 	<p>
 		Here are some topics I've written about! These posts cover a variety of tech-related topics.
 		Take a look and see if you find anything interesting!
@@ -97,9 +102,28 @@
 </Container>
 
 <style>
-	h1 {
+	.heading-row {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
 		margin-top: 0.5rem;
 		margin-bottom: 0.5rem;
+	}
+
+	h1 {
+		margin: 0;
+	}
+
+	.rss-link {
+		color: #888;
+		font-size: 0.9rem;
+		text-decoration: none;
+		transition: color 0.18s ease;
+	}
+
+	.rss-link:hover {
+		color: #ccc;
 	}
 
 	.posts-list {

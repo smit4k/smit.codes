@@ -10,6 +10,7 @@ type IndexedPage = {
 	description?: string;
 	lastModified?: string;
 	date?: string;
+	tags?: string[];
 };
 
 function extractField(block: string, field: string) {
@@ -22,6 +23,18 @@ function extractField(block: string, field: string) {
 	return plainMatch?.[1]?.trim();
 }
 
+function extractListField(block: string, field: string) {
+	const match = block.match(new RegExp(`^${field}:\\s*\\[([^\\]]*)\\]$`, 'm'));
+	if (!match) {
+		return [];
+	}
+
+	return match[1]
+		.split(',')
+		.map((value) => value.trim().replace(/^["']|["']$/g, ''))
+		.filter(Boolean);
+}
+
 function extractMarkdownFrontmatter(source: string) {
 	const match = source.match(/^---\n([\s\S]*?)\n---/);
 	if (!match) {
@@ -32,7 +45,8 @@ function extractMarkdownFrontmatter(source: string) {
 	return {
 		title: extractField(block, 'title'),
 		description: extractField(block, 'description'),
-		date: extractField(block, 'date')
+		date: extractField(block, 'date'),
+		tags: extractListField(block, 'tags')
 	};
 }
 
@@ -64,7 +78,8 @@ async function readMarkdownIndex(section: 'writing' | 'projects') {
 					path: `${basePath}/${slug}`,
 					description: metadata.description,
 					lastModified: fileStat.mtime.toISOString(),
-					date: metadata.date
+					date: metadata.date,
+					tags: metadata.tags
 				} satisfies IndexedPage;
 			})
 	);
