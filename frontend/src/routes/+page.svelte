@@ -67,16 +67,6 @@
 		place.
 	</p>
 
-	<Callout type="info" title="Check out my Neovim plugin!">
-		<p>
-			I've been working on my first Neovim plugin for a while now -- it's called <b>snapshot.nvim</b
-			> and it lets you take beautiful screenshots of your code directly inside Neovim. I'd greatly appreciate
-			it if you could check it out. A post about the plugin is coming soon!
-		</p>
-
-		<p>Github: <a href="https://github.com/smit4k/snapshot.nvim">snapshot.nvim</a></p>
-	</Callout>
-
 	<h2>Contact</h2>
 	<hr />
 
