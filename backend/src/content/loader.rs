@@ -21,7 +21,8 @@ pub fn load_content_from_dir(root: &Path, kind: ContentKind) -> Result<Vec<Conte
             .to_string_lossy()
             .to_string();
 
-        let item = create_content_item_with_asset_base(&md, &slug, kind.clone(), root, root)?;
+        let item = create_content_item_with_asset_base(&md, &slug, kind.clone(), root, root)
+            .map_err(|err| format!("Failed to load {}: {}", path.display(), err))?;
         items.push(item);
     }
 
@@ -279,11 +280,7 @@ fn resolve_asset_path(
     }
 
     let sanitized_relative_path = sanitize_relative_path(raw_path)?;
-    let absolute_path = base_dir.join(&sanitized_relative_path);
-
-    if !absolute_path.exists() {
-        return Err(format!("Missing asset {}", absolute_path.display()));
-    }
+    let absolute_path = resolve_existing_asset_path(base_dir, &sanitized_relative_path)?;
 
     let assets_root = content_root.parent().unwrap_or(content_root);
     let relative_to_content = absolute_path.strip_prefix(assets_root).map_err(|_| {
@@ -299,6 +296,90 @@ fn resolve_asset_path(
         .replace(std::path::MAIN_SEPARATOR, "/");
 
     Ok(format!("/assets/{}", web_path))
+}
+
+fn resolve_existing_asset_path(base_dir: &Path, relative_path: &Path) -> Result<PathBuf, String> {
+    let exact_path = base_dir.join(relative_path);
+
+    match resolve_case_insensitive_path(base_dir, relative_path)? {
+        Some(path) => Ok(path),
+        None => Err(format!("Missing asset {}", exact_path.display())),
+    }
+}
+
+fn resolve_case_insensitive_path(
+    base_dir: &Path,
+    relative_path: &Path,
+) -> Result<Option<PathBuf>, String> {
+    let mut current = base_dir.to_path_buf();
+
+    for component in relative_path.components() {
+        let Component::Normal(wanted_name) = component else {
+            continue;
+        };
+
+        let wanted_name = wanted_name.to_str().ok_or_else(|| {
+            format!(
+                "Asset path {} contains non-UTF-8 characters",
+                relative_path.display()
+            )
+        })?;
+
+        let entries = match fs::read_dir(&current) {
+            Ok(entries) => entries,
+            Err(_) => return Ok(None),
+        };
+
+        let mut exact_match = None;
+        let mut matches = Vec::new();
+        for entry in entries {
+            let entry = entry.map_err(|err| {
+                format!(
+                    "Failed to read asset directory {}: {}",
+                    current.display(),
+                    err
+                )
+            })?;
+            let entry_name = entry.file_name();
+            let Some(entry_name) = entry_name.to_str() else {
+                continue;
+            };
+
+            if entry_name == wanted_name {
+                exact_match = Some(entry.path());
+                break;
+            }
+
+            if entry_name.eq_ignore_ascii_case(wanted_name) {
+                matches.push(entry.path());
+            }
+        }
+
+        if let Some(path) = exact_match {
+            current = path;
+            continue;
+        }
+
+        match matches.len() {
+            0 => return Ok(None),
+            1 => current = matches.remove(0),
+            _ => {
+                let matches = matches
+                    .iter()
+                    .map(|path| path.display().to_string())
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                return Err(format!(
+                    "Ambiguous asset path {} under {}: {}",
+                    relative_path.display(),
+                    base_dir.display(),
+                    matches
+                ));
+            }
+        }
+    }
+
+    Ok(Some(current))
 }
 
 fn resolve_markdown_image_paths(
@@ -581,6 +662,48 @@ mod tests {
     }
 
     #[test]
+    fn markdown_image_normalization_uses_unambiguous_asset_filename_case() {
+        let content_root = temp_content_dir("asset-case");
+        let writing_root = content_root.join("writing");
+        let image_dir = writing_root.join("imgs");
+        fs::create_dir_all(&image_dir).expect("create image dir");
+        fs::write(image_dir.join("codexss.PNG"), b"png").expect("write image");
+
+        let normalized = resolve_markdown_image_paths(
+            "![local](imgs/codexss.png)",
+            &writing_root,
+            &writing_root,
+        )
+        .expect("normalize");
+
+        assert_eq!(normalized, "![local](/assets/writing/imgs/codexss.PNG)");
+
+        fs::remove_dir_all(content_root).expect("remove temp content");
+    }
+
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    #[test]
+    fn markdown_image_normalization_rejects_ambiguous_asset_filename_case() {
+        let content_root = temp_content_dir("ambiguous-asset-case");
+        let writing_root = content_root.join("writing");
+        let image_dir = writing_root.join("imgs");
+        fs::create_dir_all(&image_dir).expect("create image dir");
+        fs::write(image_dir.join("codexss.PNG"), b"png").expect("write first image");
+        fs::write(image_dir.join("CODEXSS.png"), b"png").expect("write second image");
+
+        let error = resolve_markdown_image_paths(
+            "![local](imgs/codexss.png)",
+            &writing_root,
+            &writing_root,
+        )
+        .expect_err("ambiguous image case should fail");
+
+        assert!(error.contains("Ambiguous asset path"));
+
+        fs::remove_dir_all(content_root).expect("remove temp content");
+    }
+
+    #[test]
     fn markdown_image_normalization_rejects_missing_relative_assets() {
         let content_root = temp_content_dir("missing-image");
         let writing_root = content_root.join("writing");
@@ -593,6 +716,27 @@ mod tests {
         )
         .expect_err("missing image should fail");
 
+        assert!(error.contains("Missing asset"));
+
+        fs::remove_dir_all(content_root).expect("remove temp content");
+    }
+
+    #[test]
+    fn load_content_from_dir_reports_markdown_path_for_missing_assets() {
+        let content_root = temp_content_dir("missing-image-context");
+        let writing_root = content_root.join("writing");
+        fs::create_dir_all(&writing_root).expect("create writing dir");
+        let markdown_path = writing_root.join("broken-post.md");
+        fs::write(
+            &markdown_path,
+            format!("{}![missing](imgs/missing.png)\n", frontmatter()),
+        )
+        .expect("write markdown");
+
+        let error = load_content_from_dir(&writing_root, ContentKind::Writing)
+            .expect_err("missing image should fail");
+
+        assert!(error.contains(&markdown_path.display().to_string()));
         assert!(error.contains("Missing asset"));
 
         fs::remove_dir_all(content_root).expect("remove temp content");
