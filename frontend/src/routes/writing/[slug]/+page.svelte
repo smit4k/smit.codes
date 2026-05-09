@@ -124,6 +124,33 @@
 		line-height: 1.6;
 	}
 
+	.content :global(h2[id]),
+	.content :global(h3[id]) {
+		scroll-margin-top: 1rem;
+	}
+
+	.content :global(.heading-anchor) {
+		margin-left: 0.35rem;
+		color: #777;
+		font-weight: 400;
+		text-decoration: none;
+		opacity: 0;
+		transition:
+			color 0.2s,
+			opacity 0.2s;
+	}
+
+	.content :global(h2[id]:hover .heading-anchor),
+	.content :global(h3[id]:hover .heading-anchor) {
+		opacity: 1;
+	}
+
+	.content :global(.heading-anchor:hover),
+	.content :global(.heading-anchor:focus-visible) {
+		color: #ccc;
+		opacity: 1;
+	}
+
 	hr {
 		margin: 1rem 0;
 	}

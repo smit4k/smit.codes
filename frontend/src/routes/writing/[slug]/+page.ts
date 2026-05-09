@@ -17,7 +17,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 		const post: ContentItem = await res.json();
 		const viewCount: ViewCountResponse = await viewRes.json();
-		const htmlContent = await parseMarkdownWithShiki(post.markdown);
+		const htmlContent = await parseMarkdownWithShiki(post.markdown, { headingPermalinks: true });
 
 		fetch(`/api/writing/${params.slug}/view`, {
 			method: 'POST'
