@@ -58,15 +58,11 @@
 	<h1>Home</h1>
 	<hr />
 	<p>
-		I build software, write technical posts, and publish project notes on
-		<a href="https://smit.codes">smit.codes</a>. I&apos;m a high school student in Michigan
-		interested in software development, Linux, robotics, Rust, and Lua.
+		Hey 👋, I'm Smit, an incoming student at Michigan State University from Michigan. I'm interested
+		in software development, robotics, Minecraft modding, and Linux. I use this site to write
+		technical posts, share what I'm learning, and showcase some of my projects. I mostly code in
+		Rust, Java, and Lua.
 	</p>
-	<p>
-		This site is where I keep my most complete projects, longer-form writing, and photo posts in one
-		place.
-	</p>
-
 	<h2>Contact</h2>
 	<hr />
 
