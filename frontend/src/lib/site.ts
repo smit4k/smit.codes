@@ -5,6 +5,7 @@ export const site = {
 	description:
 		'Smit Patil is a student developer in Michigan writing about software, showcasing projects, and publishing photo posts on smit.codes.',
 	email: 'smit@smit.codes',
+	githubUsername: 'smit4k',
 	githubUrl: 'https://github.com/smit4k',
 	repositoryUrl: 'https://github.com/smit4k/smit.codes',
 	locale: 'en_US'
