@@ -8,19 +8,6 @@ use std::fs;
 use std::path::{Component, Path, PathBuf};
 use std::time::SystemTime;
 
-pub fn create_content_item(md: &str, slug: &str, kind: ContentKind) -> Result<ContentItem, String> {
-    let (frontmatter, body) = parse_markdown(md)?;
-    let read_time = estimate_read_time(&body);
-
-    Ok(ContentItem {
-        slug: slug.to_string(),
-        kind,
-        frontmatter,
-        markdown: body,
-        read_time,
-    })
-}
-
 pub fn load_content_from_dir(root: &Path, kind: ContentKind) -> Result<Vec<ContentItem>, String> {
     let mut items = Vec::new();
 
@@ -34,11 +21,31 @@ pub fn load_content_from_dir(root: &Path, kind: ContentKind) -> Result<Vec<Conte
             .to_string_lossy()
             .to_string();
 
-        let item = create_content_item(&md, &slug, kind.clone())?;
+        let item = create_content_item_with_asset_base(&md, &slug, kind.clone(), root, root)?;
         items.push(item);
     }
 
     Ok(items)
+}
+
+fn create_content_item_with_asset_base(
+    md: &str,
+    slug: &str,
+    kind: ContentKind,
+    content_root: &Path,
+    base_dir: &Path,
+) -> Result<ContentItem, String> {
+    let (frontmatter, body) = parse_markdown(md)?;
+    let body = resolve_markdown_image_paths(&body, content_root, base_dir)?;
+    let read_time = estimate_read_time(&body);
+
+    Ok(ContentItem {
+        slug: slug.to_string(),
+        kind,
+        frontmatter,
+        markdown: body,
+        read_time,
+    })
 }
 
 pub fn load_photo_posts_from_dir(root: &Path) -> Result<Vec<PhotoPost>, String> {
@@ -294,6 +301,143 @@ fn resolve_asset_path(
     Ok(format!("/assets/{}", web_path))
 }
 
+fn resolve_markdown_image_paths(
+    markdown: &str,
+    content_root: &Path,
+    base_dir: &Path,
+) -> Result<String, String> {
+    let mut normalized = Vec::new();
+    let mut in_fence = false;
+
+    for line in markdown.lines() {
+        let trimmed = line.trim_start();
+
+        if trimmed.starts_with("```") || trimmed.starts_with("~~~") {
+            in_fence = !in_fence;
+            normalized.push(line.to_string());
+            continue;
+        }
+
+        if in_fence {
+            normalized.push(line.to_string());
+        } else {
+            normalized.push(resolve_markdown_image_paths_in_line(
+                line,
+                content_root,
+                base_dir,
+            )?);
+        }
+    }
+
+    Ok(normalized.join("\n"))
+}
+
+fn resolve_markdown_image_paths_in_line(
+    line: &str,
+    content_root: &Path,
+    base_dir: &Path,
+) -> Result<String, String> {
+    let mut output = String::with_capacity(line.len());
+    let mut cursor = 0;
+
+    while let Some(image_start) = line[cursor..].find("![") {
+        let image_start = cursor + image_start;
+        let Some(target_start) = line[image_start + 2..].find("](") else {
+            break;
+        };
+        let target_start = image_start + 2 + target_start + 2;
+
+        let Some(target_end) = line[target_start..].find(')') else {
+            break;
+        };
+        let target_end = target_start + target_end;
+
+        output.push_str(&line[cursor..target_start]);
+        output.push_str(&resolve_markdown_image_target(
+            &line[target_start..target_end],
+            content_root,
+            base_dir,
+        )?);
+        output.push(')');
+
+        cursor = target_end + 1;
+    }
+
+    output.push_str(&line[cursor..]);
+    Ok(output)
+}
+
+fn resolve_markdown_image_target(
+    target: &str,
+    content_root: &Path,
+    base_dir: &Path,
+) -> Result<String, String> {
+    let leading_len = target.len() - target.trim_start().len();
+    let leading = &target[..leading_len];
+    let rest = &target[leading_len..];
+
+    if let Some(stripped) = rest.strip_prefix('<') {
+        if let Some(destination_end) = stripped.find('>') {
+            let destination = &stripped[..destination_end];
+            let suffix = &stripped[destination_end + 1..];
+
+            return Ok(format!(
+                "{}<{}>{}",
+                leading,
+                resolve_markdown_image_destination(destination, content_root, base_dir)?,
+                suffix
+            ));
+        }
+    }
+
+    let destination_end = rest
+        .char_indices()
+        .find(|(_, value)| value.is_whitespace())
+        .map(|(index, _)| index)
+        .unwrap_or(rest.len());
+
+    let destination = &rest[..destination_end];
+    let suffix = &rest[destination_end..];
+
+    Ok(format!(
+        "{}{}{}",
+        leading,
+        resolve_markdown_image_destination(destination, content_root, base_dir)?,
+        suffix
+    ))
+}
+
+fn resolve_markdown_image_destination(
+    destination: &str,
+    content_root: &Path,
+    base_dir: &Path,
+) -> Result<String, String> {
+    if should_leave_markdown_image_destination(destination) {
+        return Ok(destination.to_string());
+    }
+
+    let path_end = destination.find(['?', '#']).unwrap_or(destination.len());
+    let path = &destination[..path_end];
+    let suffix = &destination[path_end..];
+
+    Ok(format!(
+        "{}{}",
+        resolve_asset_path(content_root, base_dir, path)?,
+        suffix
+    ))
+}
+
+fn should_leave_markdown_image_destination(destination: &str) -> bool {
+    destination.is_empty()
+        || destination.starts_with('/')
+        || destination.starts_with('#')
+        || destination.starts_with("http://")
+        || destination.starts_with("https://")
+        || destination.starts_with("mailto:")
+        || destination.starts_with("tel:")
+        || destination.starts_with("data:")
+}
+
 fn sanitize_relative_path(raw_path: &str) -> Result<PathBuf, String> {
     let path = Path::new(raw_path.trim());
 
@@ -351,4 +495,106 @@ fn humanize_slug(slug: &str) -> String {
         })
         .collect::<Vec<_>>()
         .join(" ")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+
+    fn temp_content_dir(name: &str) -> PathBuf {
+        let unique = SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .expect("clock should be after unix epoch")
+            .as_nanos();
+        std::env::temp_dir().join(format!(
+            "smit-codes-loader-test-{}-{}-{}",
+            std::process::id(),
+            name,
+            unique
+        ))
+    }
+
+    fn frontmatter() -> &'static str {
+        "---\ntitle: Test Post\ndate: 2026-05-08\ntags: []\nlinks: []\ndescription: Test\n---\n"
+    }
+
+    #[test]
+    fn load_content_from_dir_normalizes_relative_markdown_images() {
+        let content_root = temp_content_dir("relative-images");
+        let writing_root = content_root.join("writing");
+        let image_dir = writing_root.join("imgs");
+        fs::create_dir_all(&image_dir).expect("create image dir");
+        fs::write(image_dir.join("codexexamplescreenshot.png"), b"png").expect("write image");
+        fs::write(
+            writing_root.join("codex-is-awesome.md"),
+            format!(
+                "{}![codex cli screenshot](imgs/codexexamplescreenshot.png)\n",
+                frontmatter()
+            ),
+        )
+        .expect("write markdown");
+
+        let posts = load_content_from_dir(&writing_root, ContentKind::Writing).expect("load posts");
+
+        assert_eq!(posts.len(), 1);
+        assert_eq!(
+            posts[0].markdown,
+            "![codex cli screenshot](/assets/writing/imgs/codexexamplescreenshot.png)"
+        );
+
+        fs::remove_dir_all(content_root).expect("remove temp content");
+    }
+
+    #[test]
+    fn markdown_image_normalization_preserves_external_urls_titles_and_code_fences() {
+        let content_root = temp_content_dir("mixed-images");
+        let writing_root = content_root.join("writing");
+        let image_dir = writing_root.join("imgs");
+        fs::create_dir_all(&image_dir).expect("create image dir");
+        fs::write(image_dir.join("local.png"), b"png").expect("write image");
+
+        let markdown = "\
+![external](https://example.com/image.png)
+![local](imgs/local.png \"Local image\")
+
+```markdown
+![example](imgs/missing.png)
+```
+";
+
+        let normalized = resolve_markdown_image_paths(markdown, &writing_root, &writing_root)
+            .expect("normalize");
+
+        assert_eq!(
+            normalized,
+            "\
+![external](https://example.com/image.png)
+![local](/assets/writing/imgs/local.png \"Local image\")
+
+```markdown
+![example](imgs/missing.png)
+```"
+        );
+
+        fs::remove_dir_all(content_root).expect("remove temp content");
+    }
+
+    #[test]
+    fn markdown_image_normalization_rejects_missing_relative_assets() {
+        let content_root = temp_content_dir("missing-image");
+        let writing_root = content_root.join("writing");
+        fs::create_dir_all(&writing_root).expect("create writing dir");
+
+        let error = resolve_markdown_image_paths(
+            "![missing](imgs/missing.png)",
+            &writing_root,
+            &writing_root,
+        )
+        .expect_err("missing image should fail");
+
+        assert!(error.contains("Missing asset"));
+
+        fs::remove_dir_all(content_root).expect("remove temp content");
+    }
 }
