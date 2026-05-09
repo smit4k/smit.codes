@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { ContentItem, ViewCountResponse } from '$lib/types';
+	import type { MarkdownHeading } from '$lib/markdown';
 	import Container from '$lib/components/Container.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import PostTableOfContents from '$lib/components/PostTableOfContents.svelte';
 	import { formatDate } from '$lib/date';
 	import { breadcrumbJsonLd, serializeJsonLd } from '$lib/seo';
 	import { absoluteUrl, buildPageTitle, site } from '$lib/site';
@@ -13,6 +15,7 @@
 		post: ContentItem;
 		viewCount: ViewCountResponse;
 		htmlContent: string;
+		headings: MarkdownHeading[];
 	};
 
 	const getGitHubLink = (links: string[]) => links.find((link) => link.includes('github.com'));
@@ -56,55 +59,105 @@
 	<script type="application/ld+json">{@html structuredData}</script>
 </svelte:head>
 
-<Container>
-	<Navbar />
-	<article>
-		<nav class="breadcrumbs" aria-label="Breadcrumb">
-			<a href="/projects">projects</a>
-			<span class="separator">&gt;&gt;</span>
-			<span class="current">{data.post.slug}</span>
-		</nav>
-		<div class="post-header">
-			<h1>{data.post.frontmatter.title}</h1>
+<div class="post-page">
+	<Container>
+		<Navbar />
+	</Container>
+	<div class={data.headings.length >= 2 ? 'post-shell has-toc' : 'post-shell'}>
+		{#if data.headings.length >= 2}
+			<div class="toc-slot">
+				{#key data.post.slug}
+					<PostTableOfContents headings={data.headings} />
+				{/key}
+			</div>
+		{/if}
+		<article>
+			<nav class="breadcrumbs" aria-label="Breadcrumb">
+				<a href="/projects">projects</a>
+				<span class="separator">&gt;&gt;</span>
+				<span class="current">{data.post.slug}</span>
+			</nav>
+			<div class="post-header">
+				<h1>{data.post.frontmatter.title}</h1>
 
-			<div class="icons">
-				{#if getGitHubLink(data.post.frontmatter.links)}
-					<a
-						href={getGitHubLink(data.post.frontmatter.links)}
-						target="_blank"
-						rel="noreferrer"
-						aria-label="GitHub"
-					>
-						<Github size="1.4em" />
-					</a>
-				{/if}
-
-				{#each data.post.frontmatter.links as link (link)}
-					{#if !link.includes('github.com')}
-						<a href={link} target="_blank" rel="noreferrer" aria-label="External link">
-							<Link size="1.4em" />
+				<div class="icons">
+					{#if getGitHubLink(data.post.frontmatter.links)}
+						<a
+							href={getGitHubLink(data.post.frontmatter.links)}
+							target="_blank"
+							rel="noreferrer"
+							aria-label="GitHub"
+						>
+							<Github size="1.4em" />
 						</a>
 					{/if}
-				{/each}
-			</div>
-		</div>
 
-		<p class="meta">
-			Created {formatDate(data.post.frontmatter.date)} • {data.post.read_time} min read • {data
-				.viewCount.total_views}
-			views
-		</p>
-		<p class="tags">Tags: {data.post.frontmatter.tags.join(', ')}</p>
+					{#each data.post.frontmatter.links as link (link)}
+						{#if !link.includes('github.com')}
+							<a href={link} target="_blank" rel="noreferrer" aria-label="External link">
+								<Link size="1.4em" />
+							</a>
+						{/if}
+					{/each}
+				</div>
+			</div>
+
+			<p class="meta">
+				Created {formatDate(data.post.frontmatter.date)} • {data.post.read_time} min read • {data
+					.viewCount.total_views}
+				views
+			</p>
+			<p class="tags">Tags: {data.post.frontmatter.tags.join(', ')}</p>
+			<hr />
+			<div class="content">
+				{@html data.htmlContent}
+			</div>
+		</article>
+	</div>
+	<Container>
 		<hr />
-		<div class="content">
-			{@html data.htmlContent}
-		</div>
-	</article>
-	<hr />
-	<Footer />
-</Container>
+		<Footer />
+	</Container>
+</div>
 
 <style>
+	.post-page {
+		width: 100%;
+	}
+
+	.post-shell {
+		display: grid;
+		grid-template-columns: minmax(0, 65ch);
+		max-width: 65ch;
+		width: 100%;
+		margin: 0 auto;
+		padding: 0 1rem;
+		font-family: Inter, Arial, system-ui, sans-serif;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+		box-sizing: border-box;
+	}
+
+	.post-shell.has-toc {
+		grid-template-columns: minmax(9rem, 14rem) minmax(0, 65ch) minmax(9rem, 14rem);
+		gap: 1.25rem;
+		max-width: calc(65ch + 30rem);
+	}
+
+	.toc-slot {
+		grid-column: 1;
+		min-width: 0;
+	}
+
+	article {
+		grid-column: 1;
+		min-width: 0;
+	}
+
+	.has-toc article {
+		grid-column: 2;
+	}
+
 	.breadcrumbs {
 		font-size: 0.9rem;
 		color: #888;
@@ -155,6 +208,38 @@
 		line-height: 1.6;
 	}
 
+	.content :global(img) {
+		max-width: 100%;
+		height: auto;
+	}
+
+	.content :global(h2[id]),
+	.content :global(h3[id]) {
+		scroll-margin-top: 1rem;
+	}
+
+	.content :global(.heading-anchor) {
+		margin-left: 0.35rem;
+		color: #777;
+		font-weight: 400;
+		text-decoration: none;
+		opacity: 0;
+		transition:
+			color 0.2s,
+			opacity 0.2s;
+	}
+
+	.content :global(h2[id]:hover .heading-anchor),
+	.content :global(h3[id]:hover .heading-anchor) {
+		opacity: 1;
+	}
+
+	.content :global(.heading-anchor:hover),
+	.content :global(.heading-anchor:focus-visible) {
+		color: #ccc;
+		opacity: 1;
+	}
+
 	hr {
 		margin: 1rem 0;
 	}
@@ -194,6 +279,21 @@
 
 		.icons a:first-child {
 			margin-left: 0;
+		}
+	}
+
+	@media (max-width: 1150px) {
+		.post-shell.has-toc {
+			grid-template-columns: minmax(0, 65ch);
+			max-width: 65ch;
+		}
+
+		.toc-slot {
+			display: none;
+		}
+
+		.has-toc article {
+			grid-column: 1;
 		}
 	}
 </style>

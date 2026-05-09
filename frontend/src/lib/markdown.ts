@@ -5,6 +5,21 @@ type ParseMarkdownOptions = {
 	headingPermalinks?: boolean;
 };
 
+export type MarkdownHeading = {
+	id: string;
+	text: string;
+	level: 2 | 3;
+};
+
+type ParsedMarkdown = {
+	html: string;
+	headings: MarkdownHeading[];
+};
+
+type MarkdownEnv = {
+	headings?: MarkdownHeading[];
+};
+
 type RenderRule = NonNullable<MarkdownIt['renderer']['rules']['heading_open']>;
 type MarkdownToken = Parameters<RenderRule>[0][number];
 
@@ -75,6 +90,12 @@ function slugifyHeading(heading: string): string {
 	);
 }
 
+function headingLevelFromTag(tag: string): MarkdownHeading['level'] | null {
+	if (tag === 'h2') return 2;
+	if (tag === 'h3') return 3;
+	return null;
+}
+
 function headingPermalinkPlugin(md: MarkdownIt) {
 	const headingLevels = new Set(['h2', 'h3']);
 	const usedSlugs = new Map<string, number>();
@@ -124,6 +145,16 @@ function headingPermalinkPlugin(md: MarkdownIt) {
 		const headingText = collectTokenText(inlineToken);
 		const label = md.utils.escapeHtml(`Link to section: ${headingText}`);
 		const escapedId = md.utils.escapeHtml(id);
+		const level = headingLevelFromTag(openToken.tag);
+		const markdownEnv = env as MarkdownEnv;
+
+		if (level && markdownEnv?.headings) {
+			markdownEnv.headings.push({
+				id,
+				text: headingText,
+				level
+			});
+		}
 
 		return `<a class="heading-anchor" href="#${escapedId}" aria-label="${label}" title="${label}">¶</a>${defaultHeadingClose(
 			tokens,
@@ -135,10 +166,10 @@ function headingPermalinkPlugin(md: MarkdownIt) {
 	};
 }
 
-export async function parseMarkdownWithShiki(
+async function renderMarkdownWithShiki(
 	markdown: string,
 	options: ParseMarkdownOptions = {}
-): Promise<string> {
+): Promise<ParsedMarkdown> {
 	// Extract code blocks
 	const codeBlocks: { original: string; lang: string; code: string }[] = [];
 	const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
@@ -183,12 +214,29 @@ export async function parseMarkdownWithShiki(
 		md.use(headingPermalinkPlugin);
 	}
 
-	let html = md.render(processedMarkdown);
+	const headings: MarkdownHeading[] = [];
+	const env: MarkdownEnv = { headings };
+	let html = md.render(processedMarkdown, env);
 
 	// Restore highlighted code blocks
 	highlightedBlocks.forEach((highlighted, index) => {
 		html = html.replace(`<!--CODE_BLOCK_${index}-->`, highlighted);
 	});
 
+	return { html, headings };
+}
+
+export async function parseMarkdownWithShiki(
+	markdown: string,
+	options: ParseMarkdownOptions = {}
+): Promise<string> {
+	const { html } = await renderMarkdownWithShiki(markdown, options);
 	return html;
+}
+
+export async function parseMarkdownWithShikiWithHeadings(
+	markdown: string,
+	options: ParseMarkdownOptions = {}
+): Promise<ParsedMarkdown> {
+	return renderMarkdownWithShiki(markdown, { ...options, headingPermalinks: true });
 }

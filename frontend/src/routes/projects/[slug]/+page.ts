@@ -1,7 +1,7 @@
 import type { PageLoad } from './$types';
 import type { ContentItem, ViewCountResponse } from '$lib/types';
 import { error } from '@sveltejs/kit';
-import { parseMarkdownWithShiki } from '$lib/markdown';
+import { parseMarkdownWithShikiWithHeadings } from '$lib/markdown';
 
 export const load: PageLoad = async ({ params, fetch }) => {
 	const url = `/api/projects/${params.slug}`;
@@ -17,7 +17,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
 
 		const post: ContentItem = await res.json();
 		const viewCount: ViewCountResponse = await viewRes.json();
-		const htmlContent = await parseMarkdownWithShiki(post.markdown);
+		const { html: htmlContent, headings } = await parseMarkdownWithShikiWithHeadings(post.markdown);
 
 		fetch(`/api/projects/${params.slug}/view`, {
 			method: 'POST'
@@ -28,7 +28,8 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		return {
 			post,
 			viewCount,
-			htmlContent
+			htmlContent,
+			headings
 		};
 	} catch (e) {
 		console.error('Fetch error:', e);
