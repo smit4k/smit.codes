@@ -1,8 +1,5 @@
 <div class="footer">
 	<span>© Smit Patil 2026</span>
-	<div class="links">
-		<a href="https://github.com/smit4k/smit.codes">Source</a>
-	</div>
 </div>
 
 <style>
@@ -14,10 +11,5 @@
 		color: #bbb;
 		margin-top: 1rem;
 		padding-bottom: max(2rem, env(safe-area-inset-bottom));
-	}
-
-	.links {
-		display: flex;
-		gap: 1rem;
 	}
 </style>
