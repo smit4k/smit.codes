@@ -107,27 +107,23 @@
 		font-family: Inter, Arial, system-ui, sans-serif;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
-		box-sizing: border-box;
 	}
 
 	.post-shell.has-toc {
-		grid-template-columns: minmax(9rem, 14rem) minmax(0, 65ch) minmax(9rem, 14rem);
-		gap: 1.25rem;
-		max-width: calc(65ch + 30rem);
+		position: relative;
 	}
 
 	.toc-slot {
-		grid-column: 1;
-		min-width: 0;
+		position: absolute;
+		top: 0;
+		right: calc(100% + 1.25rem);
+		bottom: 0;
+		width: 14rem;
 	}
 
 	article {
 		grid-column: 1;
 		min-width: 0;
-	}
-
-	.has-toc article {
-		grid-column: 2;
 	}
 
 	.breadcrumbs {
@@ -214,17 +210,8 @@
 	}
 
 	@media (max-width: 1150px) {
-		.post-shell.has-toc {
-			grid-template-columns: minmax(0, 65ch);
-			max-width: 65ch;
-		}
-
 		.toc-slot {
 			display: none;
-		}
-
-		.has-toc article {
-			grid-column: 1;
 		}
 	}
 </style>
