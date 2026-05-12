@@ -27,7 +27,7 @@ pub fn collect_files_with_extensions(
         } else if path
             .extension()
             .and_then(|ext| ext.to_str())
-            .map_or(false, |ext| {
+            .is_some_and(|ext| {
                 extensions
                     .iter()
                     .any(|candidate| ext.eq_ignore_ascii_case(candidate))

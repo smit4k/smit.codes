@@ -2,22 +2,22 @@
 
 ## Project Structure & Module Organization
 
-This directory is the Rust backend for `smit.codes`. Application code lives in `src/`, with modules split by concern:
+This directory is the Rust backend workspace for `smit.codes`. The site binary lives in `apps/smit-backend/`, and reusable backend functionality lives in `crates/blogkit/`.
 
-- `src/main.rs` wires the Axum router, CORS, rate limits, content loading, and server startup.
-- `src/content/` parses and loads Markdown-backed writing, project, and photo content.
-- `src/analytics/` owns SQLite setup and page/post view handlers.
-- `src/system/` exposes runtime system info and metrics.
-- `src/utils/` contains shared helpers such as caching and read-time calculation.
+- `apps/smit-backend/src/main.rs` wires the Axum router, CORS, rate limits, content loading, and server startup for `smit.codes`.
+- `crates/blogkit/src/content/` parses and loads Markdown-backed writing, project, and photo content.
+- `crates/blogkit/src/analytics/` owns SQLite setup and page/post view handlers.
+- `crates/blogkit/src/system/` exposes runtime system info and metrics.
+- `crates/blogkit/src/utils/` contains shared helpers such as caching and read-time calculation.
 
-Content is stored under `content/writing/`, `content/projects/`, and `content/photos/`. The analytics schema is embedded from `src/database/schema.sql`. Runtime SQLite files are created under `db/` and should not be treated as source assets.
+Content is stored under `content/writing/`, `content/projects/`, and `content/photos/`. The analytics schema is embedded from `crates/blogkit/src/database/schema.sql`. Runtime SQLite files are created under `db/` and should not be treated as source assets.
 
 ## Build, Test, and Development Commands
 
-- `cargo run` starts the API locally, defaulting to `127.0.0.1:3001`.
-- `SERVER_ADDR=0.0.0.0:3001 cargo run` runs the server on an explicit bind address.
-- `cargo build` compiles the debug binary.
-- `cargo build --release --locked` matches the Docker build path and uses `Cargo.lock`.
+- `cargo run -p smit-backend` starts the API locally, defaulting to `127.0.0.1:3001`.
+- `SERVER_ADDR=0.0.0.0:3001 cargo run -p smit-backend` runs the server on an explicit bind address.
+- `cargo build -p smit-backend` compiles the debug binary.
+- `cargo build -p smit-backend --release --locked` matches the Docker build path and uses `Cargo.lock`.
 - `cargo fmt --check` verifies Rust formatting.
 - `cargo clippy --all-targets --all-features` checks common Rust issues.
 - `cargo test` runs unit and integration tests when present.

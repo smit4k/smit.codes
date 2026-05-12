@@ -1,15 +1,20 @@
 FROM rust:1-bookworm AS builder
 
-WORKDIR /app/backend
+WORKDIR /app
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends pkg-config libssl-dev ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-COPY backend/Cargo.toml backend/Cargo.lock ./
-COPY backend/src ./src
+COPY backend/Cargo.toml backend/Cargo.lock ./backend/
+COPY backend/apps/smit-backend/Cargo.toml ./backend/apps/smit-backend/Cargo.toml
+COPY backend/crates/blogkit/Cargo.toml ./backend/crates/blogkit/Cargo.toml
+COPY backend/apps ./backend/apps
+COPY backend/crates ./backend/crates
 
-RUN cargo build --release --locked
+WORKDIR /app/backend
+
+RUN cargo build -p smit-backend --release --locked
 
 FROM debian:bookworm-slim AS runtime
 
@@ -19,7 +24,7 @@ RUN apt-get update \
 
 WORKDIR /app/backend
 
-COPY --from=builder /app/backend/target/release/backend /usr/local/bin/smit-codes-backend
+COPY --from=builder /app/backend/target/release/smit-backend /usr/local/bin/smit-codes-backend
 COPY backend/content ./content
 
 ENV SERVER_ADDR=0.0.0.0:3001

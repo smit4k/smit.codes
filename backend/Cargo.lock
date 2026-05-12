@@ -102,27 +102,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "backend"
-version = "0.1.0"
-dependencies = [
- "axum",
- "chrono",
- "dotenv",
- "serde",
- "serde_json",
- "serde_yaml",
- "sha1",
- "sqlx",
- "sysinfo",
- "tokio",
- "tower",
- "tower-http",
- "tower_governor",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "base64"
 version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -150,6 +129,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3078c7629b62d3f0439517fa394996acacc5cbc91c5a20d8c658e77abd503a71"
 dependencies = [
  "generic-array",
+]
+
+[[package]]
+name = "blogkit"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "chrono",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "sha1",
+ "sqlx",
+ "sysinfo",
+ "tower-http",
+ "tower_governor",
+ "tracing",
 ]
 
 [[package]]
@@ -326,12 +322,6 @@ dependencies = [
  "quote",
  "syn",
 ]
-
-[[package]]
-name = "dotenv"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 
 [[package]]
 name = "dotenvy"
@@ -1716,6 +1706,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
 dependencies = [
  "serde",
+]
+
+[[package]]
+name = "smit-backend"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "blogkit",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tokio",
+ "tower-http",
+ "tower_governor",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
