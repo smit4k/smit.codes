@@ -1,4 +1,5 @@
 target/
 .DS_Store
 db/*.db
+db/*.db-*
 content/writing/imgs/

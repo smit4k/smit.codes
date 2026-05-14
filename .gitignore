@@ -6,9 +6,11 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+/.playwright-mcp/
 /playwright.config.ts
 /playwright-todomvc-added-items.png
 /playwright@latest/
 /tests/
 /.github/workflows/playwright.yml
 /package-lock.json
+/pnpm-lock.yaml
