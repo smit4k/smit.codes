@@ -6,6 +6,7 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import PostTableOfContents from '$lib/components/PostTableOfContents.svelte';
 	import { formatDate } from '$lib/date';
+	import { LANG_COLORS } from '$lib/project-language';
 	import { breadcrumbJsonLd, serializeJsonLd } from '$lib/seo';
 	import { absoluteUrl, buildPageTitle, site } from '$lib/site';
 
@@ -14,6 +15,7 @@
 	export let data: {
 		post: ContentItem;
 		viewCount: ViewCountResponse;
+		language: string | null;
 		htmlContent: string;
 		headings: MarkdownHeading[];
 	};
@@ -99,6 +101,17 @@
 							</a>
 						{/if}
 					{/each}
+
+					{#if data.language && LANG_COLORS[data.language]}
+						<span
+							class="language-pill"
+							style="background-color: {LANG_COLORS[data.language]}"
+							title={data.language}
+							aria-label={`Primary language: ${data.language}`}
+						>
+							<span>{data.language}</span>
+						</span>
+					{/if}
 				</div>
 			</div>
 
@@ -250,7 +263,55 @@
 
 	.icons {
 		display: flex;
+		align-items: center;
 		flex-shrink: 0;
+	}
+
+	.language-pill {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		margin-left: 0.5rem;
+		width: 10px;
+		height: 10px;
+		max-width: 10px;
+		border-radius: 50%;
+		overflow: hidden;
+		color: white;
+		font-size: 0.68rem;
+		font-weight: 700;
+		line-height: 1;
+		white-space: nowrap;
+		cursor: default;
+		transition:
+			width 0.18s ease,
+			max-width 0.18s ease,
+			height 0.18s ease,
+			border-radius 0.18s ease,
+			padding 0.18s ease;
+	}
+
+	.language-pill span {
+		opacity: 0;
+		transform: translateX(0.25rem);
+		transition:
+			opacity 0.12s ease,
+			transform 0.18s ease;
+	}
+
+	.language-pill:hover,
+	.language-pill:focus-visible {
+		width: auto;
+		max-width: 8rem;
+		height: 1.25rem;
+		border-radius: 999px;
+		padding: 0 0.45rem;
+	}
+
+	.language-pill:hover span,
+	.language-pill:focus-visible span {
+		opacity: 1;
+		transform: translateX(0);
 	}
 
 	.icons a {

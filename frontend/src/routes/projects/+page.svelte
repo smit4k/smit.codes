@@ -8,6 +8,7 @@
 	import { formatDate } from '$lib/date';
 	import { collectionJsonLd, serializeJsonLd } from '$lib/seo';
 	import { absoluteUrl, buildPageTitle } from '$lib/site';
+	import { LANG_COLORS } from '$lib/project-language';
 
 	// Icons
 	import { Github } from '@lucide/svelte';
@@ -19,33 +20,6 @@
 	const description =
 		'Software projects by Smit Patil, including build notes, implementation details, and external links.';
 	const canonicalUrl = absoluteUrl('/projects');
-
-	// GitHub linguist language colors (subset)
-	const LANG_COLORS: Record<string, string> = {
-		TypeScript: '#3178c6',
-		JavaScript: '#f1e05a',
-		Svelte: '#ff3e00',
-		Rust: '#dea584',
-		Python: '#3572A5',
-		Go: '#00ADD8',
-		CSS: '#563d7c',
-		HTML: '#e34c26',
-		Shell: '#89e051',
-		C: '#555555',
-		'C++': '#f34b7d',
-		'C#': '#178600',
-		Java: '#b07219',
-		Ruby: '#701516',
-		PHP: '#4F5D95',
-		Swift: '#F05138',
-		Kotlin: '#A97BFF',
-		Dart: '#00B4AB',
-		Lua: '#000080',
-		Haskell: '#5e5086',
-		Elixir: '#6e4a7e',
-		Nix: '#7e7eff',
-		Vue: '#41b883',
-	};
 
 	// Sort projects by date, newest first
 	let sortedProjects = data.posts.sort((a, b) => {
@@ -150,10 +124,13 @@
 							>
 							{#if data.languages[project.slug] && LANG_COLORS[data.languages[project.slug]!]}
 								<span
-									class="lang-dot"
+									class="language-pill"
 									style="background-color: {LANG_COLORS[data.languages[project.slug]!]}"
 									title={data.languages[project.slug]}
-								></span>
+									aria-label={`Primary language: ${data.languages[project.slug]}`}
+								>
+									<span>{data.languages[project.slug]}</span>
+								</span>
 							{/if}
 						</div>
 					</div>
@@ -232,13 +209,57 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.5rem;
+		position: relative;
+		padding-right: 1.35rem;
 	}
 
-	.lang-dot {
-		width: 10px;
-		height: 10px;
+	.language-pill {
+		position: absolute;
+		top: 50%;
+		right: 0;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		width: max-content;
+		height: 12px;
+		max-width: 12px;
 		border-radius: 50%;
 		flex-shrink: 0;
+		overflow: hidden;
+		color: white;
+		font-size: 0.68rem;
+		font-weight: 700;
+		line-height: 1;
+		white-space: nowrap;
+		cursor: default;
+		transform: translateY(-50%);
+		transition:
+			max-width 0.18s ease,
+			height 0.18s ease,
+			border-radius 0.18s ease,
+			padding 0.18s ease;
+	}
+
+	.language-pill span {
+		opacity: 0;
+		transform: translateX(0.25rem);
+		transition:
+			opacity 0.12s ease,
+			transform 0.18s ease;
+	}
+
+	.language-pill:hover,
+	.language-pill:focus-visible {
+		max-width: 8rem;
+		height: 1.25rem;
+		border-radius: 999px;
+		padding: 0 0.45rem;
+	}
+
+	.language-pill:hover span,
+	.language-pill:focus-visible span {
+		opacity: 1;
+		transform: translateX(0);
 	}
 
 	.date {
