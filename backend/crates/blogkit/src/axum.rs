@@ -1,12 +1,14 @@
 #[cfg(feature = "rate-limit")]
 use ::axum::http::Method;
+#[cfg(feature = "system")]
+use ::axum::Json;
 use ::axum::{
     body::Bytes,
     extract::{Path, State},
     http::{HeaderMap, HeaderValue, StatusCode},
     response::{IntoResponse, Response},
     routing::get,
-    Json, Router,
+    Router,
 };
 use serde::Serialize;
 use std::{collections::HashMap, sync::Arc};

@@ -143,6 +143,7 @@ dependencies = [
  "sha1",
  "sqlx",
  "sysinfo",
+ "tokio",
  "tower-http",
  "tower_governor",
  "tracing",

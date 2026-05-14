@@ -15,6 +15,15 @@ CREATE TABLE IF NOT EXISTS page_views (
     viewed_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS site_counters (
+    counter_name TEXT PRIMARY KEY,
+    count INTEGER NOT NULL DEFAULT 0,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT OR IGNORE INTO site_counters (counter_name, count)
+VALUES ('total_page_visits', 0);
+
 CREATE INDEX IF NOT EXISTS idx_post_views_lookup
 ON post_views (post_slug, post_type, viewer_ip, user_agent, viewed_at);
 

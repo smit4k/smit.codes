@@ -25,3 +25,6 @@ sysinfo = { workspace = true, optional = true }
 tower-http = { workspace = true, optional = true }
 tower_governor = { workspace = true, optional = true }
 tracing = { workspace = true, optional = true }
+
+[dev-dependencies]
+tokio = { workspace = true }

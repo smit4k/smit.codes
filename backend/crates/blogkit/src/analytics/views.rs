@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
 
+const TOTAL_PAGE_VISITS_COUNTER: &str = "total_page_visits";
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ViewCount {
     pub total_views: i64,
@@ -84,6 +86,8 @@ pub async fn record_page_view(
     viewer_ip: Option<String>,
     user_agent: Option<String>,
 ) -> Result<(), sqlx::Error> {
+    increment_total_page_visits(pool).await?;
+
     sqlx::query(
         "INSERT INTO page_views (page_path, viewer_ip, user_agent, viewed_at)
          SELECT ?, ?, ?, datetime('now')
@@ -106,6 +110,36 @@ pub async fn record_page_view(
     .await?;
 
     Ok(())
+}
+
+/// Increment the site-wide page visit counter.
+pub async fn increment_total_page_visits(pool: &SqlitePool) -> Result<(), sqlx::Error> {
+    sqlx::query(
+        "INSERT INTO site_counters (counter_name, count, updated_at)
+         VALUES (?, 1, datetime('now'))
+         ON CONFLICT(counter_name) DO UPDATE SET
+            count = count + 1,
+            updated_at = datetime('now')",
+    )
+    .bind(TOTAL_PAGE_VISITS_COUNTER)
+    .execute(pool)
+    .await?;
+
+    Ok(())
+}
+
+/// Get the site-wide page visit counter.
+pub async fn get_total_page_visits(pool: &SqlitePool) -> Result<i64, sqlx::Error> {
+    let row = sqlx::query(
+        "SELECT count
+         FROM site_counters
+         WHERE counter_name = ?",
+    )
+    .bind(TOTAL_PAGE_VISITS_COUNTER)
+    .fetch_optional(pool)
+    .await?;
+
+    Ok(row.map(|row| row.get("count")).unwrap_or(0))
 }
 
 /// Get total and unique views for a specific page path
@@ -133,9 +167,9 @@ pub async fn get_page_view_count(
 
 /// Get site-wide stats: total views, unique visitors, and per-page breakdown
 pub async fn get_site_stats(pool: &SqlitePool) -> Result<SiteStats, sqlx::Error> {
-    let totals = sqlx::query(
+    let total_views = get_total_page_visits(pool).await?;
+    let unique_visitors = sqlx::query(
         "SELECT
-            COUNT(*) as total_views,
             COUNT(DISTINCT viewer_ip) as unique_visitors
          FROM page_views",
     )
@@ -155,8 +189,8 @@ pub async fn get_site_stats(pool: &SqlitePool) -> Result<SiteStats, sqlx::Error>
     .await?;
 
     Ok(SiteStats {
-        total_views: totals.get("total_views"),
-        unique_visitors: totals.get("unique_visitors"),
+        total_views,
+        unique_visitors: unique_visitors.get("unique_visitors"),
         pages: pages
             .into_iter()
             .map(|r| PageViewCount {
@@ -193,4 +227,70 @@ pub async fn get_top_viewed(
         .into_iter()
         .map(|r| (r.get("post_slug"), r.get("view_count")))
         .collect())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    async fn test_pool() -> SqlitePool {
+        let pool = SqlitePool::connect("sqlite::memory:")
+            .await
+            .expect("connect in-memory sqlite");
+        sqlx::raw_sql(include_str!("../database/schema.sql"))
+            .execute(&pool)
+            .await
+            .expect("initialize schema");
+        pool
+    }
+
+    #[tokio::test]
+    async fn records_total_page_visits_without_page_dedupe() {
+        let pool = test_pool().await;
+
+        record_page_view(
+            &pool,
+            "/",
+            Some("127.0.0.0".to_string()),
+            Some("test-agent".to_string()),
+        )
+        .await
+        .expect("record first page view");
+        record_page_view(
+            &pool,
+            "/",
+            Some("127.0.0.0".to_string()),
+            Some("test-agent".to_string()),
+        )
+        .await
+        .expect("record second page view");
+
+        let total_page_visits = get_total_page_visits(&pool)
+            .await
+            .expect("get total page visits");
+        let page_views = get_page_view_count(&pool, "/")
+            .await
+            .expect("get page views");
+
+        assert_eq!(total_page_visits, 2);
+        assert_eq!(page_views.total_views, 1);
+    }
+
+    #[tokio::test]
+    async fn site_stats_use_total_page_visit_counter() {
+        let pool = test_pool().await;
+
+        record_page_view(&pool, "/", Some("127.0.0.0".to_string()), None)
+            .await
+            .expect("record first page view");
+        record_page_view(&pool, "/about", Some("127.0.0.0".to_string()), None)
+            .await
+            .expect("record second page view");
+
+        let stats = get_site_stats(&pool).await.expect("get site stats");
+
+        assert_eq!(stats.total_views, 2);
+        assert_eq!(stats.unique_visitors, 1);
+        assert_eq!(stats.pages.len(), 2);
+    }
 }
