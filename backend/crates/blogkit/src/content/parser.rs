@@ -9,23 +9,21 @@ pub fn parse_markdown(md: &str) -> Result<(Frontmatter, String), String> {
     }
 
     let mut fm_lines = Vec::new();
-    for i in 2..=6 {
-        match lines.next() {
-            Some(line) => fm_lines.push(line),
-            None => return Err(format!("Missing frontmatter content on line {}", i)),
+
+    for line in &mut lines {
+        if line.trim() == "---" {
+            let yaml = fm_lines.join("\n");
+
+            let frontmatter: Frontmatter =
+                serde_yaml::from_str(&yaml).map_err(|e| e.to_string())?;
+
+            let markdown = lines.collect::<Vec<_>>().join("\n");
+
+            return Ok((frontmatter, markdown));
         }
+
+        fm_lines.push(line);
     }
 
-    match lines.next() {
-        Some(line) if line.trim() == "---" => {}
-        _ => return Err("Missing frontmatter end delimiter (---) on line 7".into()),
-    }
-
-    let yaml = fm_lines.join("\n");
-
-    let frontmatter: Frontmatter = serde_yaml::from_str(&yaml).map_err(|e| e.to_string())?;
-
-    let markdown = lines.collect::<Vec<_>>().join("\n");
-
-    Ok((frontmatter, markdown))
+    Err("Missing frontmatter end delimiter (---)".into())
 }
