@@ -14,3 +14,4 @@ node_modules/
 /.github/workflows/playwright.yml
 /package-lock.json
 /pnpm-lock.yaml
+backend/content/.obsidian/
