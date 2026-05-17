@@ -14,7 +14,7 @@ I'm moving away from Neovim. I've used it for a while now and I loved it, heck,
 I even made plugins and [a theme](https://github.com/smit4k/shale.nvim) for
 Neovim. It's just that Neovim became a hassle, even when I got my own setup and
 plugins and customized it to my liking, I never once felt like I was getting
-work done any faster than if I was using a traditional IDE. So, why bother
+work done any faster than if I was using a traditional IDE. So why bother
 continuously tinkering if I was going to get marginal, or no improvements in my
 work productivity.
 
@@ -32,13 +32,13 @@ habits as a person than the software you use to edit code.
 ## Why Zed?
 
 While I was initially going to just go back to VS Code, I realized there's other
-competitors -- notably Zed Editor. Built in Rust from the ground up, Zed felt
-fast, sleek, lightweight, while covering everything I needed from a modern
-editor. It sounded great, so I installed it and tested it. Just using Zed felt
-like a breath of fresh air. It was amazing and had the familiar structure of VS
-Code but everything was faster and more polished. Everything just worked, LSPs,
-themes, extensions, terminal, as well as the agent. This was it. This was the
-editor I'll stick with.
+competitors -- notably [Zed Editor](https://zed.dev). Built in Rust from the
+ground up, Zed felt fast, sleek, lightweight, while covering everything I needed
+from a modern editor. It sounded great, so I installed it and tested it. Just
+using Zed felt like a breath of fresh air. It was amazing and had the familiar
+structure of VS Code but everything was faster and more polished. Everything
+just worked, LSPs, themes, extensions, terminal, as well as the agent. This is
+it. This is the editor I'll stick with.
 
 What stood out the most about Zed to me, was the lack of friction. In Neovim, I
 needed to set up multiple different plugins for me to code comfortably, and it
