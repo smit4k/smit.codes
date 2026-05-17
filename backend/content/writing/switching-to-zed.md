@@ -3,10 +3,13 @@ title: Why I Switched From Neovim to Zed
 date: 2026-05-17
 tags: [ide, editor, zed, neovim]
 links: []
-description: "Why I moved away from Neovim and why Zed feels like a better fit for my workflow."
+description:
+  "Why I moved away from Neovim and why Zed feels like a better fit for my
+  workflow."
 ---
 
 ## Why I Left Neovim
+
 I'm moving away from Neovim. I've used it for a while now and I loved it, heck,
 I even made plugins and [a theme](https://github.com/smit4k/shale.nvim) for
 Neovim. It's just that Neovim became a hassle, even when I got my own setup and
