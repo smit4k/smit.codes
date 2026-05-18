@@ -1,31 +1,27 @@
 services:
-  backend:
-    image: ${BACKEND_IMAGE:-smit-codes-backend:local}
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-    restart: unless-stopped
-    environment:
-      SERVER_ADDR: 0.0.0.0:3001
-      ANALYTICS_DB_URL: sqlite:./db/analytics.db
-      RATE_LIMIT_TRUST_PROXY_HEADERS: "true"
-    volumes:
-      - backend-db:/app/backend/db
-    expose:
-      - "3001"
-
   frontend:
-    image: ${FRONTEND_IMAGE:-smit-codes-frontend:local}
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
+    image: ghcr.io/smit4k/smit.codes-frontend:${IMAGE_TAG}
+    container_name: smit-codes-frontend
     restart: unless-stopped
-    environment:
-      BACKEND_UPSTREAM: http://backend:3001
     ports:
-      - "${FRONTEND_PORT:-8080}:80"
+      - "127.0.0.1:3000:80"
     depends_on:
       - backend
 
+  backend:
+    image: ghcr.io/smit4k/smit.codes-backend:${IMAGE_TAG}
+    container_name: smit-codes-backend
+    restart: unless-stopped
+    environment:
+      RUST_LOG: info
+      SERVER_ADDR: 0.0.0.0:3001
+      ANALYTICS_DB_URL: sqlite:./db/analytics.db
+      RATE_LIMIT_TRUST_PROXY_HEADERS: "true"
+    ports:
+      - "127.0.0.1:3001:3001"
+    volumes:
+      - smit_codes_db:/app/backend/db
+      - /opt/smit.codes/content/writing/imgs:/app/backend/content/writing/imgs:ro
+
 volumes:
-  backend-db:
+  smit_codes_db:
