@@ -7,11 +7,31 @@
 
 	let activeId = headings[0]?.id ?? '';
 	let progress = 0;
+	let targetId = '';
+	let isNavigatingToTarget = false;
 
 	const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
+	const getHashId = () => {
+		const hash = window.location.hash.slice(1);
+		if (!hash) return '';
+
+		try {
+			return decodeURIComponent(hash);
+		} catch {
+			return hash;
+		}
+	};
+
+	const handleHeadingClick = (id: string) => {
+		targetId = id;
+		isNavigatingToTarget = true;
+		activeId = id;
+	};
+
 	onMount(() => {
 		let frame = 0;
+		let targetScrollY = 0;
 		let headingElements: HTMLElement[] = [];
 		let contentElement: HTMLElement | null = null;
 
@@ -32,20 +52,50 @@
 			if (!contentElement) return;
 
 			const scrollY = window.scrollY;
-			const contentTop = contentElement.getBoundingClientRect().top + scrollY;
-			const readableDistance = contentElement.offsetHeight - window.innerHeight;
-			progress = readableDistance <= 0 ? 1 : clamp((scrollY - contentTop) / readableDistance);
+			const viewportHeight = window.innerHeight;
+			const activationLine = Math.min(viewportHeight * 0.35, 180);
+			const maxScrollY = document.documentElement.scrollHeight - viewportHeight;
+			progress = maxScrollY <= 0 ? 1 : clamp(scrollY / maxScrollY);
 
-			if (contentElement.getBoundingClientRect().bottom <= window.innerHeight + 8) {
+			if (!headingElements.length) {
+				activeId = headings[0]?.id ?? '';
+				return;
+			}
+
+			if (targetId && !isNavigatingToTarget && Math.abs(scrollY - targetScrollY) > 2) {
+				targetId = '';
+			}
+
+			if (progress >= 0.999 && !targetId) {
 				activeId = headings.at(-1)?.id ?? '';
 				return;
 			}
 
-			const activationLine = Math.min(window.innerHeight * 0.35, 180);
-			const activeHeading = [...headingElements]
-				.reverse()
-				.find((heading) => heading.getBoundingClientRect().top <= activationLine);
-			activeId = activeHeading?.id ?? headings[0]?.id ?? '';
+			let activeIndex = 0;
+			for (const [index, heading] of headingElements.entries()) {
+				if (heading.getBoundingClientRect().top <= activationLine) {
+					activeIndex = index;
+				} else {
+					break;
+				}
+			}
+
+			const targetIndex = headingElements.findIndex((heading) => heading.id === targetId);
+			if (targetIndex !== -1) {
+				const targetRect = headingElements[targetIndex].getBoundingClientRect();
+				const targetIsVisible = targetRect.bottom >= 0 && targetRect.top <= viewportHeight - 16;
+
+				if (targetIsVisible) {
+					activeIndex = targetIndex;
+					targetScrollY = scrollY;
+					isNavigatingToTarget = false;
+				} else {
+					targetId = '';
+					isNavigatingToTarget = false;
+				}
+			}
+
+			activeId = headingElements[activeIndex]?.id ?? headings[0]?.id ?? '';
 		};
 
 		const requestUpdate = () => {
@@ -53,18 +103,46 @@
 			frame = requestAnimationFrame(update);
 		};
 
+		const handleHashChange = () => {
+			targetId = getHashId();
+			isNavigatingToTarget = true;
+			requestUpdate();
+		};
+
+		const handleManualScroll = () => {
+			if (!isNavigatingToTarget) {
+				targetId = '';
+			}
+		};
+
+		const finishTargetNavigation = () => {
+			isNavigatingToTarget = false;
+		};
+
 		tick().then(() => {
+			targetId = getHashId();
+			isNavigatingToTarget = Boolean(targetId);
 			collectElements();
 			update();
 		});
 
 		window.addEventListener('scroll', requestUpdate, { passive: true });
 		window.addEventListener('resize', requestUpdate);
+		window.addEventListener('hashchange', handleHashChange);
+		window.addEventListener('wheel', handleManualScroll, { passive: true });
+		window.addEventListener('touchstart', handleManualScroll, { passive: true });
+		window.addEventListener('keydown', handleManualScroll);
+		window.addEventListener('scrollend', finishTargetNavigation);
 
 		return () => {
 			if (frame) cancelAnimationFrame(frame);
 			window.removeEventListener('scroll', requestUpdate);
 			window.removeEventListener('resize', requestUpdate);
+			window.removeEventListener('hashchange', handleHashChange);
+			window.removeEventListener('wheel', handleManualScroll);
+			window.removeEventListener('touchstart', handleManualScroll);
+			window.removeEventListener('keydown', handleManualScroll);
+			window.removeEventListener('scrollend', finishTargetNavigation);
 		};
 	});
 </script>
@@ -81,6 +159,7 @@
 					class:h3={heading.level === 3}
 					href={`#${heading.id}`}
 					aria-current={heading.id === activeId ? 'location' : undefined}
+					on:click={() => handleHeadingClick(heading.id)}
 				>
 					{heading.text}
 				</a>
