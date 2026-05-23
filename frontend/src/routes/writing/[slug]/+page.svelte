@@ -53,7 +53,9 @@
 	<meta property="article:published_time" content={data.post.frontmatter.date} />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
-	<script type="application/ld+json">{@html structuredData}</script>
+	<script type="application/ld+json">
+{@html structuredData}
+	</script>
 </svelte:head>
 
 <div class="post-page">
@@ -75,6 +77,7 @@
 				<span class="current">{data.post.slug}</span>
 			</nav>
 			<h1>{data.post.frontmatter.title}</h1>
+			<p class="desc">{data.post.frontmatter.description}</p>
 			<p class="meta">
 				Published {formatDate(data.post.frontmatter.date)} • {data.post.read_time} min read • {data
 					.viewCount.total_views} views
@@ -155,6 +158,13 @@
 		margin-top: 0.5rem;
 		margin-bottom: 0.25rem;
 		color: white;
+	}
+
+	.desc {
+		margin: 0.2rem 0;
+		color: #aaa;
+		font-size: 0.9rem;
+		font-style: italic;
 	}
 
 	.meta {

@@ -58,7 +58,9 @@
 	<meta property="article:published_time" content={data.post.frontmatter.date} />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
-	<script type="application/ld+json">{@html structuredData}</script>
+	<script type="application/ld+json">
+{@html structuredData}
+	</script>
 </svelte:head>
 
 <div class="post-page">
@@ -114,7 +116,7 @@
 					{/if}
 				</div>
 			</div>
-
+			<p class="desc">{data.post.frontmatter.description}</p>
 			<p class="meta">
 				Created {formatDate(data.post.frontmatter.date)} • {data.post.read_time} min read • {data
 					.viewCount.total_views}
@@ -199,6 +201,13 @@
 		display: inline-block;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
+	}
+
+	.desc {
+		margin: 0.2rem 0;
+		color: #aaa;
+		font-size: 0.9rem;
+		font-style: italic;
 	}
 
 	.meta {
