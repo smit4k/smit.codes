@@ -14,7 +14,7 @@ description: My first impressions of tangled.org, the decentralized git forge
 
 [Tangled](https://tangled.org) is a new git forge, like Github, Gitlab, and Codeberg. The main difference is that Tangled is built on the [AT Protocol](https://atproto.com) (like Bluesky) and is partially **decentralized**. The main reasoning behind Tangled is that users can fully own and self-govern their code. The developers hope this will turn coding social and fun again.
 
-Tangled is still **very new**, and every contribution counts, if you're interested by the end of reading this article, I suggest you look into contributing to Tangled. I've [contributed to tangled](https://tangled.org/tangled.org/core/pulls/1549/) a little bit myself.
+Tangled is still **very new**, and every contribution counts, if you're interested by the end of reading this article, I suggest you look into contributing to Tangled. I've [contributed to tangled](https://tangled.org/tangled.org/core/pulls?q=author%3Asmit.codes) a little bit myself.
 
 :::info More about Tangled
 If you would like to learn more about Tangled, you can check out their own blog post [here](https://blog.tangled.org/intro/)
