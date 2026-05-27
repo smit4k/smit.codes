@@ -17,7 +17,7 @@ services:
     environment:
       BACKEND_UPSTREAM: http://backend:3001
     ports:
-      - "${FRONTEND_PORT:-8080}:80"
+      - "${FRONTEND_PORT:-127.0.0.1:3000}:80"
     depends_on:
       - backend
 

@@ -42,10 +42,11 @@ I use the [Ghostty](https://ghostty.org) terminal with
 
 ### Browser
 
-~~I use [Zen](zen-browser.app) browser. There's no real reason why, I just wanted
-a Firefox based browser and Zen looked pretty nice.~~
+~~I use [Zen](zen-browser.app) browser. There's no real reason why, I just
+wanted a Firefox based browser and Zen looked pretty nice.~~
 
-I use [Helium Browser](https://helium.computer). It's based on chromium, it's fast and its bloat-free.
+I use [Helium Browser](https://helium.computer). It's based on chromium, it's
+fast and its bloat-free.
 
 ### Design
 
