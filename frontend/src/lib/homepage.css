@@ -135,6 +135,50 @@ pre {
     font-family: JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
 }
 
+.code-block {
+    position: relative;
+    margin: 1rem 0;
+    max-width: 100%;
+}
+
+.code-block pre {
+    margin: 0;
+    padding-right: 4rem !important;
+}
+
+.code-copy-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+    color: #e8e8e8;
+    padding: 0.1rem 0.35rem;
+    font: 700 0.72rem JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    line-height: 1.2;
+    cursor: pointer;
+    text-transform: lowercase;
+}
+
+.code-copy-button:hover,
+.code-copy-button:focus-visible {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    outline: none;
+}
+
+.code-copy-button[data-copied='true'] {
+    color: #66ccbb;
+}
+
+.code-copy-button[data-copied='true']:hover,
+.code-copy-button[data-copied='true']:focus-visible {
+    background: rgba(255, 255, 255, 0.18);
+    color: #8ff5e4;
+}
+
 pre code,
 code {
     font-family: JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;

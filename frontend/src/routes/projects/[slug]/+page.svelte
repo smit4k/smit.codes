@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { ContentItem, ViewCountResponse } from '$lib/types';
 	import type { MarkdownHeading } from '$lib/markdown';
 	import Container from '$lib/components/Container.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import PostTableOfContents from '$lib/components/PostTableOfContents.svelte';
+	import { installCodeBlockCopy } from '$lib/code-copy';
 	import { formatDate } from '$lib/date';
 	import { LANG_COLORS } from '$lib/project-language';
 	import { breadcrumbJsonLd, serializeJsonLd } from '$lib/seo';
@@ -45,6 +47,10 @@
 			{ name: data.post.frontmatter.title, path: `/projects/${data.post.slug}` }
 		])
 	]);
+
+	let contentElement: HTMLDivElement;
+
+	onMount(() => installCodeBlockCopy(contentElement));
 </script>
 
 <svelte:head>
@@ -124,7 +130,7 @@
 			</p>
 			<p class="tags">Tags: {data.post.frontmatter.tags.join(', ')}</p>
 			<hr />
-			<div class="content">
+			<div class="content" bind:this={contentElement}>
 				{@html data.htmlContent}
 			</div>
 		</article>

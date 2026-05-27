@@ -23,6 +23,10 @@ type MarkdownEnv = {
 type RenderRule = NonNullable<MarkdownIt['renderer']['rules']['heading_open']>;
 type MarkdownToken = Parameters<RenderRule>[0][number];
 
+function copyableCodeBlock(html: string): string {
+	return `<div class="code-block"><button class="code-copy-button" type="button" aria-label="Copy code to clipboard">Copy</button>${html}</div>`;
+}
+
 function calloutPlugin(md: MarkdownIt) {
 	md.block.ruler.before('fence', 'callout', (state, startLine, endLine, silent) => {
 		const start = state.getLines(startLine, startLine + 1, 0, false).trim();
@@ -172,7 +176,7 @@ async function renderMarkdownWithShiki(
 ): Promise<ParsedMarkdown> {
 	// Extract code blocks
 	const codeBlocks: { original: string; lang: string; code: string }[] = [];
-	const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+	const codeBlockRegex = /^```([^\s`]*)[^\S\r\n]*(?:\r?\n)([\s\S]*?)^```[^\S\r\n]*$/gm;
 	let match;
 
 	while ((match = codeBlockRegex.exec(markdown)) !== null) {
@@ -187,12 +191,14 @@ async function renderMarkdownWithShiki(
 	const highlightedBlocks = await Promise.all(
 		codeBlocks.map(async (block) => {
 			try {
-				return await codeToHtml(block.code, {
+				const highlighted = await codeToHtml(block.code, {
 					lang: block.lang,
 					theme: 'dark-plus'
 				});
+				return copyableCodeBlock(highlighted);
 			} catch {
-				return `<pre><code>${block.code}</code></pre>`;
+				const escapedCode = MarkdownIt().utils.escapeHtml(block.code);
+				return copyableCodeBlock(`<pre><code>${escapedCode}</code></pre>`);
 			}
 		})
 	);
