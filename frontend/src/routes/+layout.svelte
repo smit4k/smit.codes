@@ -18,6 +18,6 @@
 	<meta name="theme-color" content="#080808" />
 </svelte:head>
 
-<SvelteKitTopLoader color="#58a6ff" showSpinner={false} />
+<SvelteKitTopLoader color="#58a6ff" showSpinner={false} height={2} />
 
 {@render children()}
