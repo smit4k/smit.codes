@@ -58,10 +58,9 @@
 	<h1>Home</h1>
 	<hr />
 	<p>
-		Hey 👋, I'm Smit, an incoming student at Michigan State University from Michigan. I'm interested
-		in software development, robotics, Minecraft modding, and Linux. I use this site to write
-		technical posts, share what I'm learning, and showcase some of my projects. I mostly code in
-		Rust, Java, and Lua.
+		Hey 👋, I'm Smit, an incoming university student from Michigan. I'm interested in software
+		development, robotics, Minecraft modding, and Linux. I use this site to write technical posts,
+		share what I'm learning, and showcase some of my projects. I mostly code in Rust and Java.
 	</p>
 	<h2>Contact</h2>
 	<hr />
@@ -76,7 +75,7 @@
 	</ul>
 	<h2>Recent</h2>
 	<hr />
-	<p>Recent work from my projects and writing archives.</p>
+	<p>Recent work from my projects and writing posts.</p>
 	<h3>Projects</h3>
 	<ul>
 		{#each data.recentProjects as project}
