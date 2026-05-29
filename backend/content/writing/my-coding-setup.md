@@ -19,20 +19,19 @@ for coding especially in distracting environments.
 
 ### IDE
 
-I use [Neovim](https://neovim.io) btw, and it's a great IDE. I started by using
+~~I use [Neovim](https://neovim.io) btw, and it's a great IDE. I started by using
 [LazyVim](https://lazyvim.org) and configured it from there, adding my own
 plugins, themes and changing settings to make it more comfortable to use. You
 can find my entire Neovim config in my
-[.dotfiles](https://github.com/smit4k/.dotfiles)
+[.dotfiles](https://github.com/smit4k/.dotfiles)~~
+
+I use Zed editor. It is fast, good looking and feature-full. If you want to know why I switched from Neovim, read [this article](https://smit.codes/writing/switching-to-zed).
 
 For fonts, I prefer the JetBrainsMono Nerd Font. In my experience, it's an
 amazing font that's highly readable and aesthetically pleasing. I use the Nerd
 Font simply because I use Neovim and require Nerd Fonts for my setup.
 
-As per my colorscheme, I usually either use the
-[vscode.nvim](https://github.com/Mofiqul/vscode.nvim) colorscheme or my personal
-[shale.nvim](https://github.com/smit4k/shale.nvim) colorscheme (you should try
-it out!)
+I usually use either the VSCode Dark Modern theme or my own Shale theme.
 
 ### Terminal
 
@@ -50,9 +49,7 @@ fast and its bloat-free.
 
 ### Design
 
-Whenever I need to work on designing UI, I use [Figma](https://figma.com), I
-also sometimes use Adobe Illustrator or Photoshop to make banners, profile
-pictures, or other art for my projects.
+Whenever I need to work on designing UI, I use [Figma](https://figma.com).
 
 ## Languages
 
@@ -62,6 +59,4 @@ I've tried React and hated it, and so Svelte seems to be the perfect web
 framework for me. In fact, this website is made with a Svelte front-end and a
 Rust powered backend!
 
-As per recently however, I've started using Lua to write Neovim plugins and I've
-been loving it so far — it's nice, simple and stupidly easy to use and
-understand.
+I also use Java when Minecraft modding.
