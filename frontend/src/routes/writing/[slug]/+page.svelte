@@ -108,8 +108,8 @@
 
 	.post-shell {
 		display: grid;
-		grid-template-columns: minmax(0, 65ch);
-		max-width: 65ch;
+		grid-template-columns: minmax(0, 70ch);
+		max-width: 70ch;
 		width: 100%;
 		margin: 0 auto;
 		padding: 0 1rem;
