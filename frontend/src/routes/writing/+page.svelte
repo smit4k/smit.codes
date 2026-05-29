@@ -56,7 +56,9 @@
 	<meta property="og:url" content={canonicalUrl} />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
-	<script type="application/ld+json">{@html structuredData}</script>
+	<script type="application/ld+json">
+{@html structuredData}
+	</script>
 </svelte:head>
 
 <Container>
@@ -173,7 +175,7 @@
 	}
 
 	.meta {
-		font-size: 0.78rem;
+		font-size: 0.8rem;
 		color: #555;
 	}
 
