@@ -15,6 +15,10 @@
 	const description =
 		'Smit Patil is a student developer in Michigan publishing software projects, technical writing, and photo posts on smit.codes.';
 	const canonicalUrl = absoluteUrl('/');
+	const formatRecentDate = (date: string) => {
+		const [year, month, day] = date.split('-');
+		return `${month}/${day}/${year}`;
+	};
 	const structuredData = serializeJsonLd([
 		{
 			'@context': 'https://schema.org',
@@ -73,28 +77,15 @@
 		<li>Email: <a href="mailto:smit@smit.codes">smit@smit.codes</a></li>
 		<li>Discord: <code>sm.it</code></li>
 	</ul>
-	<h2>Recent</h2>
+	<h2>Recent Articles</h2>
 	<hr />
-	<p>Recent work from my projects and writing posts.</p>
-	<h3>Projects</h3>
-	<ul>
-		{#each data.recentProjects as project}
-			<li>
-				<a href={`/projects/${project.slug}`}>
-					{project.frontmatter.title}
-				</a>
-				— {project.frontmatter.description}
-			</li>
-		{/each}
-	</ul>
-	<h3>Writing</h3>
-	<ul>
+	<ul class="recent-articles">
 		{#each data.recentWriting as post}
 			<li>
+				{formatRecentDate(post.frontmatter.date)} -
 				<a href={`/writing/${post.slug}`}>
 					{post.frontmatter.title}
 				</a>
-				— {post.frontmatter.description}
 			</li>
 		{/each}
 	</ul>
