@@ -3,20 +3,32 @@ title: snapshot.nvim
 date: 2026-05-03
 tags: [neovim, lua, rust]
 links: [https://github.com/smit4k/snapshot.nvim]
-description: "Create beautiful screenshots of your code, directly inside Neovim "
+description: |
+  snapshot.nvim is a Neovim plugin for creating polished screenshots of code
+  without leaving the editor. It started as a Neovim-native version of the
+  Polacode workflow from Visual Studio Code: select some code, run a command,
+  and get a clean image with syntax highlighting. Instead of screenshotting the
+  terminal or relying on an external editor, snapshot.nvim reads the current
+  buffer or visual selection directly from Neovim and turns it into a generated
+  image.
+
+  The project uses Lua for the editor integration and Rust for the image
+  renderer. Lua collects the selected text, Tree-sitter captures, highlight
+  colors, and user configuration. Rust receives that structured data and handles
+  text measurement, padding, backgrounds, rounded corners, shadows, file output,
+  and clipboard support.
 ---
 
 
 ![snapshot.nvim example](https://raw.githubusercontent.com/smit4k/snapshot.nvim/main/examples/snapshot-example.png)
 
-I made this plugin because I liked the plugin [Polacode](https://github.com/octref/polacode) plugin from Visual Studio
-Code, It allows you to create a nice aesthetic screenshot of your code with
-syntax highlighting. and I noticed there werent any native plugins recreating
-the functionality of Polacode inside of Neovim, so I made my own.
-[snapshot.nvim](https://github.com/smit4k/snapshot.nvim) allows you to create beautiful code screenshots directly inside
-of Neovim! It captures either the current visual selection or the whole buffer,
-keeps the Tree-sitter syntax colors, and renders the final image with a small
-Rust binary.
+snapshot.nvim is a Neovim plugin for creating polished screenshots of code
+without leaving the editor. It started as a Neovim-native version of the
+Polacode workflow from Visual Studio Code: select some code, run a command, and
+get a clean image with syntax highlighting. Instead of screenshotting the
+terminal or relying on an external editor, snapshot.nvim reads the current
+buffer or visual selection directly from Neovim and turns it into a generated
+image. It uses Lua to get the syntax color data and buffer data and sends it over to Rust to generate the full image.
 
 
 ## Usage

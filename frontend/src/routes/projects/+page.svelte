@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { ContentItem } from '$lib/types';
-	import { goto } from '$app/navigation';
 
 	import Container from '$lib/components/Container.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
@@ -8,9 +7,6 @@
 	import { formatDate } from '$lib/date';
 	import { collectionJsonLd, serializeJsonLd } from '$lib/seo';
 	import { absoluteUrl, buildPageTitle } from '$lib/site';
-	import { LANG_COLORS } from '$lib/project-language';
-
-	// Icons
 	import { Github } from '@lucide/svelte';
 	import { Link } from '@lucide/svelte';
 
@@ -18,25 +14,61 @@
 
 	const title = buildPageTitle('Projects');
 	const description =
-		'Software projects by Smit Patil, including build notes, implementation details, and external links.';
+		'Software projects by Smit Patil, including selected tools, plugins, mods, and source code links.';
 	const canonicalUrl = absoluteUrl('/projects');
 
-	// Sort projects by date, newest first
-	let sortedProjects = data.posts.sort((a, b) => {
+	let sortedProjects = [...data.posts].sort((a, b) => {
 		return b.frontmatter.date.localeCompare(a.frontmatter.date);
 	});
 
-	// Helper function to find GitHub link
 	const getGitHubLink = (links: string[]) => links.find((link) => link.includes('github.com'));
+	const externalLinks = (links: string[]) => links.filter((link) => !link.includes('github.com'));
 
-	function openProject(slug: string) {
-		goto(`/projects/${slug}`);
+	function stripMarkdown(value: string) {
+		return value
+			.replace(/!\[[^\]]*\]\([^)]+\)/g, '')
+			.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+			.replace(/`([^`]+)`/g, '$1')
+			.replace(/\*\*([^*]+)\*\*/g, '$1')
+			.replace(/\*([^*]+)\*/g, '$1')
+			.replace(/_{1,2}([^_]+)_{1,2}/g, '$1')
+			.replace(/:::/g, '')
+			.trim();
 	}
 
-	function onCardKeydown(event: KeyboardEvent, slug: string) {
-		if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault();
-			openProject(slug);
+	function getProjectDescription(project: ContentItem) {
+		const paragraphs = project.markdown
+			.split(/\n\s*\n/)
+			.map((paragraph) => paragraph.trim())
+			.filter((paragraph) => {
+				return (
+					paragraph &&
+					!paragraph.startsWith('![') &&
+					!paragraph.startsWith('#') &&
+					!paragraph.startsWith('```') &&
+					!paragraph.startsWith(':::') &&
+					!paragraph.includes('img.shields.io')
+				);
+			})
+			.map(stripMarkdown)
+			.filter(Boolean);
+
+		return paragraphs.slice(0, 2).length
+			? paragraphs.slice(0, 2)
+			: [project.frontmatter.description];
+	}
+
+	function getProjectMeta(project: ContentItem) {
+		const language = data.languages[project.slug];
+		return [formatDate(project.frontmatter.date), language].filter(Boolean).join(' · ');
+	}
+
+	function getLinkLabel(link: string) {
+		if (link.includes('modrinth.com')) return 'Modrinth';
+		try {
+			return new URL(link).hostname.replace(/^www\./, '');
+		} catch {
+			return 'Link';
 		}
 	}
 
@@ -47,7 +79,7 @@
 			path: '/projects',
 			items: sortedProjects.map((project) => ({
 				name: project.frontmatter.title,
-				path: `/projects/${project.slug}`
+				path: `/projects#${project.slug}`
 			}))
 		})
 	);
@@ -63,79 +95,57 @@
 	<meta property="og:url" content={canonicalUrl} />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
-	<script type="application/ld+json">{@html structuredData}</script>
+	<script type="application/ld+json">
+{@html structuredData}
+	</script>
 </svelte:head>
 
 <Container>
 	<Navbar />
 	<h1>Projects</h1>
 	<p>
-		You can find all of my projects on my Github,
-		<a href="https://github.com/smit4k">@smit4k</a>. Some of my most interesting or complete
-		projects will be put here, with articles explaining them in detail.
+		A list of open-source projects I've authored that I feel like showcasing. All of my projects can
+		be found on my Github, <a href="https://github.com/smit4k">@smit4k</a>
 	</p>
 	<hr />
 
-	<div class="posts-list">
-		<div class="cards-grid">
-			{#each sortedProjects as project}
-					<div
-						class="card"
-						role="link"
-						tabindex="0"
-						aria-label={`Open ${project.frontmatter.title}`}
-						onclick={() => openProject(project.slug)}
-						onkeydown={(event) => onCardKeydown(event, project.slug)}
-					>
-						<div class="card-top">
-							<div class="card-title-row">
-								<span class="date">{formatDate(project.frontmatter.date)}</span>
-								<div class="icons">
-									{#if getGitHubLink(project.frontmatter.links)}
-										<a
-											href={getGitHubLink(project.frontmatter.links)}
-											target="_blank"
-											aria-label="GitHub"
-											onclick={(e) => e.stopPropagation()}
-										>
-											<Github size="1em" />
-										</a>
-									{/if}
-									{#each project.frontmatter.links as link (link)}
-										{#if !link.includes('github.com')}
-											<a
-												href={link}
-												target="_blank"
-												aria-label="External Link"
-												onclick={(e) => e.stopPropagation()}
-											>
-												<Link size="1em" />
-											</a>
-										{/if}
-									{/each}
-								</div>
-							</div>
-							<h2>{project.frontmatter.title}</h2>
-							<p class="description">{project.frontmatter.description}</p>
-						</div>
-						<div class="card-bottom">
-							<span class="meta"
-								>{project.read_time} min read • {project.frontmatter.tags.join(', ')}</span
-							>
-							{#if data.languages[project.slug] && LANG_COLORS[data.languages[project.slug]!]}
-								<span
-									class="language-pill"
-									style="background-color: {LANG_COLORS[data.languages[project.slug]!]}"
-									title={data.languages[project.slug]}
-									aria-label={`Primary language: ${data.languages[project.slug]}`}
-								>
-									<span>{data.languages[project.slug]}</span>
-								</span>
-							{/if}
-						</div>
-					</div>
-			{/each}
-		</div>
+	<div class="project-list">
+		{#each sortedProjects as project}
+			<section class="project" id={project.slug} aria-labelledby={`${project.slug}-title`}>
+				<h2 id={`${project.slug}-title`}>
+					{#if getGitHubLink(project.frontmatter.links)}
+						<a href={getGitHubLink(project.frontmatter.links)} target="_blank" rel="noreferrer">
+							{project.frontmatter.title}
+						</a>
+					{:else}
+						{project.frontmatter.title}
+					{/if}
+				</h2>
+				<p class="meta">{getProjectMeta(project)}</p>
+
+				<div class="description">
+					{#each getProjectDescription(project) as paragraph}
+						<p>{paragraph}</p>
+					{/each}
+				</div>
+
+				<div class="links" aria-label={`${project.frontmatter.title} links`}>
+					{#if getGitHubLink(project.frontmatter.links)}
+						<a href={getGitHubLink(project.frontmatter.links)} target="_blank" rel="noreferrer">
+							<Github size="1em" aria-hidden="true" />
+							GitHub
+						</a>
+					{/if}
+
+					{#each externalLinks(project.frontmatter.links) as link (link)}
+						<a href={link} target="_blank" rel="noreferrer">
+							<Link size="1em" aria-hidden="true" />
+							{getLinkLabel(link)}
+						</a>
+					{/each}
+				</div>
+			</section>
+		{/each}
 	</div>
 
 	<hr />
@@ -148,148 +158,78 @@
 		margin-bottom: 0.5rem;
 	}
 
-	.posts-list {
-		margin-top: 1rem;
-	}
-
-	.cards-grid {
+	.project-list {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-		gap: 0.85rem;
-		margin-bottom: 0.5rem;
-	}
-
-	.card {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		gap: 0.75rem;
-		padding: 1rem 1.1rem;
-		background: #0e0e0e;
-		border: 1px solid #2a2a2a;
-		border-radius: 8px;
-		text-decoration: none;
-		color: inherit;
-		transition:
-			border-color 0.18s ease,
-			background 0.18s ease;
-	}
-
-	.card:hover {
-		border-color: #555;
-		background: #141414;
-	}
-
-	.card-title-row {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 0.3rem;
+		gap: 2.1rem;
+		margin: 1.45rem 0 0.5rem;
 	}
 
 	h2 {
-		margin: 0 0 0.35rem;
-		font-size: 1rem;
+		margin: 0;
+		font-size: 1.2rem;
 		color: white;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
-		line-height: 1.35;
+		line-height: 1.25;
 	}
 
-	.description {
-		margin: 0;
-		font-size: 0.85rem;
-		color: #aaa;
-		line-height: 1.45;
+	h2 a {
+		color: inherit;
+		text-decoration: none;
+		transition: color 0.2s;
 	}
 
-	.card-bottom {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.5rem;
-		position: relative;
-		padding-right: 1.35rem;
-	}
-
-	.language-pill {
-		position: absolute;
-		top: 50%;
-		right: 0;
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-		width: max-content;
-		height: 12px;
-		max-width: 12px;
-		border-radius: 50%;
-		flex-shrink: 0;
-		overflow: hidden;
-		color: white;
-		font-size: 0.68rem;
-		font-weight: 700;
-		line-height: 1;
-		white-space: nowrap;
-		cursor: default;
-		transform: translateY(-50%);
-		transition:
-			max-width 0.18s ease,
-			height 0.18s ease,
-			border-radius 0.18s ease,
-			padding 0.18s ease;
-	}
-
-	.language-pill span {
-		opacity: 0;
-		transform: translateX(0.25rem);
-		transition:
-			opacity 0.12s ease,
-			transform 0.18s ease;
-	}
-
-	.language-pill:hover,
-	.language-pill:focus-visible {
-		max-width: 8rem;
-		height: 1.25rem;
-		border-radius: 999px;
-		padding: 0 0.45rem;
-	}
-
-	.language-pill:hover span,
-	.language-pill:focus-visible span {
-		opacity: 1;
-		transform: translateX(0);
-	}
-
-	.date {
-		display: block;
-		font-size: 0.78rem;
-		color: #666;
+	h2 a:hover {
+		color: #8abfff;
 	}
 
 	.meta {
-		font-size: 0.78rem;
-		color: #555;
+		margin: 0.22rem 0 0;
+		color: #777;
+		font-size: 0.82rem;
+	}
+
+	.description {
+		margin-top: 0.85rem;
+		color: #b9b9b9;
+		line-height: 1.55;
+	}
+
+	.description p {
+		margin: 0;
+	}
+
+	.description p + p {
+		margin-top: 0.7rem;
+	}
+
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
+		margin-top: 0.85rem;
+	}
+
+	.links a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.32rem;
+		color: #8abfff;
+		font-size: 0.9rem;
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	.links a:hover {
+		color: #ccc;
+	}
+
+	.project + .project {
+		padding-top: 2.1rem;
+		border-top: 1px solid #2a2a2a;
 	}
 
 	hr {
 		margin: 1rem 0;
-	}
-
-	.icons {
-		display: flex;
-		gap: 0.4rem;
-		flex-shrink: 0;
-	}
-
-	.icons a {
-		color: #666;
-		transition: color 0.2s;
-		line-height: 0;
-	}
-
-	.icons a:hover {
-		color: #ccc;
 	}
 </style>

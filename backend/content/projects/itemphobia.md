@@ -3,18 +3,32 @@ title: Itemphobia
 date: 2025-12-25
 tags: [minecraft, fabric, java]
 links: [https://github.com/smit4k/Itemphobia, https://modrinth.com/mod/itemphobia]
-description: "A client side Minecraft fabric mod that lets you blacklist items that you do not want to pick up from the ground"
+description: |
+  Itemphobia is a client-side Minecraft Fabric mod that lets players blacklist
+  items they do not want to pick up from the ground. The idea came from a small
+  but persistent annoyance: inventories fill up with rotten flesh, cobblestone,
+  seeds, and other junk while mining, building, or fighting mobs. Instead of
+  forcing players to constantly throw those items away, Itemphobia lets them
+  define a personal blacklist and quietly blocks those pickups before they enter
+  the inventory.
+
+  The project is intentionally simple from the player's perspective, but it
+  touches a few useful Minecraft modding patterns under the hood. It stores the
+  blacklist as stable item identifiers, keeps the active set in memory for fast
+  lookup, and uses a Mixin on item collision behavior to cancel pickups for
+  blacklisted items.
 ---
 
 ![GitHub Release](https://img.shields.io/github/v/release/smit4k/itemphobia)
 ![Modrinth Downloads](https://img.shields.io/modrinth/dt/itemphobia)
 
-This is a Minecraft fabric mod that allows you to blacklist items that you do
-not want to pick up from the ground. I made this because I realized that I was
-constantly picking up random junk like rotten flesh, cobblestone and other
-items that I did not want. It got so annoying that I checked if there was a mod
-that could blacklist items, and there apparently wasn't one, so I took the
-opportunity to make one myself.
+Itemphobia is a client-side Minecraft Fabric mod that lets players blacklist
+items they do not want to pick up from the ground. The idea came from a small
+but persistent annoyance: inventories fill up with rotten flesh, cobblestone,
+seeds, and other junk while mining, building, or fighting mobs. Instead of
+forcing players to constantly throw those items away, Itemphobia lets them
+define a personal blacklist and quietly blocks those pickups before they enter
+the inventory.
 
 :::info Download Links
 The mod can be downloaded from [Modrinth](https://modrinth.com/mod/itemphobia) and [Github](https://github.com/smit4k/itemphobia/releases)
