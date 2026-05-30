@@ -24,38 +24,11 @@
 	const getGitHubLink = (links: string[]) => links.find((link) => link.includes('github.com'));
 	const externalLinks = (links: string[]) => links.filter((link) => !link.includes('github.com'));
 
-	function stripMarkdown(value: string) {
-		return value
-			.replace(/!\[[^\]]*\]\([^)]+\)/g, '')
-			.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-			.replace(/`([^`]+)`/g, '$1')
-			.replace(/\*\*([^*]+)\*\*/g, '$1')
-			.replace(/\*([^*]+)\*/g, '$1')
-			.replace(/_{1,2}([^_]+)_{1,2}/g, '$1')
-			.replace(/:::/g, '')
-			.trim();
-	}
-
 	function getProjectDescription(project: ContentItem) {
-		const paragraphs = project.markdown
+		return project.frontmatter.description
 			.split(/\n\s*\n/)
 			.map((paragraph) => paragraph.trim())
-			.filter((paragraph) => {
-				return (
-					paragraph &&
-					!paragraph.startsWith('![') &&
-					!paragraph.startsWith('#') &&
-					!paragraph.startsWith('```') &&
-					!paragraph.startsWith(':::') &&
-					!paragraph.includes('img.shields.io')
-				);
-			})
-			.map(stripMarkdown)
 			.filter(Boolean);
-
-		return paragraphs.slice(0, 2).length
-			? paragraphs.slice(0, 2)
-			: [project.frontmatter.description];
 	}
 
 	function getProjectMeta(project: ContentItem) {
