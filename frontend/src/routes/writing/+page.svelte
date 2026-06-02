@@ -16,7 +16,7 @@
 	const rssUrl = absoluteUrl('/writing/rss.xml');
 
 	// Sort posts by date, newest first
-	let sortedPosts = data.posts.sort((a, b) => {
+	let sortedPosts = [...data.posts].sort((a, b) => {
 		return b.frontmatter.date.localeCompare(a.frontmatter.date);
 	});
 
@@ -67,32 +67,27 @@
 		<h1>Writing</h1>
 		<a class="rss-link" href="/writing/rss.xml" data-sveltekit-reload>RSS</a>
 	</div>
-	<p>
-		Here are some topics I've written about! These posts cover a variety of tech-related topics.
-		Take a look and see if you find anything interesting!
-	</p>
+	<p class="lede">Notes on software projects, developer tools, configuration, and experiments.</p>
 	<hr />
 
 	<div class="posts-list">
 		{#each postsByYear as { year, posts }}
-			<div class="year-divider">
-				<span class="year-line"></span>
-				<span class="year-label"><strong>{year}</strong></span>
-				<span class="year-line"></span>
-			</div>
-			<div class="cards-grid">
+			<section class="year-section" aria-labelledby={`writing-${year}`}>
+				<h2 id={`writing-${year}`} class="year-heading">{year}</h2>
 				{#each posts as post}
-					<a href={`/writing/${post.slug}`} class="card">
-						<h2>{post.frontmatter.title}</h2>
-						<p class="description">{post.frontmatter.description}</p>
-						<span class="meta"
-							>{formatDate(post.frontmatter.date)} • {post.read_time} min read • {post.frontmatter.tags.join(
-								', '
-							)}</span
-						>
-					</a>
+					<article class="post-row" aria-labelledby={`${post.slug}-title`}>
+						<time class="date" datetime={post.frontmatter.date}>{formatDate(post.frontmatter.date)}</time>
+						<a href={`/writing/${post.slug}`} class="post-link">
+							<span id={`${post.slug}-title`} class="post-title">{post.frontmatter.title}</span>
+							<span class="description">{post.frontmatter.description}</span>
+						</a>
+						<div class="meta" aria-label={`Metadata for ${post.frontmatter.title}`}>
+							<span>{post.read_time} min</span>
+							<span>{post.frontmatter.tags.join(' / ')}</span>
+						</div>
+					</article>
 				{/each}
-			</div>
+			</section>
 		{/each}
 	</div>
 
@@ -115,6 +110,13 @@
 		line-height: 1.1;
 	}
 
+	.lede {
+		max-width: 58ch;
+		margin: 0.65rem 0 0.9rem;
+		color: #b8b8b8;
+		line-height: 1.45;
+	}
+
 	.rss-link {
 		color: #888;
 		font-size: 0.9rem;
@@ -128,75 +130,126 @@
 	}
 
 	.posts-list {
-		margin-top: 1rem;
+		display: grid;
+		gap: 1.2rem;
+		margin-top: 1.05rem;
 	}
 
-	.cards-grid {
+	.year-section {
 		display: grid;
-		grid-template-columns: 1fr;
-		gap: 0.55rem;
-		margin-bottom: 0.5rem;
+		grid-template-columns: 4.1rem minmax(0, 1fr);
+		column-gap: 1rem;
+		border-top: 1px solid #292929;
+		padding-top: 0.8rem;
 	}
 
-	.card {
+	.year-heading {
+		margin: 0.12rem 0 0;
+		color: #9c9c9c;
+		font-family: JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+		font-size: 0.78rem;
+		font-weight: 400;
+		line-height: 1.35;
+	}
+
+	.post-row {
+		grid-column: 2;
 		display: grid;
-		gap: 0.22rem;
-		padding: 0.62rem 0.78rem;
-		background: #0e0e0e;
-		border: 1px solid #2a2a2a;
-		border-radius: 8px;
-		text-decoration: none;
+		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-areas:
+			'date date'
+			'content meta';
+		column-gap: 1rem;
+		row-gap: 0.16rem;
+		padding: 0.62rem 0;
+		border-bottom: 1px solid #1c1c1c;
+	}
+
+	.date {
+		grid-area: date;
+		color: #707070;
+		font-family: JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+		font-size: 0.74rem;
+		line-height: 1.25;
+	}
+
+	.post-link {
+		grid-area: content;
+		display: grid;
+		gap: 0.16rem;
+		min-width: 0;
 		color: inherit;
-		transition:
-			border-color 0.18s ease,
-			background 0.18s ease;
+		text-decoration: none;
 	}
 
-	.card:hover {
-		border-color: #555;
-		background: #141414;
+	.post-link:hover .post-title {
+		color: #fff;
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.16em;
 	}
 
-	h2 {
+	.post-title {
 		margin: 0;
 		font-size: 1rem;
-		color: white;
+		font-weight: 700;
+		color: #eeeeee;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
-		line-height: 1.35;
+		line-height: 1.3;
 		min-width: 0;
+		transition: color 0.16s ease;
 	}
 
 	.description {
 		margin: 0;
 		font-size: 0.85rem;
-		color: #aaa;
-		line-height: 1.35;
+		color: #a8a8a8;
+		line-height: 1.38;
 	}
 
 	.meta {
+		display: grid;
+		gap: 0.16rem;
+		grid-area: meta;
+		justify-items: end;
+		align-self: end;
+		max-width: 14rem;
+		padding-top: 0.1rem;
 		font-size: 0.8rem;
-		color: #555;
+		line-height: 1.35;
+		color: #666;
+		text-align: right;
 	}
 
 	hr {
 		margin: 1rem 0;
 	}
 
-	.year-divider {
-		display: flex;
-		align-items: center;
-		gap: 0.6rem;
-		margin: 1.5rem 0 0.75rem;
-		color: #aaa;
-		font-size: 0.9rem;
-	}
-	.year-line {
-		flex: 1;
-		height: 1px;
-		background-color: #444;
-	}
-	.year-label strong {
-		color: #ccc;
+	@media (max-width: 680px) {
+		.year-section {
+			grid-template-columns: 1fr;
+			gap: 0.45rem;
+		}
+
+		.year-heading {
+			font-size: 0.82rem;
+		}
+
+		.post-row {
+			grid-column: 1;
+			grid-template-columns: 1fr;
+			grid-template-areas:
+				'date'
+				'content'
+				'meta';
+			gap: 0.18rem;
+		}
+
+		.meta {
+			justify-items: start;
+			max-width: none;
+			text-align: left;
+		}
 	}
 </style>
