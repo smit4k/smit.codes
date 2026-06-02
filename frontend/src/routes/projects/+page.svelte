@@ -2,48 +2,53 @@
 	import type { ContentItem } from '$lib/types';
 
 	import Container from '$lib/components/Container.svelte';
-	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	import { formatDate } from '$lib/date';
+	import Navbar from '$lib/components/Navbar.svelte';
+	import { LANG_COLORS } from '$lib/project-language';
 	import { collectionJsonLd, serializeJsonLd } from '$lib/seo';
 	import { absoluteUrl, buildPageTitle } from '$lib/site';
-	import { Github } from '@lucide/svelte';
-	import { Link } from '@lucide/svelte';
 
 	export let data: { posts: ContentItem[]; languages: Record<string, string | null> };
+
+	type ProjectRow = {
+		project: ContentItem;
+		year: string;
+		language: string | null;
+		languageLabel: string | null;
+		color: string;
+		githubLink: string | undefined;
+		summary: string;
+	};
 
 	const title = buildPageTitle('Projects');
 	const description =
 		'Software projects by Smit Patil, including selected tools, plugins, mods, and source code links.';
 	const canonicalUrl = absoluteUrl('/projects');
 
-	let sortedProjects = [...data.posts].sort((a, b) => {
-		return b.frontmatter.date.localeCompare(a.frontmatter.date);
-	});
-
 	const getGitHubLink = (links: string[]) => links.find((link) => link.includes('github.com'));
-	const externalLinks = (links: string[]) => links.filter((link) => !link.includes('github.com'));
+	const fallbackColor = '#777777';
 
-	function getProjectDescription(project: ContentItem) {
-		return project.frontmatter.description
-			.split(/\n\s*\n/)
-			.map((paragraph) => paragraph.trim())
-			.filter(Boolean);
-	}
+	const normalizeSummary = (value: string) => value.replace(/\s+/g, ' ').trim();
 
-	function getProjectMeta(project: ContentItem) {
-		const language = data.languages[project.slug];
-		return [formatDate(project.frontmatter.date), language].filter(Boolean).join(' · ');
-	}
+	let hoveredSlug: string | null = null;
 
-	function getLinkLabel(link: string) {
-		if (link.includes('modrinth.com')) return 'Modrinth';
-		try {
-			return new URL(link).hostname.replace(/^www\./, '');
-		} catch {
-			return 'Link';
-		}
-	}
+	$: sortedProjects = [...data.posts].sort((a, b) =>
+		b.frontmatter.date.localeCompare(a.frontmatter.date)
+	);
+
+	$: rows = sortedProjects.map<ProjectRow>((project) => {
+		const language = data.languages[project.slug] ?? null;
+
+		return {
+			project,
+			year: project.frontmatter.date.slice(0, 4),
+			language,
+			languageLabel: language,
+			color: language ? (LANG_COLORS[language] ?? fallbackColor) : fallbackColor,
+			githubLink: getGitHubLink(project.frontmatter.links),
+			summary: normalizeSummary(project.frontmatter.description)
+		};
+	});
 
 	$: structuredData = serializeJsonLd(
 		collectionJsonLd({
@@ -73,136 +78,272 @@
 	</script>
 </svelte:head>
 
-<Container>
-	<Navbar />
-	<h1>Projects</h1>
-	<p>
-		A list of open-source projects I've authored that I feel like showcasing. All of my projects can
-		be found on my Github, <a href="https://github.com/smit4k">@smit4k</a>
-	</p>
-	<hr />
+<div class="projects-page">
+	<Container>
+		<Navbar />
 
-	<div class="project-list">
-		{#each sortedProjects as project}
-			<section class="project" id={project.slug} aria-labelledby={`${project.slug}-title`}>
-				<h2 id={`${project.slug}-title`}>
-					{#if getGitHubLink(project.frontmatter.links)}
-						<a href={getGitHubLink(project.frontmatter.links)} target="_blank" rel="noreferrer">
-							{project.frontmatter.title}
-						</a>
-					{:else}
-						{project.frontmatter.title}
-					{/if}
-				</h2>
-				<p class="meta">{getProjectMeta(project)}</p>
+		<section class="project-section" aria-labelledby="projects-title">
+			<h1 id="projects-title">Projects</h1>
+			<p>Code projects and contributions</p>
 
-				<div class="description">
-					{#each getProjectDescription(project) as paragraph}
-						<p>{paragraph}</p>
-					{/each}
-				</div>
+			<div class="section-rule"></div>
 
-				<div class="links" aria-label={`${project.frontmatter.title} links`}>
-					{#if getGitHubLink(project.frontmatter.links)}
-						<a href={getGitHubLink(project.frontmatter.links)} target="_blank" rel="noreferrer">
-							<Github size="1em" aria-hidden="true" />
-							GitHub
-						</a>
-					{/if}
+			<div class="project-list">
+				{#each rows as row, index (row.project.slug)}
+					{@const isHovered = hoveredSlug === row.project.slug}
+					{@const shouldDim = hoveredSlug !== null && !isHovered}
+					<article
+						class:dimmed={shouldDim}
+						class:hovered={isHovered}
+						class="project-row"
+						id={row.project.slug}
+						style={`--language-color: ${row.color}; --row-index: ${index};`}
+						on:mouseenter={() => (hoveredSlug = row.project.slug)}
+						on:mouseleave={() => (hoveredSlug = null)}
+						aria-labelledby={`${row.project.slug}-title`}
+					>
+						<div class="meta-column" aria-label={row.language ?? row.year}>
+							<span class:fade-out={isHovered && row.languageLabel} class="year">{row.year}</span>
+							{#if row.languageLabel}
+								<span class:fade-in={isHovered} class="language">{row.languageLabel}</span>
+							{/if}
+						</div>
 
-					{#each externalLinks(project.frontmatter.links) as link (link)}
-						<a href={link} target="_blank" rel="noreferrer">
-							<Link size="1em" aria-hidden="true" />
-							{getLinkLabel(link)}
-						</a>
-					{/each}
-				</div>
-			</section>
-		{/each}
-	</div>
+						<div class="title-column">
+							<span class="language-rail" title={row.language ?? 'Unknown language'}></span>
+							{#if row.githubLink}
+								<a
+									id={`${row.project.slug}-title`}
+									href={row.githubLink}
+									target="_blank"
+									rel="noreferrer"
+									class="project-title"
+								>
+									{row.project.frontmatter.title}
+								</a>
+							{:else}
+								<h2 id={`${row.project.slug}-title`} class="project-title">
+									{row.project.frontmatter.title}
+								</h2>
+							{/if}
+						</div>
 
-	<hr />
-	<Footer />
-</Container>
+						<p class="summary">{row.summary}</p>
+					</article>
+				{/each}
+			</div>
+		</section>
+
+		<div class="footer-wrap">
+			<div class="section-rule"></div>
+			<Footer />
+		</div>
+	</Container>
+</div>
 
 <style>
-	h1 {
-		margin-top: 0.5rem;
-		margin-bottom: 0.5rem;
+	.projects-page {
+		min-height: 100vh;
+		width: 100%;
+		background: #000;
+		color: #f2f2f2;
+		font-family: 'IBM Plex Sans', Arial, system-ui, sans-serif;
+	}
+
+	.section-rule {
+		height: 1px;
+		width: 100%;
+		background: #444;
 	}
 
 	.project-list {
 		display: grid;
-		gap: 2.1rem;
-		margin: 1.45rem 0 0.5rem;
+		gap: 0;
+		padding: 1.15rem 0 4.8rem;
 	}
 
-	h2 {
-		margin: 0;
-		font-size: 1.2rem;
-		color: white;
-		word-wrap: break-word;
-		overflow-wrap: break-word;
+	.project-row {
+		--rail-width: 5px;
+		display: grid;
+		grid-template-columns: 4.4rem minmax(10rem, 15rem) minmax(0, 1fr);
+		column-gap: 1rem;
+		align-items: start;
+		min-height: 2.5rem;
+		color: #ededed;
+		opacity: 0;
+		transform: translateY(0.45rem);
+		animation: row-in 0.42s ease forwards;
+		animation-delay: calc(var(--row-index) * 55ms);
+		transition:
+			opacity 0.15s ease,
+			color 0.15s ease;
+	}
+
+	.project-row.dimmed {
+		opacity: 0.36 !important;
+	}
+
+	.meta-column {
+		position: relative;
+		min-height: 1.6rem;
+		color: #b9b9b9;
+		font-family: JetBrainsMono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+		font-size: 0.8rem;
+		font-weight: 400;
 		line-height: 1.25;
 	}
 
-	h2 a {
-		color: inherit;
-		text-decoration: none;
-		transition: color 0.2s;
+	.year,
+	.language {
+		position: absolute;
+		inset: 0 auto auto 0;
+		transition:
+			opacity 0.15s ease,
+			color 0.15s ease;
 	}
 
-	h2 a:hover {
-		color: #8abfff;
+	.language {
+		color: #e8e8e8;
+		opacity: 0;
 	}
 
-	.meta {
-		margin: 0.22rem 0 0;
-		color: #777;
-		font-size: 0.82rem;
+	.fade-out {
+		opacity: 0;
 	}
 
-	.description {
-		margin-top: 0.85rem;
-		color: #b9b9b9;
-		line-height: 1.55;
+	.fade-in {
+		opacity: 1;
 	}
 
-	.description p {
+	.title-column {
+		display: grid;
+		grid-template-columns: var(--rail-width) minmax(0, 1fr);
+		column-gap: 0.78rem;
+		min-height: 2.5rem;
+	}
+
+	.language-rail {
+		display: block;
+		width: var(--rail-width);
+		min-height: 2.5rem;
+		background: var(--language-color);
+		opacity: 0.9;
+		transition:
+			opacity 0.15s ease,
+			transform 0.15s ease;
+	}
+
+	.project-row.hovered .language-rail {
+		opacity: 1;
+		transform: scaleX(1.28);
+	}
+
+	.project-title {
+		display: block;
 		margin: 0;
-	}
+		min-width: 0;
+		color: #f5f5f5;
 
-	.description p + p {
-		margin-top: 0.7rem;
-	}
-
-	.links {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.8rem;
-		margin-top: 0.85rem;
-	}
-
-	.links a {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.32rem;
-		color: #8abfff;
-		font-size: 0.9rem;
+		font-weight: 700;
+		line-height: 1.25;
+		letter-spacing: 0.01em;
 		text-decoration: none;
-		transition: color 0.2s;
+		overflow-wrap: anywhere;
+		transition:
+			color 0.15s ease,
+			text-decoration-color 0.15s ease;
 	}
 
-	.links a:hover {
-		color: #ccc;
+	a.project-title:hover {
+		color: #ffffff;
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.16em;
 	}
 
-	.project + .project {
-		padding-top: 2.1rem;
-		border-top: 1px solid #2a2a2a;
+	.summary {
+		display: -webkit-box;
+		margin: 0;
+		min-width: 0;
+		overflow: hidden;
+		color: #aaa;
+		font-size: 0.8rem;
+		font-weight: 400;
+		line-height: 1.34;
+		letter-spacing: 0.015em;
+		line-clamp: 2;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
 	}
 
-	hr {
-		margin: 1rem 0;
+	.project-row.hovered .summary {
+		color: #c7c7c7;
+	}
+
+	@keyframes row-in {
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.project-row {
+			opacity: 1;
+			transform: none;
+			animation: none;
+		}
+
+		.project-row,
+		.language-rail,
+		.year,
+		.language,
+		.project-title {
+			transition: none;
+		}
+	}
+
+	@media (max-width: 860px) {
+		.project-list {
+			gap: 1rem;
+			padding: 1rem 0 3rem;
+		}
+
+		.project-row {
+			grid-template-columns: 3.6rem minmax(0, 1fr);
+			column-gap: 0.85rem;
+			row-gap: 0.35rem;
+			min-height: 0;
+		}
+
+		.meta-column {
+			grid-row: 1 / span 2;
+		}
+
+		.title-column {
+			grid-template-columns: 0.65rem minmax(0, 1fr);
+			column-gap: 0.65rem;
+			min-height: 0;
+		}
+
+		.language-rail {
+			width: 0.55rem;
+			height: 0.55rem;
+			min-height: 0;
+			margin-top: 0.28rem;
+			border-radius: 999px;
+		}
+
+		.summary {
+			grid-column: 2;
+			line-clamp: 3;
+			-webkit-line-clamp: 3;
+		}
+	}
+
+	@media (max-width: 520px) {
+		.project-row {
+			grid-template-columns: 3rem minmax(0, 1fr);
+		}
 	}
 </style>
