@@ -20,17 +20,30 @@
 		return b.frontmatter.date.localeCompare(a.frontmatter.date);
 	});
 
-	// Group posts by year
-	let postsByYear: { year: string; posts: ContentItem[] }[] = [];
-	for (const post of sortedPosts) {
-		const year = post.frontmatter.date.slice(0, 4);
-		const group = postsByYear.find((g) => g.year === year);
-		if (group) {
-			group.posts.push(post);
-		} else {
-			postsByYear.push({ year, posts: [post] });
+	let selectedTag: string | null = null;
+
+	function groupPostsByYear(posts: ContentItem[]) {
+		const groups: { year: string; posts: ContentItem[] }[] = [];
+
+		for (const post of posts) {
+			const year = post.frontmatter.date.slice(0, 4);
+			const group = groups.find((g) => g.year === year);
+			if (group) {
+				group.posts.push(post);
+			} else {
+				groups.push({ year, posts: [post] });
+			}
 		}
+
+		return groups;
 	}
+
+	function filterPostsByTag(posts: ContentItem[], tag: string | null) {
+		return tag === null ? posts : posts.filter((post) => post.frontmatter.tags.includes(tag));
+	}
+
+	$: filteredPosts = filterPostsByTag(sortedPosts, selectedTag);
+	$: postsByYear = groupPostsByYear(filteredPosts);
 
 	$: structuredData = serializeJsonLd(
 		collectionJsonLd({
@@ -67,7 +80,21 @@
 		<h1>Writing</h1>
 		<a class="rss-link" href="/writing/rss.xml" data-sveltekit-reload>RSS</a>
 	</div>
-	<p class="lede">Notes on software projects, developer tools, configuration, and experiments.</p>
+	<p class="lede">Here are some topics I've written about!</p>
+
+	{#if selectedTag}
+		<p class="filter-status">
+			Filtering by <span>{selectedTag}</span>
+			<button
+				type="button"
+				aria-label={`Clear ${selectedTag} filter`}
+				on:click={() => (selectedTag = null)}
+			>
+				Clear
+			</button>
+		</p>
+	{/if}
+
 	<hr />
 
 	<div class="posts-list">
@@ -76,14 +103,27 @@
 				<h2 id={`writing-${year}`} class="year-heading">{year}</h2>
 				{#each posts as post}
 					<article class="post-row" aria-labelledby={`${post.slug}-title`}>
-						<time class="date" datetime={post.frontmatter.date}>{formatDate(post.frontmatter.date)}</time>
+						<time class="date" datetime={post.frontmatter.date}
+							>{formatDate(post.frontmatter.date)}</time
+						>
 						<a href={`/writing/${post.slug}`} class="post-link">
 							<span id={`${post.slug}-title`} class="post-title">{post.frontmatter.title}</span>
 							<span class="description">{post.frontmatter.description}</span>
 						</a>
 						<div class="meta" aria-label={`Metadata for ${post.frontmatter.title}`}>
 							<span>{post.read_time} min</span>
-							<span>{post.frontmatter.tags.join(' / ')}</span>
+							<div class="post-tags" aria-label="Tags">
+								{#each post.frontmatter.tags as tag}
+									<button
+										type="button"
+										class:active={selectedTag === tag}
+										aria-pressed={selectedTag === tag}
+										on:click={() => (selectedTag = selectedTag === tag ? null : tag)}
+									>
+										{tag}
+									</button>
+								{/each}
+							</div>
 						</div>
 					</article>
 				{/each}
@@ -115,6 +155,44 @@
 		margin: 0.65rem 0 0.9rem;
 		color: #b8b8b8;
 		line-height: 1.45;
+	}
+
+	.post-tags button {
+		appearance: none;
+		border: 0;
+		background: transparent;
+		color: inherit;
+		font: inherit;
+		cursor: pointer;
+	}
+
+	.filter-status {
+		margin: 0.2rem 0 0.95rem;
+		color: #888;
+		font-size: 0.84rem;
+		line-height: 1.35;
+	}
+
+	.filter-status span {
+		color: #d0d0d0;
+	}
+
+	.filter-status button {
+		appearance: none;
+		margin-left: 0.45rem;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: #aaa;
+		font: inherit;
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.16em;
+		cursor: pointer;
+	}
+
+	.filter-status button:hover {
+		color: #fff;
 	}
 
 	.rss-link {
@@ -222,6 +300,32 @@
 		text-align: right;
 	}
 
+	.post-tags {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: 0.12rem 0.34rem;
+	}
+
+	.post-tags button {
+		padding: 0;
+		color: #666;
+		line-height: 1.35;
+		text-align: right;
+		transition: color 0.16s ease;
+	}
+
+	.post-tags button:not(:last-child)::after {
+		content: '/';
+		margin-left: 0.34rem;
+		color: #444;
+	}
+
+	.post-tags button:hover,
+	.post-tags button.active {
+		color: #b8b8b8;
+	}
+
 	hr {
 		margin: 1rem 0;
 	}
@@ -250,6 +354,10 @@
 			justify-items: start;
 			max-width: none;
 			text-align: left;
+		}
+
+		.post-tags {
+			justify-content: flex-start;
 		}
 	}
 </style>
