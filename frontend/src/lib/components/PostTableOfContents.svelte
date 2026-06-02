@@ -11,6 +11,8 @@
 	let isNavigatingToTarget = false;
 
 	const clamp = (value: number) => Math.min(1, Math.max(0, value));
+	const interpolate = (start: number, end: number, amount: number) =>
+		start + (end - start) * amount;
 
 	const getHashId = () => {
 		const hash = window.location.hash.slice(1);
@@ -54,8 +56,11 @@
 			const scrollY = window.scrollY;
 			const viewportHeight = window.innerHeight;
 			const activationLine = Math.min(viewportHeight * 0.35, 180);
-			const maxScrollY = document.documentElement.scrollHeight - viewportHeight;
-			progress = maxScrollY <= 0 ? 1 : clamp(scrollY / maxScrollY);
+			const contentRect = contentElement.getBoundingClientRect();
+			const contentTop = contentRect.top + scrollY;
+			const maxScrollY = Math.max(0, document.documentElement.scrollHeight - viewportHeight);
+			const progressStartY = Math.max(0, contentTop - activationLine);
+			const progressEndY = Math.max(progressStartY, maxScrollY);
 
 			if (!headingElements.length) {
 				activeId = headings[0]?.id ?? '';
@@ -66,14 +71,27 @@
 				targetId = '';
 			}
 
-			if (progress >= 0.999 && !targetId) {
-				activeId = headings.at(-1)?.id ?? '';
-				return;
-			}
+			const headingTops = headingElements.map(
+				(heading) => heading.getBoundingClientRect().top + scrollY
+			);
+			const headingTriggers = headingTops.map((top) => top - activationLine);
+			const firstTrigger = Math.max(0, headingTriggers[0] ?? 0);
+			const lastTrigger = Math.max(firstTrigger, headingTriggers.at(-1) ?? firstTrigger);
+			const scrollEndY = Math.max(firstTrigger, maxScrollY);
+			const shouldCompressTriggers = lastTrigger > scrollEndY && lastTrigger > firstTrigger;
+			const effectiveTriggers = headingTriggers.map((trigger) =>
+				shouldCompressTriggers
+					? interpolate(
+							firstTrigger,
+							scrollEndY,
+							(trigger - firstTrigger) / (lastTrigger - firstTrigger)
+						)
+					: trigger
+			);
 
 			let activeIndex = 0;
-			for (const [index, heading] of headingElements.entries()) {
-				if (heading.getBoundingClientRect().top <= activationLine) {
+			for (const [index, effectiveTrigger] of effectiveTriggers.entries()) {
+				if (scrollY >= effectiveTrigger) {
 					activeIndex = index;
 				} else {
 					break;
@@ -94,6 +112,18 @@
 					isNavigatingToTarget = false;
 				}
 			}
+
+			const progressScrollY =
+				targetIndex !== -1 &&
+				activeIndex === targetIndex &&
+				targetIndex < headingElements.length - 1
+					? Math.min(scrollY, effectiveTriggers[targetIndex] ?? scrollY)
+					: scrollY;
+
+			progress =
+				progressEndY === progressStartY
+					? 1
+					: clamp((progressScrollY - progressStartY) / (progressEndY - progressStartY));
 
 			activeId = headingElements[activeIndex]?.id ?? headings[0]?.id ?? '';
 		};
@@ -119,10 +149,15 @@
 			isNavigatingToTarget = false;
 		};
 
+		const resizeObserver = new ResizeObserver(requestUpdate);
+
 		tick().then(() => {
 			targetId = getHashId();
 			isNavigatingToTarget = Boolean(targetId);
 			collectElements();
+			if (contentElement) {
+				resizeObserver.observe(contentElement);
+			}
 			update();
 		});
 
@@ -136,6 +171,7 @@
 
 		return () => {
 			if (frame) cancelAnimationFrame(frame);
+			resizeObserver.disconnect();
 			window.removeEventListener('scroll', requestUpdate);
 			window.removeEventListener('resize', requestUpdate);
 			window.removeEventListener('hashchange', handleHashChange);
