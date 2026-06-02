@@ -3,8 +3,7 @@ title: Checking out Tangled
 date: 2026-05-17
 tags:
   - git
-  - decentralized
-  - tangled
+  - decentralized-web
 links:
   - https://tangled.org
 description: My first impressions of tangled.org, the decentralized git forge

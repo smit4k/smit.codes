@@ -1,7 +1,7 @@
 ---
 title: Why I Switched From Neovim to Zed
 date: 2026-05-17
-tags: [ide, editor, zed, neovim]
+tags: [editors, workflow]
 links: []
 description:
   "Why I moved away from Neovim and why Zed feels like a better fit for my

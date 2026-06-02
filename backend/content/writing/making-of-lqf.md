@@ -1,7 +1,7 @@
 ---
 title: The Making of LQF
 date: 2025-07-26
-tags: [config, language]
+tags: [configuration, language-design]
 links: []
 description:
   An overview of the design philosophy and development process behind LQF, my

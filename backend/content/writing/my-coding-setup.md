@@ -1,7 +1,7 @@
 ---
 title: My Coding Setup
 date: 2026-02-23
-tags: [setup, coding, tools, config]
+tags: [tools, workflow]
 links: []
 description: "My current programming setup for simplicity and efficiency"
 ---

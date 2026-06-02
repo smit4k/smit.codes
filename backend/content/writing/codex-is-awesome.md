@@ -1,7 +1,7 @@
 ---
 title: Codex Is Awesome
 date: 2026-05-08
-tags: [codex, ai-agents, coding-agents, coding, openai]
+tags: [ai, coding-agents]
 links: []
 description: "My experience with OpenAI's coding agent, Codex"
 ---
